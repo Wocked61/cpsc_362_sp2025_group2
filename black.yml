@@ -1,0 +1,15 @@
+name: Black
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: psf/black@stabl
+        with:
+         src: './src'
+         version: "~= 22.0"
