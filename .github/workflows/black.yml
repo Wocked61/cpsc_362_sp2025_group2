@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - uses: psf/black@stabl
+      - uses: psf/black@stable
         with:
          src: './backend'
          version: "~= 22.0"
