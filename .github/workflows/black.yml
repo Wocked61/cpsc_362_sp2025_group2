@@ -11,5 +11,5 @@ jobs:
       - uses: actions/checkout@v4
       - uses: psf/black@stabl
         with:
-         src: './src'
+         src: './backend'
          version: "~= 22.0"
