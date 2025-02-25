@@ -1,12 +1,27 @@
-# cpsc_362_sp2025_group2
+# Checkers
 
-California State University, Fullerton repository for CPSC 362 foundations of software engineering
+California State University, Fullerton repository for CPSC 362 Foundations of Software Engineering.
 
-Checkers
+Checkers is a full-stack game hosted on a web application that allows one player to play against another player locally. Using the same computer, the players will be playing the game of checkers on a two-sided checkered board in which each player will take turns for each round to move their pieces diagonally until one player is eliminated. If our game is completed earlier than expected, future features will be implemented, and server-side gameplay can be implemented with a computer/player.
 
-We will make a full-stack checkers website so one person can play against another locally.
+The front-end will be implemented in HTMl/CSS and JavaScript, and the back-end will be implemented in Python.
 
-We will use HTML and JavaScript for the front end and C++ for the back end since we are comfortable using these languages. The Checkers game will be played on the website where 2 players using the same computer will be playing the game of checkers, which is 2 sides on a checkered board in one color while the goal is to eliminate the other player's movable checker. If our game is completed earlier than expected, future features will be implemented, and server-side gameplay can be implemented with a computer/player.
+## How to Play
+
+
+## Getting Started
+
 
 ## Styleguide
-The linter we will use is ____ 
+The linter that will be used for the front-end development will be Prettier. The linter that will be used for the back-end development will be Black.
+
+## Built With
+OS, text editor, tools (compiler, linter, linker..), web framework
+
+## Future Updates
+
+
+## Authors
+
+
+## License
