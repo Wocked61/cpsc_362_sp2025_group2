@@ -6,14 +6,16 @@ Checkers is a full-stack game hosted on a web application that allows one player
 
 The front-end will be implemented in HTMl/CSS and JavaScript, and the back-end will be implemented in Python.
 
-## How to Play
-
 ## Requirement Models
-### UML Class Diagram
-<img width="500" alt="Image of UML Class Diagram" src="https://cdn.discordapp.com/attachments/1330299146166472717/1343767568925855824/uml1.PNG?ex=67be7892&is=67bd2712&hm=6aab3ef4632c1f1bdcf9901c7dc9d013e3ff7eff2d98da4285d9549c04845cdc&">
+<p align="center">
+  <img width="500" alt="Image of UML Class Diagram" src="https://cdn.discordapp.com/attachments/1330299146166472717/1343767568925855824/uml1.PNG?ex=67be7892&is=67bd2712&hm=6aab3ef4632c1f1bdcf9901c7dc9d013e3ff7eff2d98da4285d9549c04845cdc&">
+  <em>UML Class Diagram</em>
+</p>
 
-### UML Sequence Diagram
-<img width="500" alt="Image of UML Class Diagram" src="https://media.discordapp.net/attachments/1330299146166472717/1343728509306273832/swimlane.png?ex=67be5431&is=67bd02b1&hm=b9bb1a530e645e594f53b754bd8a061f5c9e7fb4026523058043aca61abcdf84&=&format=webp&quality=lossless&width=507&height=452">
+<p align="center">
+  <img width="500" alt="Image of UML Class Diagram" src="https://cdn.discordapp.com/attachments/1330299146166472717/1343869288712507413/image.png?ex=67bed74e&is=67bd85ce&hm=b7a28688a8e8ce49667815161150e68fa16b955eab36bc4b3d657e39f2ea16f0&">
+  <em>UML Sequence Diagram</em>
+</p>
 
 ## Getting Started
 
