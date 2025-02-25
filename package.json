@@ -1,0 +1,24 @@
+{
+  "name": "cpsc_362_sp2025_group2",
+  "version": "1.0.0",
+  "description": "California State University, Fullerton repository for CPSC 362 Foundations of Software Engineering.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write \"**/*.{ts,tsx,js,md,mdx,css,yaml}\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wocked61/cpsc_362_sp2025_group2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Wocked61/cpsc_362_sp2025_group2/issues"
+  },
+  "homepage": "https://github.com/Wocked61/cpsc_362_sp2025_group2#readme",
+  "devDependencies": {
+    "prettier": "3.5.2"
+  }
+}

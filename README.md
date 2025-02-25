@@ -13,7 +13,8 @@ The front-end will be implemented in HTMl/CSS and JavaScript, and the back-end w
 
 
 ## Styleguide
-The linter that will be used for the front-end development will be Prettier. The linter that will be used for the back-end development will be Black.
+The linter that will be used for the front-end development will be Prettier.
+The linter that will be used for the back-end development will be Black.
 
 ## Built With
 OS, text editor, tools (compiler, linter, linker..), web framework
