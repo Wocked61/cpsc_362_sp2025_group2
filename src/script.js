@@ -11,7 +11,7 @@ function setupBoard(){
         board[row]=[]; //make 2d
         for(let col = 0; col < cols; col++){
             const square = document.createElement("div");
-            square.classList.add("square", (row + col) % 2 === 0 ? "light" : "dark");//adds square light or quare dark class
+            square.classList.add("square", (row + col) % 2 === 0 ? "light" : "dark");//adds square light or square dark class
             square.dataset.row = row;   //stores row
             square.dataset.col = col;   //stores col
             square.addEventListener("click", handleClick);
@@ -48,8 +48,9 @@ function handleClick(event) {
     const square = event.target.closest(".square"); //current clicked
     const row = parseInt(square.dataset.row);   
     const col = parseInt(square.dataset.col);  
+    //console.log(row,col);
     if (selectedPiece) { //if selectedPiece is not empty
-
+        let valid = validMove(selectedPiece.row, selectedPiece.col, row, col);
         //checker
         //console.log("slected",selectedPiece.element);
         //console.log("square",square);
@@ -60,11 +61,11 @@ function handleClick(event) {
             square.style.border = "none";
             selectedPiece="";
         }
-        else if(!validMove(selectedPiece.row, selectedPiece.col, row, col)){//if trys to move where antoher is
+        else if(!valid){//if trys to move where antoher is
             console.log("NON VALID MOVE");
         }
         else{ 
-            movePiece(selectedPiece.row, selectedPiece.col, row, col);
+            movePiece(selectedPiece.row, selectedPiece.col, row, col,valid);
             selectedPiece="";
             }
     }else if (board[row][col] === currentPlayer) {
@@ -75,9 +76,9 @@ function handleClick(event) {
 }
 
 //move piece
-function movePiece(fromRow,fromCol,toRow,toCol){
+function movePiece(fromRow,fromCol,toRow,toCol,valid){
     //check if valid move
-    if(!validMove(fromRow,fromCol,toRow,toCol)) return;
+    if(!valid) return;
     
 
     //update visuals
@@ -104,19 +105,42 @@ function validMove(fromRow,fromCol,toRow,toCol){
     const rowDiff = toRow - fromRow;
     const colDiff = toCol - fromCol;
     //console.log("ROWS: ",rowDiff,toRow,fromRow);
-    console.log("COLS: ",colDiff,toCol,fromCol);
+    //console.log("COLS: ",colDiff,toCol,fromCol);
     //console.log("from: ",fromRow,fromCol);
     //console.log("to: ",toRow,toCol);
-    //
+    
 
-    //widh colDiff
-    //with rowDiff it checks if if trying to move back
-    if(colDiff != 1 || colDiff != -1 || (currentPlayer == "red" && rowDiff != 1) || (currentPlayer == "black" &&  rowDiff != -1)){
+    //make valid move to take a single peice
+    if(colDiff==2 || colDiff == -2){
+        //console.log(board[(toRow+fromRow)/2][(toCol+fromCol)/2],1+fromRow,1+fromCol);
+        //checks if can take black piece
+        if(currentPlayer == "red" && board[(toRow+fromRow)/2][(toCol+fromCol)/2]=="black" && (currentPlayer == "red" && rowDiff > 0)){
+            removePiece((toRow+fromRow)/2,(toCol+fromCol)/2);
+            return true;
+        }
+        //checks if can take a red piece
+        if(currentPlayer == "black" && board[(toRow+fromRow)/2][(toCol+fromCol)/2]=="red" && (currentPlayer == "black" && rowDiff < 0)){
+            removePiece((toRow+fromRow)/2,(toCol+fromCol)/2);
+            return true;
+        }
+        
+    }
+
+    //with colDiff check if trying to move to far to right or left
+    //with rowDiff it checks if trying to move back
+    if(colDiff != 1 && colDiff != -1 || (currentPlayer == "red" && rowDiff != 1) || (currentPlayer == "black" &&  rowDiff != -1)){
         console.log("non valid");
         return false;
     }
-    console.log("valid");
     return true;
+}
+
+//take piece
+function removePiece(row,col){
+    //instead of removeing it outright, we could show it on the side to show how many pieces a player has taken
+    const removeSquare = getSquare(row,col);
+    removeSquare.innerHTML = "";
+    board[row][col] = null;
 }
 
 
