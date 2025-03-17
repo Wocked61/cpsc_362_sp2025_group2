@@ -49,6 +49,7 @@ function handleClick(event) {
     const row = parseInt(square.dataset.row);   
     const col = parseInt(square.dataset.col);  
     //console.log(row,col);
+    
     if (selectedPiece) { //if selectedPiece is not empty
         let valid = validMove(selectedPiece.row, selectedPiece.col, row, col);
         //checker
@@ -56,10 +57,12 @@ function handleClick(event) {
         //console.log("square",square);
         //console.log(validMove(selectedPiece.row, selectedPiece.col, row, col));
         //-----
-
-        if(square == selectedPiece.element){ //unselect
-            square.style.border = "none";
-            selectedPiece="";
+        
+        //change selected square
+        if (board[row][col]==currentPlayer && board[selectedPiece.row][selectedPiece.col]== currentPlayer){
+            selectedPiece.element.style.border= "none";
+            selectedPiece = {row,col,element: square};
+            square.style.border = "3px solid yellow";
         }
         else if(!valid){//if trys to move where antoher is
             console.log("NON VALID MOVE");
