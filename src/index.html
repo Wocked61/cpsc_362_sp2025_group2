@@ -13,48 +13,46 @@
         <p class="title">Checkers</p>
     </header>
 
+    <div class="container">
+        <div class="skeleton">
+            <div class="box">
+                <!-- Game Information Display -->
+                <div class="game-info">
+                    <p class="player-turn">Player 1's Turn</p>
+                    <p class="score">Player 1: 0 | Player 2: 0</p>
+                </div>
 
-        <div class="box-container">
-        <div class="box">
-        <!-- Game Information Display -->
+                <!-- Toolbar with buttons -->
+                <div class="toolbar">
+                    <button class="button">New Game</button>
+                    <button class="button">Settings</button>
+                    <button class="button">Help</button>
+                </div>
+            </div>
 
+            <div class="board">
+                <!-- filler picture -->
+                <img class="image" src="Chess_Board.svg.png" alt="Checkerboard">
+            </div>
 
-        <div class="game-info">
-            <p class="player-turn">Player 1's Turn</p>
-            <p class="score">Player 1: 0 | Player 2: 0</p>
+            <!-- settings -->
+            <div class="box-settings">
+                <div class="settings">
+                    <label for="player1">Player 1 Name:</label>
+                    <input type="text" id="player1" name="player1" value="Player 1">
+
+                    <label for="player2">Player 2 Name:</label>
+                    <input type="text" id="player2" name="player2" value="Player 2">
+
+                    <label for="difficulty">Game Difficulty:</label>
+                    <select id="difficulty" name="difficulty">
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+            </div>
         </div>
-
-        <!-- Toolbar with buttons -->
-
-        <div class="toolbar">
-            <button class="toolbar-button">New Game</button>
-            <button class="toolbar-button">Settings</button>
-            <button class="toolbar-button">Help</button>
-        </div>
-        </div>
-
-    <div class="board">
-        <!-- filler picture -->
-        <img class="image" src="Chess_Board.svg.png" alt="Checkerboard">
-    </div>
-
-    <!-- settings -->
-     <div class="box-settings">
-    <div class="settings">
-        <label for="player1">Player 1 Name:</label>
-        <input type="text" id="player1" name="player1" value="Player 1">
-
-        <label for="player2">Player 2 Name:</label>
-        <input type="text" id="player2" name="player2" value="Player 2">
-
-        <label for="difficulty">Game Difficulty:</label>
-        <select id="difficulty" name="difficulty">
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-        </select>
-    </div>
-     </div>
     </div>
 
     <footer>
@@ -65,13 +63,8 @@
                 <p class="footer-text">CPSC 362 - Spring 2025</p>
             </div>
         </div>
-
-
-
-
     </footer>
 
     <script src="script.js?query=string" id="query"></script>
 </body>
-
 </html>
