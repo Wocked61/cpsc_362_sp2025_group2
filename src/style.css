@@ -102,8 +102,8 @@ footer {
 }
 
 .box-settings {
-    width: 350px;
-    height: 300px;
+    width: 400px;
+    height: 150px;
     border: 2px solid #000;
     justify-content: center;
     align-items: center;
@@ -134,6 +134,7 @@ footer {
     color: aliceblue;
     border: none;
     transition-duration: 0.6s;
+    border-radius: 6px;
 }
 
 .button:hover {
