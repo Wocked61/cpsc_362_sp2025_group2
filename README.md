@@ -51,7 +51,7 @@ The linter that will be used for the back-end development will be Black. Both li
 ## Future Updates
 
 ## Authors
-**Front-end developers:**
+**Front-end developers:**  
 Dylan Phan  
 Sony Kim  
 Samson Du  
