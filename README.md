@@ -30,8 +30,6 @@ The linter that will be used for the front-end development will be Prettier.
 The linter that will be used for the back-end development will be Black. Both linters will be automated and ran through GitHub Actions.
 
 ## Built With
-
-OS, text editor, tools (compiler, linter, linker..), web framework
 **Operating Systems:** 
 - Ubuntu
 - Windows
@@ -54,15 +52,15 @@ OS, text editor, tools (compiler, linter, linker..), web framework
 
 ## Authors
 **Front-end developers:**
-Dylan Phan
-Sony Kim
-Samson Du
-Andrew Mankin
+Dylan Phan  
+Sony Kim  
+Samson Du  
+Andrew Mankin  
 
-**Back-end developers:**
-Kayla Ngo
-Kevin Chau
-Azaan Mavandadipur
-Collin Woelfl
+**Back-end developers:**  
+Kevin Chau  
+Azaan Mavandadipur  
+Collin Woelfl  
+Kayla Ngo  
 
 ## License
