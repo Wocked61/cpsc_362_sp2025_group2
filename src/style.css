@@ -30,6 +30,12 @@ body,html{
 .light {
     background-color: beige;
 }
+.red.king{
+    background-color: darkred;   
+}
+.black.king{
+    background-color: gray  ;
+}
 .piece {
     width: 40px;
     height: 40px;
