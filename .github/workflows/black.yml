@@ -7,8 +7,13 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      statuses: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}      
       - uses: psf/black@stable
         with:
          src: './backend'

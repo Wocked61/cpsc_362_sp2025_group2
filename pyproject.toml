@@ -1,4 +1,4 @@
+# Black linter configurations
 [tool.black]
-line-length = 88
-target-version = ["py38", "py39", "py310", "py311"]
-skip-string-normalization = true
+line-length = 90    # Max line length to wrap
+target-version = ["py38", "py39", "py310", "py311"]    # Supported python versions
