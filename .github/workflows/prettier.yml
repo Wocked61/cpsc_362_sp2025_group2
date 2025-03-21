@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      -"**/*.{js,md,css,yaml,html}"
 
 jobs:
   lint: 
@@ -17,4 +19,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20.x"
+      - run: npm install
       - run: npm run format
