@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      -"**/*.{js,md,css,yaml,html}"
 
 jobs:
   lint: 
