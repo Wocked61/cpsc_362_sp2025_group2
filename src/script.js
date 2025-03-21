@@ -49,16 +49,10 @@ function handleClick(event) {
     const square = event.target.closest(".square"); //current clicked
     const row = parseInt(square.dataset.row);   
     const col = parseInt(square.dataset.col);  
-    //console.log(row,col);
     
     if (selectedPiece) { //if selectedPiece is not empty
         let valid = validMove(selectedPiece.row, selectedPiece.col, row, col);
-        //checker
-        //console.log("slected",selectedPiece.element);
-        //console.log("square",square);
-        //console.log(validMove(selectedPiece.row, selectedPiece.col, row, col));
-        //-----
-
+        
         //change selected square
         if (board[row][col]==currentPlayer && board[selectedPiece.row][selectedPiece.col]== currentPlayer){
             selectedPiece.element.style.border= "none";
@@ -111,117 +105,41 @@ function validMove(fromRow,fromCol,toRow,toCol){
 
     const rowDiff = toRow - fromRow;
     const colDiff = Math.abs(toCol - fromCol);
-    console.log("ROWS: ",rowDiff,toRow,fromRow);
-    console.log("COLS: ",colDiff,toCol,fromCol);
-    //console.log("from: ",fromRow,fromCol);
-    //console.log("to: ",toRow,toCol);
     
     //make valid move to take a single peice
-
-    //take one peice
-    if(colDiff==2){
-        if(currentPlayer == "red" && board[(toRow+fromRow)/2][(toCol+fromCol)/2]=="black" && (currentPlayer == "red" && rowDiff > 0)){
-            removePiece((toRow+fromRow)/2,(toCol+fromCol)/2);
-            return true;
-        }
-        //checks if can take a red piece
-        if(currentPlayer == "black" && board[(toRow+fromRow)/2][(toCol+fromCol)/2]=="red" && (currentPlayer == "black" && rowDiff < 0)){
-            removePiece((toRow+fromRow)/2,(toCol+fromCol)/2);
-            return true;
+    const moveSet = [
+        {piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0]}, //right
+        {piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 3, -3, 4, -4, -4, -4]}, //left
+        {piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -3, 3, -4, 4, 4, 0]}, //right
+        {piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]}, //left  
+    ];
+    //chek if in bounds of board
+    for(let x of moveSet){
+        if(getSquare(fromRow,fromCol).firstChild.dataset.king == "false"){
+            if(hops(fromRow,fromCol,toRow,toCol,x)){return true;}
         }
     }
- 
-    //if trying to make a move more than 2 squares away witch would only be double or more hop
-    //this is only for double hop not trippple or more
-    //down only bc red
-    
-
-        //red
-        //right right
-        if(board[fromRow][fromCol]=="red" && board[fromRow+1][fromCol+1]=="black" && board[fromRow+2][fromCol+2]==null && board[fromRow+3][fromCol+3]=="black"){
-            if(fromRow+4==toRow && fromCol+4== toCol){
-                removePiece(fromRow+3,fromCol+3);
-                removePiece(fromRow+1,fromCol+1);
-                console.log("valid double hop!!!")
-                return true;
-            }
-        }
-        //right left
-        if(board[fromRow][fromCol]=="red" && board[fromRow+1][fromCol+1]=="black" && board[fromRow+2][fromCol+2]==null && board[fromRow+3][fromCol+1]=="black"){
-            if(fromRow+4==toRow && fromCol == toCol){
-                removePiece(fromRow+3,fromCol+1);
-                removePiece(fromRow+1,fromCol+1);
-                console.log("valid double hop!!!")
-                return true;
-            }
-        }
-        //left left
-        if(board[fromRow][fromCol]=="red" && board[fromRow+1][fromCol-1]=="black" && board[fromRow+2][fromCol-2]==null && board[fromRow+3][fromCol-3]=="black"){
-            if(fromRow+4==toRow && fromCol-4 == toCol){
-                removePiece(fromRow+3,fromCol-3);
-                removePiece(fromRow+1,fromCol-1);
-                console.log("valid double hop!!!")
-                return true;
-            }
-        }
-        //left right
-        if(board[fromRow][fromCol]=="red" && board[fromRow+1][fromCol-1]=="black" && board[fromRow+2][fromCol-2]==null && board[fromRow+3][fromCol-1]=="black"){
-            if(fromRow-4==toRow && fromCol-4 == toCol){
-                removePiece(fromRow+3,fromCol-1);
-                removePiece(fromRow+1,fromCol-1);
-                console.log("valid double hop!!!")
-                return true;
-            }
-        }
-        //black
-        //right right
-        if(board[fromRow][fromCol]=="black" && board[fromRow-1][fromCol-1]=="red" && board[fromRow-2][fromCol-2]==null && board[fromRow-3][fromCol-3]=="red"){
-            if(fromRow-4==toRow && fromCol-4== toCol){
-                removePiece(fromRow-3,fromCol-3);
-                removePiece(fromRow-1,fromCol-1);
-                console.log("valid double hop!!!")
-                return true;
-            }
-        }
-        //right left
-        if(board[fromRow][fromCol]=="black" && board[fromRow-1][fromCol-1]=="red" && board[fromRow-2][fromCol-2]==null && board[fromRow-3][fromCol-1]=="red"){
-            if(fromRow+4==toRow && fromCol == toCol){
-                removePiece(fromRow-3,fromCol-1);
-                removePiece(fromRow-1,fromCol-1);
-                console.log("valid double hop!!!")
-                return true;
-            }
-        }
-        //left left
-        if(board[fromRow][fromCol]=="black" && board[fromRow-1][fromCol+1]=="red" && board[fromRow-2][fromCol+2]==null && board[fromRow-3][fromCol+3]=="red"){
-            if(fromRow-4==toRow && fromCol+4 == toCol){
-                removePiece(fromRow-3,fromCol+3);
-                removePiece(fromRow-1,fromCol+1);
-                console.log("valid double hop!!!")
-                return true;
-            }
-        }
-        //left right
-        if(board[fromRow][fromCol]=="black" && board[fromRow-1][fromCol+1]=="red" && board[fromRow-2][fromCol+2]==null && board[fromRow-3][fromCol+1]=="red"){
-            if(fromRow+4==toRow && fromCol+4 == toCol){
-                removePiece(fromRow-3,fromCol+1);
-                removePiece(fromRow-1,fromCol+1);
-                console.log("valid double hop!!!")
-                return true;
-            }
-        }
 
     //if king
     if(getSquare(fromRow,fromCol).firstChild.dataset.king == "true"){
-        if(colDiff==2){
-            if(currentPlayer == "red" && board[(toRow+fromRow)/2][(toCol+fromCol)/2]=="black" && (currentPlayer == "red")){
-                removePiece((toRow+fromRow)/2,(toCol+fromCol)/2);
-                return true;
-            }
-            //checks if can take a red piece
-            if(currentPlayer == "black" && board[(toRow+fromRow)/2][(toCol+fromCol)/2]=="red" && (currentPlayer == "black")){
-                removePiece((toRow+fromRow)/2,(toCol+fromCol)/2);
-                return true;
+        const kingMoveSet = [
+            {piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0]}, //right
+            {piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 3, -3, 4, -4, -4, -4]}, //left
+            {piece: "red", enemy: "black", jumps: [-1, 1, -2, 2, -3, 3, -4, 4, 4, 0]}, //right
+            {piece: "red", enemy: "black", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]}, //left  
+            {piece: "black", enemy: "red", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0]}, //right
+            {piece: "black", enemy: "red", jumps: [1, -1, 2, -2, 3, -3, 4, -4, -4, -4]}, //left
+            {piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -3, 3, -4, 4, 4, 0]}, //right
+            {piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]}, //left  
+        ];
+        for(let x of kingMoveSet){
+            let i=0, j=1;
+            for(;j<x.jumps.length;){
+                //checks if in bounds of board
+                if(fromRow+x.jumps[i]!=toRow || fromCol+x.jumps[j]!=toCol){
+                    i++; j++;
+                }
+                else if(hops(fromRow,fromCol,toRow,toCol,x)){return true;}
             }
         }
     
@@ -231,76 +149,24 @@ function validMove(fromRow,fromCol,toRow,toCol){
         return false;
     }
 
-
     //checks if single square move is valid
     //with colDiff check if trying to move to far to right or left
     //with rowDiff it checks if trying to move back
-
     if(colDiff != 1 || (currentPlayer == "red" && rowDiff != 1) || (currentPlayer == "black" &&  rowDiff != -1)){
         console.log("non valid");
         return false;
     }
-    
-
-    
-
-
     return true;
-
 }
-//a way to check for double hop is to use a valid hop and check if there are any more hops that can be made
 
 
 //take piece
 function removePiece(row,col){
-    //instead of removeing it outright, we could show it on the side to show how many pieces a player has taken
     const removeSquare = getSquare(row,col);
     removeSquare.innerHTML = "";
     board[row][col] = null;
 }
-/*
-function possibleMoves(row,col){
-    let moves = [];
-    if(currentPlayer == "red"){
-        if(board[row+1][col+1]=="null"){
-            moves.push([row+1,col+1]);
-        }
-        if(board[row+1][col-1]==null){
-            moves.push([row+1,col-1]);
-        }
-        if(board[row+1][col+1]=="black" && board[row+2][col+2]==null){
-            moves.push([row+2,col+2]);
-            removePiece(row+1,col+1);
-            if(board[row+3][col+3]=="black" && board[row+4][col+4]=="null"){
-                moves.push([row+4,col+4]);
-                removePiece(row+3,col+3);
-            } 
-        }
-        if(board[row+1][col-1]=="black" && board[row+2][col-2]==null){
-            moves.push([row+2,col-2]);
-            removePiece(row+1,col-1);
-        }
-    }
-    if(currentPlayer=="black"){
-        if(board[row-1][col+1]==null){
-            moves.push([row-1,col+1]);
-        }
-        if(board[row-1][col-1]==null){
-            moves.push([row-1,col-1]);
-        }
-        if(board[row-1][col+1]=="red" && board[row-2][col+2]==null){
-            moves.push([row-2,col+2]);
-            removePiece(row-1,col+1);
 
-        }
-        if(board[row-1][col-1]=="red" && board[row-2][col-2]==null){
-            moves.push([row-2,col-2]);
-            removePiece(row-1,col-1);
-        }
-    }
-    return moves;
-}
-*/
 
 
 function checkIfKing(row,col){
@@ -316,12 +182,31 @@ function checkIfKing(row,col){
     }
 }
 
-
-
-
-
-
-
+// 0  1  2  3  4  5  6  7  8  9 
+//[r1,c1,r2,c2,r3,c3,r4,c4,r5,c5]
+function hops(fromRow,fromCol,toRow,toCol,moves){
+    let {piece, enemy, jumps} = moves;
+    
+    if(board[fromRow][fromCol] == piece && board[fromRow+jumps[0]][fromCol+jumps[1]] == enemy && board[fromRow+jumps[2]][fromCol+jumps[3]] == null){
+        //single
+        if(toRow == fromRow+jumps[2] && toCol == fromCol+jumps[3]){
+            removePiece(fromRow+jumps[0],fromCol+jumps[1]);
+            return true;
+        }
+        //double same
+        if(board[fromRow+jumps[4]][fromCol+jumps[5]] == enemy && fromRow+jumps[6] == toRow && fromCol+jumps[7] == toCol){
+            removePiece(fromRow+jumps[4],fromCol+jumps[5]);
+            removePiece(fromRow+jumps[0],fromCol+jumps[1]);
+            return true;          
+        }
+        //double diff
+        if(board[fromRow+jumps[4]][fromCol+jumps[1]] == enemy && fromRow+jumps[8] == toRow && fromCol+jumps[9] == toCol){
+            removePiece(fromRow+jumps[4],fromCol+jumps[1]);
+            removePiece(fromRow+jumps[0],fromCol+jumps[1]);
+            return true;
+        }
+    }
+}
 
 //gets the square div
 function getSquare(row,col){

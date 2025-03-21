@@ -1,50 +1,51 @@
-body,html{
-    height: 100%;
-    margin: 0;
+body,
+html {
+  height: 100%;
+  margin: 0;
 }
-.mainContainer{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-#boardContainer{
-    background-color: black;
-    display: grid;
-    grid-template-columns: repeat(8,50px);
-    grid-template-rows: repeat(8,50px);
-    gap: 5px;
+#boardContainer {
+  background-color: black;
+  display: grid;
+  grid-template-columns: repeat(8, 50px);
+  grid-template-rows: repeat(8, 50px);
+  gap: 5px;
 }
 .square {
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px;
-    cursor: pointer;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  cursor: pointer;
 }
 .dark {
-    background-color: brown;
+  background-color: brown;
 }
 
 .light {
-    background-color: beige;
+  background-color: beige;
 }
-.red.king{
-    background-color: darkred;   
+.red.king {
+  background-color: darkred;
 }
-.black.king{
-    background-color: gray  ;
+.black.king {
+  background-color: gray;
 }
 .piece {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
 }
 .red {
-    background-color: red;
+  background-color: red;
 }
 
 .black {
-    background-color: black;
+  background-color: black;
 }
