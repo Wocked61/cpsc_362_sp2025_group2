@@ -3,7 +3,23 @@ const rows = 8, cols = 8;
 let board = [];
 let currentPlayer = "red";
 let selectedPiece = null;  
-
+//[r1,c1]
+const moveSet = [
+    {piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0]}, //right
+    {piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 3, -3, 4, -4, 4, 0]}, //left
+    {piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -3, 3, -4, 4, -4, 0]}, //right
+    {piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]}, //left  
+];
+const kingMoveSet = [
+    {piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0]}, //right
+    {piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 3, -3, 4, -4, 4, 0]}, //left
+    {piece: "red", enemy: "black", jumps: [-1, 1, -2, 2, -3, 3, -4, 4, -4, 0]}, //right
+    {piece: "red", enemy: "black", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]}, //left  
+    {piece: "black", enemy: "red", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0]}, //right
+    {piece: "black", enemy: "red", jumps: [1, -1, 2, -2, 3, -3, 4, -4, 4, 0]}, //left
+    {piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -3, 3, -4, 4, -4, 0]}, //right
+    {piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]}, //left  
+];
 //makes board
 function setupBoard(){
     boardContainer.innerHTML = "";
@@ -106,13 +122,6 @@ function validMove(fromRow,fromCol,toRow,toCol){
     const rowDiff = toRow - fromRow;
     const colDiff = Math.abs(toCol - fromCol);
     
-    //make valid move to take a single peice
-    const moveSet = [
-        {piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0]}, //right
-        {piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 3, -3, 4, -4, -4, -4]}, //left
-        {piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -3, 3, -4, 4, 4, 0]}, //right
-        {piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]}, //left  
-    ];
     //chek if in bounds of board
     for(let x of moveSet){
         if(getSquare(fromRow,fromCol).firstChild.dataset.king == "false"){
@@ -122,16 +131,6 @@ function validMove(fromRow,fromCol,toRow,toCol){
 
     //if king
     if(getSquare(fromRow,fromCol).firstChild.dataset.king == "true"){
-        const kingMoveSet = [
-            {piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0]}, //right
-            {piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 3, -3, 4, -4, -4, -4]}, //left
-            {piece: "red", enemy: "black", jumps: [-1, 1, -2, 2, -3, 3, -4, 4, 4, 0]}, //right
-            {piece: "red", enemy: "black", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]}, //left  
-            {piece: "black", enemy: "red", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0]}, //right
-            {piece: "black", enemy: "red", jumps: [1, -1, 2, -2, 3, -3, 4, -4, -4, -4]}, //left
-            {piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -3, 3, -4, 4, 4, 0]}, //right
-            {piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]}, //left  
-        ];
         for(let x of kingMoveSet){
             let i=0, j=1;
             for(;j<x.jumps.length;){
