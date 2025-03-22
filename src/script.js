@@ -1,7 +1,7 @@
 var boardContainer = document.getElementById("boardContainer");
 const rows = 8, cols = 8;
 let board = [];
-let currentPlayer = "red";
+let currentPlayer = "black";
 let selectedPiece = null;  
 //can add more cords in jumps to hop over 3 or more peices
 const moveSet = [
@@ -127,7 +127,6 @@ function validMove(fromRow,fromCol,toRow,toCol){
     }
 
     //if king
-    console.log(getSquare(fromRow,fromCol).firstChild.dataset.king);
     if(getSquare(fromRow,fromCol).firstChild.dataset.king == "true"){
         if(fromRow+1 == toRow && fromCol +1 == toCol|| fromRow+1==toRow && fromCol-1 == toCol|| fromRow-1 == toRow && fromCol+1 == toCol|| fromRow-1== toRow&& fromCol-1==toCol){
             return true;
