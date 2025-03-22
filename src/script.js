@@ -208,5 +208,14 @@ function getSquare(row,col){
     return document.querySelector(`.square[data-row="${row}"][data-col="${col}"]`);
 }
 
+//add a function for the new game button
+
+
+
+//add a popup for the settings for changing colors and pieces
+
+
+//add a popup for the help button to display the instructions
+
 
 setupBoard();

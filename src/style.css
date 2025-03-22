@@ -45,6 +45,7 @@ html {
 }
 .red {
   background-color: red;
+  border: #000 solid 2px;
 }
 
 .black {
