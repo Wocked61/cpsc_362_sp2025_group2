@@ -11,6 +11,7 @@ const moveSet = [
     {piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]} //left  
 ];
 const kingMoveSet = [
+    //add jump down then up for left and right
     {piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0]}, //right
     {piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 3, -3, 4, -4, 4, 0]}, //left
     {piece: "red", enemy: "black", jumps: [-1, 1, -2, 2, -3, 3, -4, 4, -4, 0]}, //right
@@ -47,7 +48,6 @@ function setupBoard(){
             boardContainer.appendChild(square);
         }
     }
-    console.log(board);
 }
 
 //creates and adds appends the piece to the square
@@ -132,14 +132,7 @@ function validMove(fromRow,fromCol,toRow,toCol){
             return true;
         }
         for(let x of kingMoveSet){
-            let i=0, j=1;
-            for(;j<x.jumps.length;){
-                //checks if in bounds of board
-                if(fromRow+x.jumps[i]==toRow && fromCol+x.jumps[j]==toCol){
-                    if(hops(fromRow,fromCol,toRow,toCol,x)){return true;}
-                }
-                else i=i+2; j=j+2;
-            }
+            if(hops(fromRow,fromCol,toRow,toCol,x)){return true;}
         }
         return false;
     }
@@ -180,26 +173,31 @@ function checkIfKing(row,col){
 //move over 1 or move peice
 function hops(fromRow,fromCol,toRow,toCol,moves){
     let {piece, enemy, jumps} = moves;
-    
-    if(board[fromRow][fromCol] == piece && board[fromRow+jumps[0]][fromCol+jumps[1]] == enemy && board[fromRow+jumps[2]][fromCol+jumps[3]] == null){
-        //single
-        if(toRow == fromRow+jumps[2] && toCol == fromCol+jumps[3]){
-            removePiece(fromRow+jumps[0],fromCol+jumps[1]);
-            return true;
-        }
-        //double same (r-r or l-l)
-        if(board[fromRow+jumps[4]][fromCol+jumps[5]] == enemy && fromRow+jumps[6] == toRow && fromCol+jumps[7] == toCol){
-            removePiece(fromRow+jumps[4],fromCol+jumps[5]);
-            removePiece(fromRow+jumps[0],fromCol+jumps[1]);
-            return true;          
-        }
-        //double diff (r-l or l-r)
-        if(board[fromRow+jumps[4]][fromCol+jumps[1]] == enemy && fromRow+jumps[8] == toRow && fromCol+jumps[9] == toCol){
-            removePiece(fromRow+jumps[4],fromCol+jumps[1]);
-            removePiece(fromRow+jumps[0],fromCol+jumps[1]);
-            return true;
-        }
+    let i=0;j=1;
+    for(;j<jumps.length;){
+        if(fromRow+jumps[i]==toRow && fromCol+jumps[j]==toCol){
+            if(board[fromRow][fromCol] == piece && board[fromRow+jumps[0]][fromCol+jumps[1]] == enemy && board[fromRow+jumps[2]][fromCol+jumps[3]] == null){
+                //single
+                if(toRow == fromRow+jumps[2] && toCol == fromCol+jumps[3]){
+                    removePiece(fromRow+jumps[0],fromCol+jumps[1]);
+                    return true;
+                }
+                //double same (r-r or l-l)
+                if(board[fromRow+jumps[4]][fromCol+jumps[5]] == enemy && fromRow+jumps[6] == toRow && fromCol+jumps[7] == toCol){
+                    removePiece(fromRow+jumps[4],fromCol+jumps[5]);
+                    removePiece(fromRow+jumps[0],fromCol+jumps[1]);
+                    return true;          
+                }
+                //double diff (r-l or l-r)
+                if(board[fromRow+jumps[4]][fromCol+jumps[1]] == enemy && fromRow+jumps[8] == toRow && fromCol+jumps[9] == toCol){
+                    removePiece(fromRow+jumps[4],fromCol+jumps[1]);
+                    removePiece(fromRow+jumps[0],fromCol+jumps[1]);
+                    return true;
+                }
+            }
+        }else i = i + 2; j = j + 2;
     }
+    
 }
 
 //gets the square div
