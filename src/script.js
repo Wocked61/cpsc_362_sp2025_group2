@@ -3,12 +3,12 @@ const rows = 8, cols = 8;
 let board = [];
 let currentPlayer = "red";
 let selectedPiece = null;  
-//[r1,c1]
+//can add more cords in jumps to hop over 3 or more peices
 const moveSet = [
     {piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0]}, //right
     {piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 3, -3, 4, -4, 4, 0]}, //left
     {piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -3, 3, -4, 4, -4, 0]}, //right
-    {piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]}, //left  
+    {piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]} //left  
 ];
 const kingMoveSet = [
     {piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0]}, //right
@@ -18,7 +18,7 @@ const kingMoveSet = [
     {piece: "black", enemy: "red", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0]}, //right
     {piece: "black", enemy: "red", jumps: [1, -1, 2, -2, 3, -3, 4, -4, 4, 0]}, //left
     {piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -3, 3, -4, 4, -4, 0]}, //right
-    {piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]}, //left  
+    {piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]} //left  
 ];
 //makes board
 function setupBoard(){
@@ -45,10 +45,8 @@ function setupBoard(){
                 board[row][col] = null;
             }
             boardContainer.appendChild(square);
-        
         }
     }
-
     console.log(board);
 }
 
@@ -93,7 +91,6 @@ function movePiece(fromRow,fromCol,toRow,toCol,valid){
     //check if valid move
     if(!valid) return;
     
-
     //update visuals
     const fromSquare = getSquare(fromRow,fromCol);
     const toSquare = getSquare(toRow,toCol);
@@ -130,20 +127,20 @@ function validMove(fromRow,fromCol,toRow,toCol){
     }
 
     //if king
+    console.log(getSquare(fromRow,fromCol).firstChild.dataset.king);
     if(getSquare(fromRow,fromCol).firstChild.dataset.king == "true"){
+        if(fromRow+1 == toRow && fromCol +1 == toCol|| fromRow+1==toRow && fromCol-1 == toCol|| fromRow-1 == toRow && fromCol+1 == toCol|| fromRow-1== toRow&& fromCol-1==toCol){
+            return true;
+        }
         for(let x of kingMoveSet){
             let i=0, j=1;
             for(;j<x.jumps.length;){
                 //checks if in bounds of board
-                if(fromRow+x.jumps[i]!=toRow || fromCol+x.jumps[j]!=toCol){
-                    i++; j++;
+                if(fromRow+x.jumps[i]==toRow && fromCol+x.jumps[j]==toCol){
+                    if(hops(fromRow,fromCol,toRow,toCol,x)){return true;}
                 }
-                else if(hops(fromRow,fromCol,toRow,toCol,x)){return true;}
+                else i=i+2; j=j+2;
             }
-        }
-    
-        if(fromRow+1 == toRow && fromCol +1 == toCol|| fromRow+1==toRow && fromCol-1 == toCol|| fromRow-1 == toRow && fromCol+1 == toCol|| fromRow-1== toRow&& fromCol-1==toCol){
-            return true;
         }
         return false;
     }
@@ -167,7 +164,7 @@ function removePiece(row,col){
 }
 
 
-
+//converts piece
 function checkIfKing(row,col){
     if(currentPlayer=="red" && row == 7){
         toKing = getSquare(row,col);
@@ -181,8 +178,7 @@ function checkIfKing(row,col){
     }
 }
 
-// 0  1  2  3  4  5  6  7  8  9 
-//[r1,c1,r2,c2,r3,c3,r4,c4,r5,c5]
+//move over 1 or move peice
 function hops(fromRow,fromCol,toRow,toCol,moves){
     let {piece, enemy, jumps} = moves;
     
@@ -192,13 +188,13 @@ function hops(fromRow,fromCol,toRow,toCol,moves){
             removePiece(fromRow+jumps[0],fromCol+jumps[1]);
             return true;
         }
-        //double same
+        //double same (r-r or l-l)
         if(board[fromRow+jumps[4]][fromCol+jumps[5]] == enemy && fromRow+jumps[6] == toRow && fromCol+jumps[7] == toCol){
             removePiece(fromRow+jumps[4],fromCol+jumps[5]);
             removePiece(fromRow+jumps[0],fromCol+jumps[1]);
             return true;          
         }
-        //double diff
+        //double diff (r-l or l-r)
         if(board[fromRow+jumps[4]][fromCol+jumps[1]] == enemy && fromRow+jumps[8] == toRow && fromCol+jumps[9] == toCol){
             removePiece(fromRow+jumps[4],fromCol+jumps[1]);
             removePiece(fromRow+jumps[0],fromCol+jumps[1]);
