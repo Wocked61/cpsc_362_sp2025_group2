@@ -8,11 +8,65 @@
     <title>Document</title>
 </head>
 
+
+
+
 <body>
-    <div class="mainContainer">
-        <div class="header">header</div>
-        <div id="boardContainer"></div>
+    <header>
+        <p class="title">Checkers</p>
+    </header>
+
+    <div class="container">
+        <div class="skeleton">
+            <div class="box">
+                <!-- Game Information Display -->
+                <div class="game-info">
+                    <p class="player-turn">Player 1's Turn</p>
+                    <p class="score">Player 1: 0 | Player 2: 0</p>
+                </div>
+
+                <!-- Toolbar with buttons -->
+                <div class="toolbar">
+                    <button class="button">New Game</button>
+                    <button class="button">Settings</button>
+                    <button class="button">Help</button>
+                </div>
+            </div>
+
+            <div class="board">
+                <div id="boardContainer"></div>
+            </div>
+
+            <!-- settings -->
+            <div class="box-settings">
+                <div class="settings">
+                    <label for="player1">Player 1 Name:</label>
+                    <input class="name" type="text" id="player1" name="player1" placeholder="Player 1" value="">
+
+                    <label for="player2">Player 2 Name:</label>
+                    <input class="name" type="text" id="player2" name="player2" placeholder="player2" value="">
+
+                    <label for="difficulty">Game Difficulty:</label>
+                    <select id="difficulty" name="difficulty">
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
-</body>
+
+    <footer>
+        <div class="footer">
+            <div class="footer-content">
+                <p class="footer-text">Checkers Game</p>
+                <p class="footer-text">Created by Group 2</p>
+                <p class="footer-text">CPSC 362 - Spring 2025</p>
+            </div>
+        </div>
+    </footer>
+
     <script src="script.js?query=string" id="query"></script>
+</body>
 </html>
