@@ -23,6 +23,41 @@ The front-end will be implemented in HTML/CSS and JavaScript, and the back-end w
 </p>
 
 ## Getting Started
+**Downloading Dependencies**
+Ensure system and python is up-to-date.
+
+Start VM and install the necessary dependencies for Django and WebSocket connection:
+```
+source venv/bin/activate     // Ubuntu, macOS
+venv\Scripts\activate.bat    // Windows cmd.exe shell
+venv\Scripts\Activate.ps1    // Windows PowerShell
+
+pip install -r requirements.txt
+```
+
+Install database for event stream (Ubuntu):
+```
+sudo apt install redis-server
+
+sudo systemctl enable redis-server //start redis server whenever venv boots up
+sudo systemctl start redis-server
+sudo systemctl status redis-server //check status is active 
+
+//check redis is running, should output pong
+redis-cli
+ping
+
+```
+
+For Windows:
+```
+```
+
+Deactivate VM:
+```
+deactivate
+```
+
 
 ## Styleguide
 
@@ -46,6 +81,7 @@ The linter that will be used for the back-end development will be Black. Both li
 **Compiler:**
 
 **Web Framework:**
+- Django using websockets for multiplayer on separate machines
 
 
 ## Future Updates
