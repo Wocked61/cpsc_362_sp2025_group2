@@ -177,9 +177,65 @@ function movePiece(fromRow, fromCol, toRow, toCol, valid) {
   fromSquare.style.border = "none"
 }
 
-//this is where it checks if the move is ok
-//also it will be where you check if you can take
-//prob dont need toRow cuz it should just return the
+function highlightMovablePieces() {
+  // Clear previous highlights
+  document.querySelectorAll(".square").forEach((square) => {
+    square.style.border = "none"
+  })
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      if (board[row][col] === currentPlayer) {
+        // Check if the piece has any valid moves
+        const moves = getValidMoves(row, col)
+        if (moves.length > 0) {
+          const square = getSquare(row, col)
+          square.style.border = "2px solid green" // Highlight movable pieces
+        }
+      }
+    }
+  }
+}
+
+// Helper function to get valid moves for a piece
+function getValidMoves(row, col) {
+  const validMoves = []
+
+  // Define movement directions based on player and whether it's a king
+  const directions = []
+  if (board[row][col] === "red") {
+    directions.push([1, 1], [1, -1]) // Red moves forward
+    if (getSquare(row, col).firstChild.dataset.king === "true") {
+      directions.push([-1, 1], [-1, -1]) // Kings move backward as well
+    }
+  } else if (board[row][col] === "black") {
+    directions.push([-1, 1], [-1, -1]) // Black moves forward
+    if (getSquare(row, col).firstChild.dataset.king === "true") {
+      directions.push([1, 1], [1, -1]) // Kings move backward as well
+    }
+  }
+
+  // Check each direction for valid moves
+  directions.forEach(([rowDiff, colDiff]) => {
+    const newRow = row + rowDiff
+    const newCol = col + colDiff
+
+    // Ensure the move is within bounds and valid
+    if (
+      newRow >= 0 &&
+      newRow < rows &&
+      newCol >= 0 &&
+      newCol < cols &&
+      board[newRow][newCol] === null &&
+      validMove(row, col, newRow, newCol)
+    ) {
+      validMoves.push({ row: newRow, col: newCol })
+    }
+  })
+
+  return validMoves
+}
+
 function validMove(fromRow, fromCol, toRow, toCol) {
   if (board[toRow][toCol] != null) return false //must move to an empty square
 
@@ -299,3 +355,5 @@ function getSquare(row, col) {
 
 setupBoard()
 startTimer()
+
+highlightMovablePieces()
