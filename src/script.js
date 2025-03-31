@@ -7,6 +7,7 @@ let selectedPiece = null
 let redTime = 180 // 3 minutes in seconds for the red player
 let blackTime = 180 // 3 minutes in seconds for the black player
 let timerInterval // Timer interval
+let gameStarted = false; // Flag to check if the game has started
 //can add more cords in jumps to hop over 3 or more peices
 const moveSet = [
   { piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0] }, //right
@@ -40,7 +41,7 @@ const kingMoveSet = [
 // Timer functionality
 function startTimer() {
   clearInterval(timerInterval) // Clear the previous timer
-
+  if (!gameStarted) return; // Don't start the timer if the game hasn't started yet
   timerInterval = setInterval(() => {
     if (currentPlayer === "red") {
       redTime-- // Decrease red's timer
@@ -157,6 +158,11 @@ function handleClick(event) {
 function movePiece(fromRow, fromCol, toRow, toCol, valid) {
   //check if valid move
   if (!valid) return
+
+  if (!gameStarted) {
+    gameStarted = true; // Set the flag to true when the game starts
+    startTimer(); // Start the timer when the game starts
+  }
 
   //update visuals
   const fromSquare = getSquare(fromRow, fromCol)
@@ -363,7 +369,6 @@ function newGame() {
   blackTime = 180 // Reset black time
   currentPlayer = "black" // Reset current player to black
   setupBoard() // Set up the board again
-  startTimer() // Start the timer for the new game
   highlightMovablePieces() 
 }
 //connects the new game button to the function
