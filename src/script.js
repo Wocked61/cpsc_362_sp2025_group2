@@ -353,10 +353,7 @@ function getSquare(row, col) {
   return document.querySelector(`.square[data-row="${row}"][data-col="${col}"]`)
 }
 
-setupBoard()
-startTimer()
 
-highlightMovablePieces()
 
 //add a function for the new game button
 
@@ -408,9 +405,10 @@ function saveSettings() {
     closeSettings();
 }
 
+setupBoard()
+startTimer()
 
+highlightMovablePieces()
 
 
 //add a popup for the help button to display the instructions
-
-
