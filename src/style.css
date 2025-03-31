@@ -23,7 +23,7 @@
   background-color: #333;
   border: 2px solid #444;
   border-radius: 10px;
-  width: 80%;
+  width: 30%;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -73,10 +73,12 @@
 
 .red {
   background-color: red;
+  border: 1px solid #000;
 }
 
 .black {
   background-color: black;
+  border: 1px solid #000;
 }
 
 /* New CSS for highlighted movable pieces */
@@ -295,4 +297,28 @@ select{
   align-items: center;
   flex-direction: row;
   gap: 10px;
+}
+
+.help-content {
+  max-width: 500px;
+  width: 90%;
+}
+
+.help-text {
+  margin: 20px 0;
+  line-height: 1.5;
+}
+
+.help-text h3 {
+  color: #4681f4;
+  margin-top: 15px;
+}
+
+.help-text ul {
+  margin-left: 20px;
+  padding-left: 0;
+}
+
+.help-text li {
+  margin: 8px 0;
 }

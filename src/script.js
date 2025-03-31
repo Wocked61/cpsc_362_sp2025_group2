@@ -410,6 +410,17 @@ function saveSettings() {
     closeSettings();
 }
 
+function openHelp() {
+    const helpPopup = document.getElementById("helpPopup");
+    helpPopup.style.display = "block";
+    
+}
+
+function closeHelp() {
+    const helpPopup = document.getElementById("helpPopup");
+    helpPopup.style.display = "none";
+}
+
 setupBoard()
 startTimer()
 
