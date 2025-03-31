@@ -51,4 +51,5 @@
 #     }
 # `
 # document.head.appendChild(style)
-return 0
+def main():
+    return 0
