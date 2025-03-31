@@ -412,5 +412,3 @@ highlightMovablePieces()
 
 
 //add a popup for the help button to display the instructions
-
-
