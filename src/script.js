@@ -1,7 +1,6 @@
 var boardContainer = document.getElementById("boardContainer")
 const rows = 8,
   cols = 8
-  const board = document.getElementById("board")
 let board = []
 let currentPlayer = "black"
 let selectedPiece = null
@@ -9,6 +8,9 @@ let redTime = 180 // 3 minutes in seconds for the red player
 let blackTime = 180 // 3 minutes in seconds for the black player
 let timerInterval // Timer interval
 let gameStarted = false; // Flag to check if the game has started
+let player1Score = 0;
+let player2Score = 0;
+
 //can add more cords in jumps to hop over 3 or more peices
 const moveSet = [
   { piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0] }, //right
@@ -313,45 +315,53 @@ function checkIfKing(row, col) {
 
 //move over 1 or move peice
 function hops(fromRow, fromCol, toRow, toCol, moves) {
-  let { piece, enemy, jumps } = moves
-  let i = 0
-  j = 1
-  for (; j < jumps.length; ) {
-    if (fromRow + jumps[i] == toRow && fromCol + jumps[j] == toCol) {
-      if (
-        board[fromRow][fromCol] == piece &&
-        board[fromRow + jumps[0]][fromCol + jumps[1]] == enemy &&
-        board[fromRow + jumps[2]][fromCol + jumps[3]] == null
-      ) {
-        //single
-        if (toRow == fromRow + jumps[2] && toCol == fromCol + jumps[3]) {
-          removePiece(fromRow + jumps[0], fromCol + jumps[1])
-          return true
-        }
-        //double same (r-r or l-l)
-        if (
-          board[fromRow + jumps[4]][fromCol + jumps[5]] == enemy &&
-          fromRow + jumps[6] == toRow &&
-          fromCol + jumps[7] == toCol
-        ) {
-          removePiece(fromRow + jumps[4], fromCol + jumps[5])
-          removePiece(fromRow + jumps[0], fromCol + jumps[1])
-          return true
-        }
-        //double diff (r-l or l-r)
-        if (
-          board[fromRow + jumps[4]][fromCol + jumps[1]] == enemy &&
-          fromRow + jumps[8] == toRow &&
-          fromCol + jumps[9] == toCol
-        ) {
-          removePiece(fromRow + jumps[4], fromCol + jumps[1])
-          removePiece(fromRow + jumps[0], fromCol + jumps[1])
-          return true
-        }
-      }
-    } else i = i + 2
-    j = j + 2
-  }
+    let { piece, enemy, jumps } = moves
+    let i = 0
+    j = 1
+    for (; j < jumps.length; ) {
+        if (fromRow + jumps[i] == toRow && fromCol + jumps[j] == toCol) {
+            if (
+                board[fromRow][fromCol] == piece &&
+                board[fromRow + jumps[0]][fromCol + jumps[1]] == enemy &&
+                board[fromRow + jumps[2]][fromCol + jumps[3]] == null
+            ) {
+                //single
+                if (toRow == fromRow + jumps[2] && toCol == fromCol + jumps[3]) {
+                    removePiece(fromRow + jumps[0], fromCol + jumps[1])
+                    // Update score for single capture
+                    updateScore(currentPlayer === "red" ? 1 : 2)
+                    return true
+                }
+                //double same (r-r or l-l)
+                if (
+                    board[fromRow + jumps[4]][fromCol + jumps[5]] == enemy &&
+                    fromRow + jumps[6] == toRow &&
+                    fromCol + jumps[7] == toCol
+                ) {
+                    removePiece(fromRow + jumps[4], fromCol + jumps[5])
+                    removePiece(fromRow + jumps[0], fromCol + jumps[1])
+                    // Update score for double capture
+                    updateScore(currentPlayer === "red" ? 1 : 2)
+                    updateScore(currentPlayer === "red" ? 1 : 2)
+                    return true
+                }
+                //double diff (r-l or l-r)
+                if (
+                    board[fromRow + jumps[4]][fromCol + jumps[1]] == enemy &&
+                    fromRow + jumps[8] == toRow &&
+                    fromCol + jumps[9] == toCol
+                ) {
+                    removePiece(fromRow + jumps[4], fromCol + jumps[1])
+                    removePiece(fromRow + jumps[0], fromCol + jumps[1])
+                    // Update score for double capture
+                    updateScore(currentPlayer === "red" ? 1 : 2)
+                    updateScore(currentPlayer === "red" ? 1 : 2)
+                    return true
+                }
+            }
+        } else i = i + 2
+        j = j + 2
+    }
 }
 
 //gets the square div
@@ -366,11 +376,12 @@ function getSquare(row, col) {
 
 function newGame() {
   boardContainer.innerHTML = "" // Clear the board
-  redTime = 180 // Reset red time
-  blackTime = 180 // Reset black time
   currentPlayer = "black" // Reset current player to black
   setupBoard() // Set up the board again
+  resetTime()//restart the timer
+  gameStarted = false; // Reset game started flag
   highlightMovablePieces() 
+  resetScores(); // Reset scores
 }
 //connects the new game button to the function
 document.getElementById('newGameButton').addEventListener('click', newGame);
@@ -411,6 +422,7 @@ function saveSettings() {
     closeSettings();
 }
 
+//help popup open and close functions
 function openHelp() {
     const helpPopup = document.getElementById("helpPopup");
     helpPopup.style.display = "block";
@@ -423,6 +435,58 @@ function closeHelp() {
 }
 
 
+//function to change the names of the players
+function updatePlayerNames() {
+    const player1Name = document.getElementById('player1').value || 'Player 1';
+    const player2Name = document.getElementById('player2').value || 'Player 2';
+
+    // Update the player turn display
+    const playerTurnElement = document.querySelector('.player-turn');
+    if (playerTurnElement) {
+        playerTurnElement.textContent = `${player1Name}'s Turn`;
+    }
+    
+    // Update the score display
+    const scoreElement = document.querySelector('.score');
+    if (scoreElement) {
+        scoreElement.textContent = `${player1Name}: 0 | ${player2Name}: 0`;
+    }
+}
+
+function updateScore(capturingPlayer) {
+    if (capturingPlayer === 1) {
+        player1Score += 1;
+    } else {
+        player2Score += 1;
+    }
+
+    const player1Name = document.getElementById('player1').value || 'Player 1';
+    const player2Name = document.getElementById('player2').value || 'Player 2';
+    
+    // Update the score display
+    document.getElementById('score').textContent = 
+        `${player1Name}: ${player1Score} | ${player2Name}: ${player2Score}`;
+}
+
+function resetScores(){
+    player1Score = 0;
+    player2Score = 0;
+
+    const player1Name = document.getElementById('player1').value || 'Player 1';
+    const player2Name = document.getElementById('player2').value || 'Player 2';
+    
+    // Update the score display
+    document.getElementById('score').textContent = 
+        `${player1Name}: ${player1Score} | ${player2Name}: ${player2Score}`;
+}
+
+function resetTime() {
+    const settingsTime = document.getElementById("gameTimer").value * 60; // Get time from settings in seconds
+    redTime = settingsTime;
+    blackTime = settingsTime;
+    document.getElementById("timer").textContent =
+        `Red Time Left: ${formatTime(redTime)} | Black Time Left: ${formatTime(blackTime)}`;
+}
 
 setupBoard()
 startTimer()

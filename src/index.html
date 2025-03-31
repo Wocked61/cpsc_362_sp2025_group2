@@ -23,7 +23,7 @@
                 <!-- Game Information Display -->
                 <div class="game-info">
                     <p class="player-turn">Player 1's Turn</p>
-                    <p class="score">Player 1: 0 | Player 2: 0</p>
+                    <p id="score" class="score">Player 1: 0 | Player 2: 0</p>
                 </div>
 
                 <!-- Toolbar with buttons -->
@@ -42,9 +42,9 @@
             <div class="box-settings">
                 <div class="settings">
                     <label for="player1">Player 1 Name:</label>
-                    <input class="name" type="text" id="player1" name="player1" placeholder="Player 1" value="">
+                    <input class="name" type="text" id="player1" name="player1" placeholder="Player 1" value="" oninput="updatePlayerNames()">
                     <label for="player2">Player 2 Name:</label>
-                    <input class="name" type="text" id="player2" name="player2" placeholder="player2" value="">
+                    <input class="name" type="text" id="player2" name="player2" placeholder="Player 2" value="" oninput="updatePlayerNames()">
                     <label for="difficulty">Game Difficulty:</label>
                     <select id="difficulty" name="difficulty">
                         <option value="easy">Easy</option>
