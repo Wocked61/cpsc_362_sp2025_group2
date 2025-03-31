@@ -380,8 +380,8 @@ function openSettings() {
     settingsPopup.style.display = "block";
     
     // Load current settings
-    document.getElementById("redColor").value = getComputedStyle(document.querySelector(".piece.red")).backgroundColor;
-    document.getElementById("blackColor").value = getComputedStyle(document.querySelector(".piece.black")).backgroundColor;
+    document.getElementById("redColor").value = rgbToHex(getComputedStyle(redPiece).backgroundColor);
+    document.getElementById("blackColor").value = rgbToHex(getComputedStyle(blackPiece).backgroundColor);
     document.getElementById("gameTimer").value = Math.floor(redTime / 60);
 }
 
@@ -413,13 +413,15 @@ function saveSettings() {
 function openHelp() {
     const helpPopup = document.getElementById("helpPopup");
     helpPopup.style.display = "block";
-    
+
 }
 
 function closeHelp() {
     const helpPopup = document.getElementById("helpPopup");
     helpPopup.style.display = "none";
 }
+
+
 
 setupBoard()
 startTimer()
