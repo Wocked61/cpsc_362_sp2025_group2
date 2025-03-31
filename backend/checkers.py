@@ -1,10 +1,3 @@
-#   This file contains the backend code for the checkers game. It is responsible for creating the board, moving pieces, and checking for wins.abs
-# this is from the javascript file that I will be deleteing for cleaniness attempt to make this in django
-
-
-
-#  // script.js
-# const board = document.getElementById("board")
 
 # // Create the board
 # for (let i = 0; i < 64; i++) {
@@ -58,3 +51,4 @@
 #     }
 # `
 # document.head.appendChild(style)
+return 0

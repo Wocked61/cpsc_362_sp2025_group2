@@ -1,6 +1,7 @@
 var boardContainer = document.getElementById("boardContainer")
 const rows = 8,
   cols = 8
+  const board = document.getElementById("board")
 let board = []
 let currentPlayer = "black"
 let selectedPiece = null
