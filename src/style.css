@@ -1,21 +1,40 @@
-body,
-html {
-  height: 100%;
-  margin: 0;
-}
+/* CSS for the chessboard and pieces */
+/* General styles for the chessboard */
 .mainContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
+.header {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 20px 0;
+  color: white;
+}
+
+#timer {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  margin: 20px 0;
+  padding: 10px;
+  background-color: #333;
+  border: 2px solid #444;
+  border-radius: 10px;
+  width: 80%;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 #boardContainer {
   background-color: black;
   display: grid;
   grid-template-columns: repeat(8, 50px);
   grid-template-rows: repeat(8, 50px);
   gap: 5px;
-  border: #000 solid 1rem;
 }
+
 .square {
   width: 50px;
   height: 50px;
@@ -24,7 +43,11 @@ html {
   justify-content: center;
   font-size: 30px;
   cursor: pointer;
+  transition:
+    border 0.3s ease,
+    background-color 0.3s ease;
 }
+
 .dark {
   background-color: brown;
 }
@@ -32,25 +55,46 @@ html {
 .light {
   background-color: beige;
 }
+
 .red.king {
   background-color: darkred;
 }
+
 .black.king {
   background-color: gray;
 }
+
 .piece {
   width: 40px;
   height: 40px;
   border-radius: 50%;
 }
+
 .red {
   background-color: red;
-  border: #000 solid 2px;
 }
 
 .black {
   background-color: black;
 }
+
+/* New CSS for highlighted movable pieces */
+.square.highlight {
+  border: 2px solid green; /* Green border to indicate movable pieces */
+  background-color: rgba(
+    0,
+    255,
+    0,
+    0.2
+  ); /* Light green background for emphasis */
+}
+
+/* Hover effect for enhanced interactivity */
+.square.highlight:hover {
+  background-color: rgba(0, 255, 0, 0.4); /* Brighter green on hover */
+  cursor: pointer;
+}
+
 
 html, body {
   height: 100%;
