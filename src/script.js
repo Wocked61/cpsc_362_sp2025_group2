@@ -353,7 +353,62 @@ function getSquare(row, col) {
   return document.querySelector(`.square[data-row="${row}"][data-col="${col}"]`)
 }
 
+
+
+//add a function for the new game button
+
+function newGame() {
+  boardContainer.innerHTML = "" // Clear the board
+  redTime = 180 // Reset red time
+  blackTime = 180 // Reset black time
+  currentPlayer = "black" // Reset current player to black
+  setupBoard() // Set up the board again
+  startTimer() // Start the timer for the new game
+  highlightMovablePieces() 
+}
+//connects the new game button to the function
+document.getElementById('newGameButton').addEventListener('click', newGame);
+
+//add a popup for the settings for changing colors and pieces
+function openSettings() {
+    const settingsPopup = document.getElementById("settingsPopup");
+    settingsPopup.style.display = "block";
+    
+    // Load current settings
+    document.getElementById("redColor").value = getComputedStyle(document.querySelector(".piece.red")).backgroundColor;
+    document.getElementById("blackColor").value = getComputedStyle(document.querySelector(".piece.black")).backgroundColor;
+    document.getElementById("gameTimer").value = Math.floor(redTime / 60);
+}
+
+function closeSettings() {
+    const settingsPopup = document.getElementById("settingsPopup");
+    settingsPopup.style.display = "none";
+}
+
+function saveSettings() {
+    const redColor = document.getElementById("redColor").value;
+    const blackColor = document.getElementById("blackColor").value;
+    const newTime = document.getElementById("gameTimer").value * 60;
+
+    // Update piece colors
+    document.querySelectorAll(".piece.red").forEach(piece => {
+        piece.style.backgroundColor = redColor;
+    });
+    document.querySelectorAll(".piece.black").forEach(piece => {
+        piece.style.backgroundColor = blackColor;
+    });
+
+    // Update timer
+    redTime = newTime;
+    blackTime = newTime;
+    
+    closeSettings();
+}
+
 setupBoard()
 startTimer()
 
 highlightMovablePieces()
+
+
+//add a popup for the help button to display the instructions

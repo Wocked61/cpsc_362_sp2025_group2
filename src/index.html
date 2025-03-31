@@ -1,18 +1,96 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <title>Checkers Game</title>
-  </head>
 
-  <body>
-    <div class="mainContainer">
-      <div class="header">Checkers Game</div>
-      <div id="timer">Red Time Left: 3:00 | Black Time Left: 3:00</div>
-      <div id="boardContainer"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+
+
+
+
+<body>
+    <header>
+        <p class="title">Checkers</p>
+    </header>
+
+    <div class="container">
+        <div id="timer">Red Time Left: 3:00 | Black Time Left: 3:00</div>
+        <div class="skeleton">
+            <div class="box">
+                <!-- Game Information Display -->
+                <div class="game-info">
+                    <p class="player-turn">Player 1's Turn</p>
+                    <p class="score">Player 1: 0 | Player 2: 0</p>
+                </div>
+
+                <!-- Toolbar with buttons -->
+                <div class="toolbar">
+                    <button id="newGameButton" class="button">New Game</button>
+                    <button id="settings" class="button" onclick="openSettings()">Settings</button>
+                    <button class="button">Help</button>
+                </div>
+            </div>
+
+            <div class="board">
+                <div id="boardContainer"></div>
+            </div>
+
+            <!-- settings -->
+            <div class="box-settings">
+                <div class="settings">
+                    <label for="player1">Player 1 Name:</label>
+                    <input class="name" type="text" id="player1" name="player1" placeholder="Player 1" value="">
+
+                    <label for="player2">Player 2 Name:</label>
+                    <input class="name" type="text" id="player2" name="player2" placeholder="player2" value="">
+
+                    <label for="difficulty">Game Difficulty:</label>
+                    <select id="difficulty" name="difficulty">
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
-    <script src="script.js"></script>
-  </body>
+
+    <div id="settingsPopup" class="popup">
+        <div class="popup-content">
+            <h2>Game Settings</h2>
+            <div class="setting-group">
+                <label>Top Player Color:</label>
+                <input type="color" id="redColor" value="#ff0000">
+            </div>
+            <div class="setting-group">
+                <label>Bottom Player Color:</label>
+                <input type="color" id="blackColor" value="#000000">
+            </div>
+            <div class="setting-group">
+                <label>Game Timer (minutes):</label>
+                <input type="number" id="gameTimer" min="1" max="30" value="3">
+            </div>
+            <div class="center">
+            <button onclick="saveSettings()" class="center">Save</button>
+            <button onclick="closeSettings()" class="center">Cancel</button>   
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer">
+            <div class="footer-content">
+                <p class="footer-text">Checkers Game</p>
+                <p class="footer-text">Created by Group 2</p>
+                <p class="footer-text">CPSC 362 - Spring 2025</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js?query=string" id="query"></script>
+</body>
 </html>
