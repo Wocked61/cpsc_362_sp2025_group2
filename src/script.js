@@ -382,7 +382,6 @@ function newGame() {
   resetScores() // Reset scores
 }
 
-
 //add a popup for the settings for changing colors and pieces
 function openSettings() {
   const settingsPopup = document.getElementById("settingsPopup")
@@ -487,12 +486,10 @@ function resetTime() {
     `Red Time Left: ${formatTime(redTime)} | Black Time Left: ${formatTime(blackTime)}`
 }
 
-
-document.addEventListener('DOMContentLoaded', function() {
-  setupBoard();
-  startTimer();
-  highlightMovablePieces();
-//connects the new game button to the function
-document.getElementById('newGameButton').addEventListener('click', newGame)
-});
-
+document.addEventListener("DOMContentLoaded", function () {
+  setupBoard()
+  startTimer()
+  highlightMovablePieces()
+  //connects the new game button to the function
+  document.getElementById("newGameButton").addEventListener("click", newGame)
+})
