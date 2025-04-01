@@ -381,8 +381,7 @@ function newGame() {
   highlightMovablePieces()
   resetScores() // Reset scores
 }
-//connects the new game button to the function
-document.getElementById("newGameButton").addEventListener("click", newGame)
+
 
 //add a popup for the settings for changing colors and pieces
 function openSettings() {
@@ -488,9 +487,12 @@ function resetTime() {
     `Red Time Left: ${formatTime(redTime)} | Black Time Left: ${formatTime(blackTime)}`
 }
 
-setupBoard()
-startTimer()
 
-highlightMovablePieces()
+document.addEventListener('DOMContentLoaded', function() {
+  setupBoard();
+  startTimer();
+  highlightMovablePieces();
+//connects the new game button to the function
+document.getElementById('newGameButton').addEventListener('click', newGame)
+});
 
-//add a popup for the help button to display the instructions
