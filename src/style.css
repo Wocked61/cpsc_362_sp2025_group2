@@ -118,8 +118,35 @@ body {
   color: #FFF2F2;
   text-align: center;
   margin: 0;
-  padding: 3rem;
+  padding: 1rem;
   background-color: #212121;
+}
+
+.navigation {
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  background-color: #212121;
+  color: #FFF2F2;
+  padding: 1rem;
+}
+
+.navigation ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navigation li {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.navigation a {
+  text-decoration: none;
+  color: inherit;
 }
 
 .skeleton {
