@@ -1,121 +1,142 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
     <title>Checkers</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <p class="title">Checkers and Chess</p>
-        <nav class="navigation">
-            <ul>
-                <li><a href="home.html">Home</a></li>
-                <li><a href="index.html">Checkers</a></li>
-                <li><a href="chess.html">Chess</a></li>
-            </ul>
-        </nav>
+      <p class="title">Checkers and Chess</p>
+      <nav class="navigation">
+        <ul>
+          <li><a href="home.html">Home</a></li>
+          <li><a href="index.html">Checkers</a></li>
+          <li><a href="chess.html">Chess</a></li>
+        </ul>
+      </nav>
     </header>
 
     <div class="container">
-        <div id="timer">Red Time Left: 3:00 | Black Time Left: 3:00</div>
-        <div class="skeleton">
-            <div class="box">
-                <!-- Game Information Display -->
-                <div class="game-info">
-                    <p class="player-turn">Player 1's Turn</p>
-                    <p id="score" class="score">Player 1: 0 | Player 2: 0</p>
-                </div>
+      <div id="timer">Red Time Left: 3:00 | Black Time Left: 3:00</div>
+      <div class="skeleton">
+        <div class="box">
+          <!-- Game Information Display -->
+          <div class="game-info">
+            <p class="player-turn">Player 1's Turn</p>
+            <p id="score" class="score">Player 1: 0 | Player 2: 0</p>
+          </div>
 
-                <!-- Toolbar with buttons -->
-                <div class="toolbar">
-                    <button id="newGameButton" class="button">New Game</button>
-                    <button id="settings" class="button" onclick="openSettings()">Settings</button>
-                    <button class="button" onclick="openHelp()">Help</button>
-                </div>
-            </div>
-
-            <div class="board">
-                <div id="boardContainer"></div>
-            </div>
-
-            <!-- settings -->
-            <div class="box-settings">
-                <div class="settings">
-                    <label for="player1">Player 1 Name:</label>
-                    <input class="name" type="text" id="player1" name="player1" placeholder="Player 1" value="" oninput="updatePlayerNames()">
-                    <label for="player2">Player 2 Name:</label>
-                    <input class="name" type="text" id="player2" name="player2" placeholder="Player 2" value="" oninput="updatePlayerNames()">
-                    <label for="difficulty">Game Difficulty:</label>
-                    <select id="difficulty" name="difficulty">
-                        <option value="easy">Easy</option>
-                        <option value="medium">Medium</option>
-                        <option value="hard">Hard</option>
-                    </select>
-                </div>
-            </div>
+          <!-- Toolbar with buttons -->
+          <div class="toolbar">
+            <button id="newGameButton" class="button">New Game</button>
+            <button id="settings" class="button" onclick="openSettings()">
+              Settings
+            </button>
+            <button class="button" onclick="openHelp()">Help</button>
+          </div>
         </div>
+
+        <div class="board">
+          <div id="boardContainer"></div>
+        </div>
+
+        <!-- settings -->
+        <div class="box-settings">
+          <div class="settings">
+            <label for="player1">Player 1 Name:</label>
+            <input
+              class="name"
+              type="text"
+              id="player1"
+              name="player1"
+              placeholder="Player 1"
+              value=""
+              oninput="updatePlayerNames()"
+            />
+            <label for="player2">Player 2 Name:</label>
+            <input
+              class="name"
+              type="text"
+              id="player2"
+              name="player2"
+              placeholder="Player 2"
+              value=""
+              oninput="updatePlayerNames()"
+            />
+            <label for="difficulty">Game Difficulty:</label>
+            <select id="difficulty" name="difficulty">
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div id="settingsPopup" class="popup">
-        <div class="popup-content">
-            <h2>Game Settings</h2>
-            <div class="setting-group">
-                <label>Top Player Color:</label>
-                <input type="color" id="redColor" value="#ff0000">
-            </div>
-            <div class="setting-group">
-                <label>Bottom Player Color:</label>
-                <input type="color" id="blackColor" value="#000000">
-            </div>
-            <div class="setting-group">
-                <label>Game Timer (minutes):</label>
-                <input type="number" id="gameTimer" min="1" max="30" value="3">
-            </div>
-            <div class="center">
-            <button onclick="saveSettings()" class="center">Save</button>
-            <button onclick="closeSettings()" class="center">Cancel</button>   
-            </div>
+      <div class="popup-content">
+        <h2>Game Settings</h2>
+        <div class="setting-group">
+          <label>Top Player Color:</label>
+          <input type="color" id="redColor" value="#ff0000" />
         </div>
+        <div class="setting-group">
+          <label>Bottom Player Color:</label>
+          <input type="color" id="blackColor" value="#000000" />
+        </div>
+        <div class="setting-group">
+          <label>Game Timer (minutes):</label>
+          <input type="number" id="gameTimer" min="1" max="30" value="3" />
+        </div>
+        <div class="center">
+          <button onclick="saveSettings()" class="center">Save</button>
+          <button onclick="closeSettings()" class="center">Cancel</button>
+        </div>
+      </div>
     </div>
 
     <div id="helpPopup" class="popup">
-        <div class="popup-content help-content">
-            <h2>How to Play Checkers</h2>
-            <div class="help-text">
-                <h3>Basic Rules:</h3>
-                <ul>
-                    <li>Players move diagonally forward one space at a time</li>
-                    <li>Capture opponent's pieces by jumping over them</li>
-                    <li>Multiple jumps are required if available</li>
-                    <li>Pieces that reach the opposite end become Kings</li>
-                    <li>Kings can move and capture backwards</li>
-                </ul>
-                
-                <h3>How to Move:</h3>
-                <ul>
-                    <li>Click on your piece to see available moves</li>
-                    <li>Click on a highlighted square to move there</li>
-                    <li>The timer counts down during your turn</li>
-                    <li>The game ends when a player captures all pieces or runs out of time</li>
-                </ul>
-            </div>
-            <button onclick="closeHelp()" class="button">Close</button>
+      <div class="popup-content help-content">
+        <h2>How to Play Checkers</h2>
+        <div class="help-text">
+          <h3>Basic Rules:</h3>
+          <ul>
+            <li>Players move diagonally forward one space at a time</li>
+            <li>Capture opponent's pieces by jumping over them</li>
+            <li>Multiple jumps are required if available</li>
+            <li>Pieces that reach the opposite end become Kings</li>
+            <li>Kings can move and capture backwards</li>
+          </ul>
+
+          <h3>How to Move:</h3>
+          <ul>
+            <li>Click on your piece to see available moves</li>
+            <li>Click on a highlighted square to move there</li>
+            <li>The timer counts down during your turn</li>
+            <li>
+              The game ends when a player captures all pieces or runs out of
+              time
+            </li>
+          </ul>
         </div>
+        <button onclick="closeHelp()" class="button">Close</button>
+      </div>
     </div>
 
     <footer>
-        <div class="footer">
-            <div class="footer-content">
-                <p class="footer-text">Checkers Game</p>
-                <p class="footer-text">Created by Group 2</p>
-                <p class="footer-text">CPSC 362 - Spring 2025</p>
-            </div>
+      <div class="footer">
+        <div class="footer-content">
+          <p class="footer-text">Checkers Game</p>
+          <p class="footer-text">Created by Group 2</p>
+          <p class="footer-text">CPSC 362 - Spring 2025</p>
         </div>
+      </div>
     </footer>
 
     <script src="script.js?query=string" id="query"></script>
-</body>
+  </body>
 </html>

@@ -1,82 +1,81 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-  }
-  
-  body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background-color: #808080;
-  }
-  
-  .title {
-    font-family: sans-serif;
-    font-weight: bold;
-    font-size: larger;
-    color: #FFF2F2;
-    text-align: center;
-    margin: 0;
-    padding: 1rem;
-    background-color: #212121;
-  }
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #808080;
+}
 
-  .navigation {
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-    display: flex;
-    flex-direction: row;
-    background-color: #212121;
-    color: #FFF2F2;
-    padding: 1rem;
-  }
+.title {
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: larger;
+  color: #fff2f2;
+  text-align: center;
+  margin: 0;
+  padding: 1rem;
+  background-color: #212121;
+}
 
-  .navigation ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+.navigation {
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  background-color: #212121;
+  color: #fff2f2;
+  padding: 1rem;
+}
+
+.navigation ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
 .navigation li {
-    display: inline-block;
-    margin: 0 10px;
+  display: inline-block;
+  margin: 0 10px;
 }
 
 .navigation a {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 
 .container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #808080;
-  }
-  
-  
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #808080;
+}
+
 footer {
-    background-color: #424242;
-    width: 100%;
-    padding: 1rem 0;
-    margin-top: auto;
-    display: flex;
-    text-align: center;
-    margin-bottom: auto;
-    position: relative;
-  }
-  
-  .footer {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  
-  .footer-content {
-    text-align: left;
-    color: #FFF2F2;
-    padding: 1rem;
-  }
+  background-color: #424242;
+  width: 100%;
+  padding: 1rem 0;
+  margin-top: auto;
+  display: flex;
+  text-align: center;
+  margin-bottom: auto;
+  position: relative;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.footer-content {
+  text-align: left;
+  color: #fff2f2;
+  padding: 1rem;
+}
