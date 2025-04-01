@@ -33,7 +33,7 @@
   grid-template-columns: repeat(8, 50px);
   grid-template-rows: repeat(8, 50px);
   gap: 5px;
-  border:10px solid #000;
+  border: 10px solid #000;
 }
 
 .square {
@@ -97,8 +97,8 @@
   background-color: rgba(0, 255, 0, 0.4); /* Brighter green on hover */
 }
 
-
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -115,7 +115,7 @@ body {
   font-family: sans-serif;
   font-weight: bold;
   font-size: larger;
-  color: #FFF2F2;
+  color: #fff2f2;
   text-align: center;
   margin: 0;
   padding: 1rem;
@@ -129,7 +129,7 @@ body {
   display: flex;
   flex-direction: row;
   background-color: #212121;
-  color: #FFF2F2;
+  color: #fff2f2;
   padding: 1rem;
 }
 
@@ -199,20 +199,19 @@ footer {
 .footer {
   display: flex;
   flex-wrap: wrap;
-
 }
 
 .footer-content {
   text-align: left;
-  color: #FFF2F2;
+  color: #fff2f2;
   padding: 1rem;
 }
 
 .game-info {
   text-align: center;
-  align-items:center;
+  align-items: center;
   padding: 1rem;
-  color: #FFF2F2;
+  color: #fff2f2;
   display: flex;
   flex-direction: column;
 }
@@ -275,7 +274,7 @@ footer {
   transform: translateY(4px);
 }
 
-select{
+select {
   cursor: pointer;
 }
 
@@ -318,7 +317,7 @@ select{
   cursor: pointer;
 }
 
-.center{
+.center {
   display: flex;
   justify-content: center;
   align-items: center;

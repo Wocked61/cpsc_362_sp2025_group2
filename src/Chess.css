@@ -1,5 +1,5 @@
-
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -16,7 +16,7 @@ body {
   font-family: sans-serif;
   font-weight: bold;
   font-size: larger;
-  color: #FFF2F2;
+  color: #fff2f2;
   text-align: center;
   margin: 0;
   padding: 1rem;
@@ -30,7 +30,7 @@ body {
   display: flex;
   flex-direction: row;
   background-color: #212121;
-  color: #FFF2F2;
+  color: #fff2f2;
   padding: 1rem;
 }
 
@@ -50,8 +50,6 @@ body {
   color: inherit;
 }
 
-
-
 footer {
   background-color: #424242;
   width: 100%;
@@ -70,6 +68,6 @@ footer {
 
 .footer-content {
   text-align: left;
-  color: #FFF2F2;
+  color: #fff2f2;
   padding: 1rem;
 }
