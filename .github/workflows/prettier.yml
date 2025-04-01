@@ -21,4 +21,4 @@ jobs:
       - run: git status
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: Apply formatting changes
+          commit_message: prettier linter auto changes
