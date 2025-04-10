@@ -25,7 +25,7 @@ jobs:
       - uses: psf/black@stable
         with:
           options: "--quiet"
-          src: "./backend"
+          src: "./checkers"
           version: "~= 22.0"
 
       - uses: stefanzweifel/git-auto-commit-action@v5
