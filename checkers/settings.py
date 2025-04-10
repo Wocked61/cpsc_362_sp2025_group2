@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     #third-party
 
     #own
+    "pages_app.apps.PagesAppConfig",
     "game_state_app.apps.GameStateAppConfig",
 ]
 

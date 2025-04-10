@@ -1,4 +1,5 @@
 <!doctype html>
+{% extends "main.html" %}
 {% load static %}
 <html lang="en">
   <head>
@@ -9,17 +10,7 @@
   </head>
 
   <body>
-    <header>
-      <p class="title">Checkers and Chess</p>
-      <nav class="navigation">
-        <ul>
-          <li><a href="home.html">Home</a></li>
-          <li><a href="index.html">Checkers</a></li>
-          <li><a href="chess.html">Chess</a></li>
-        </ul>
-      </nav>
-    </header>
-
+    {% block content %}
     <div class="container">
       <div id="timer">Red Time Left: 3:00 | Black Time Left: 3:00</div>
       <div class="skeleton">
@@ -128,16 +119,8 @@
       </div>
     </div>
 
-    <footer>
-      <div class="footer">
-        <div class="footer-content">
-          <p class="footer-text">Checkers Game</p>
-          <p class="footer-text">Created by Group 2</p>
-          <p class="footer-text">CPSC 362 - Spring 2025</p>
-        </div>
-      </div>
-    </footer>
-
     <script src="{static % 'script.js' %}?query=string" id="query"></script>
+
+    {% endblock content %}
   </body>
 </html>
