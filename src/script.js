@@ -433,6 +433,15 @@ function closeHelp() {
   helpPopup.style.display = "none"
 }
 
+/***
+const helpSound = new Audio('buttonclick.mp3')
+
+const helpButton = document.getElementById("helpButton")
+
+helpButton.addEventListener('click', () => {
+  helpSound.play()
+})
+***/
 //function to change the names of the players
 function updatePlayerNames() {
   const player1Name = document.getElementById("player1").value || "Player 1"

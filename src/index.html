@@ -32,10 +32,30 @@
           <!-- Toolbar with buttons -->
           <div class="toolbar">
             <button id="newGameButton" class="button">New Game</button>
+          <!--
+            <script>
+              let play = document.getElementById("newGameButton");
+                function playMusic() {
+                  let audio = new Audio("sounds/boom.mov");
+                  audio.play()
+                }
+                play.addEventListener("click", playMusic);
+            </script> 
+          -->
             <button id="settings" class="button" onclick="openSettings()">
               Settings
             </button>
             <button class="button" onclick="openHelp()">Help</button>
+            <!--
+            <script>
+              let button = document.getElementsByClassName("button");
+                function playMusic() {
+                  let audio = new Audio("sounds/boom.mov");
+                  audio.play();
+                }
+                play.addEventListener("click", playMusic);
+            </script>
+          -->
           </div>
         </div>
 
@@ -138,5 +158,16 @@
     </footer>
 
     <script src="script.js?query=string" id="query"></script>
+    <script>
+      const sound = new Audio("sounds/boom.mov"); // Make sure this file exists and is mp3 or wav
+      const buttons = document.querySelectorAll(".button");
+    
+      buttons.forEach(button => {
+        button.addEventListener("click", () => {
+          sound.currentTime = 0;
+          sound.play();
+        });
+      });
+    </script>
   </body>
 </html>
