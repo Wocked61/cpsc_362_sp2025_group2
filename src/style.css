@@ -43,8 +43,7 @@
   align-items: center;
   justify-content: center;
   font-size: 30px;
-  transition: border-color 0.5s ease;
-  border: 3px solid transparent;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
 }
 
 .dark {

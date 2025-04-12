@@ -192,6 +192,8 @@ function movePiece(fromRow, fromCol, toRow, toCol, valid) {
 
   //clear the border
   fromSquare.style.border = "none"
+
+  highlightMovablePieces()
 }
 
 function highlightMovablePieces() {
