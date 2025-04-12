@@ -132,6 +132,12 @@ function handleClick(event) {
   const row = parseInt(square.dataset.row)
   const col = parseInt(square.dataset.col)
 
+
+  if (board[row][col] === currentPlayer) {
+    soundClick.currentTime = 0
+    soundClick.play()
+  }
+
   if (selectedPiece) {
     //if selectedPiece is not empty
     let valid = validMove(selectedPiece.row, selectedPiece.col, row, col)
@@ -161,6 +167,9 @@ function handleClick(event) {
 function movePiece(fromRow, fromCol, toRow, toCol, valid) {
   //check if valid move
   if (!valid) return
+
+  sound.currentTime = 0
+  sound.play()
 
   if (!gameStarted) {
     gameStarted = true // Set the flag to true when the game starts
@@ -433,15 +442,15 @@ function closeHelp() {
   helpPopup.style.display = "none"
 }
 
-/***
-const helpSound = new Audio('buttonclick.mp3')
 
-const helpButton = document.getElementById("helpButton")
+// const helpSound = new Audio('buttonclick.mp3')
 
-helpButton.addEventListener('click', () => {
-  helpSound.play()
-})
-***/
+// const helpButton = document.getElementById("helpButton")
+
+// helpButton.addEventListener('click', () => {
+//   helpSound.play()
+// })
+
 //function to change the names of the players
 function updatePlayerNames() {
   const player1Name = document.getElementById("player1").value || "Player 1"
@@ -502,3 +511,16 @@ document.addEventListener("DOMContentLoaded", function () {
   //connects the new game button to the function
   document.getElementById("newGameButton").addEventListener("click", newGame)
 })
+
+
+const sound = new Audio("sounds/boom.mov")
+const buttons = document.querySelectorAll(".button")
+const soundClick = new Audio("sounds/buttonclick.mp3")
+
+buttons.forEach((button) => {
+  button.addEventListener("click", () => {
+    sound.currentTime = 0
+    sound.play()
+  })
+})
+
