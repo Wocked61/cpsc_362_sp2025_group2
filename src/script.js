@@ -132,7 +132,6 @@ function handleClick(event) {
   const row = parseInt(square.dataset.row)
   const col = parseInt(square.dataset.col)
 
-
   if (board[row][col] === currentPlayer) {
     soundClick.currentTime = 0
     soundClick.play()
@@ -442,7 +441,6 @@ function closeHelp() {
   helpPopup.style.display = "none"
 }
 
-
 // const helpSound = new Audio('buttonclick.mp3')
 
 // const helpButton = document.getElementById("helpButton")
@@ -512,7 +510,6 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("newGameButton").addEventListener("click", newGame)
 })
 
-
 const sound = new Audio("sounds/boom.mov")
 const buttons = document.querySelectorAll(".button")
 const soundClick = new Audio("sounds/buttonclick.mp3")
@@ -523,4 +520,3 @@ buttons.forEach((button) => {
     sound.play()
   })
 })
-
