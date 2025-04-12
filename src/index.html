@@ -32,7 +32,7 @@
           <!-- Toolbar with buttons -->
           <div class="toolbar">
             <button id="newGameButton" class="button">New Game</button>
-          <!--
+            <!--
             <script>
               let play = document.getElementById("newGameButton");
                 function playMusic() {
@@ -55,8 +55,7 @@
                 }
                 play.addEventListener("click", playMusic);
             </script>
-          -->
-          </div>
+          --></div>
         </div>
 
         <div class="board">
@@ -159,15 +158,15 @@
 
     <script src="script.js?query=string" id="query"></script>
     <script>
-      const sound = new Audio("sounds/boom.mov"); 
-      const buttons = document.querySelectorAll(".button");
-    
-      buttons.forEach(button => {
+      const sound = new Audio("sounds/boom.mov")
+      const buttons = document.querySelectorAll(".button")
+
+      buttons.forEach((button) => {
         button.addEventListener("click", () => {
-          sound.currentTime = 0;
-          sound.play();
-        });
-      });
+          sound.currentTime = 0
+          sound.play()
+        })
+      })
     </script>
   </body>
 </html>
