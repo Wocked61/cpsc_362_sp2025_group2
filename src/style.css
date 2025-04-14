@@ -44,8 +44,8 @@
   justify-content: center;
   font-size: 30px;
   transition:
-    border 0.3s ease,
-    background-color 0.3s ease;
+    border 0.1s ease,
+    box-shadow 0.1s ease;
 }
 
 .dark {

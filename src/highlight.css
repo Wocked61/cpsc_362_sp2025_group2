@@ -1,0 +1,45 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #f0f0f0;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, 50px);
+  grid-template-rows: repeat(4, 50px);
+  border: 2px solid #000;
+}
+
+.square {
+  width: 50px;
+  height: 50px;
+  background-color: #fff;
+}
+
+.square:nth-child(odd) {
+  background-color: #000;
+}
+
+.piece {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 5px auto;
+  position: relative;
+}
+
+.red {
+  background-color: red;
+}
+
+.black {
+  background-color: black;
+}
+
+.highlight {
+  border: 3px solid yellow;
+}

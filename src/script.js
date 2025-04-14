@@ -10,6 +10,8 @@ let timerInterval // Timer interval
 let gameStarted = false // Flag to check if the game has started
 let player1Score = 0
 let player2Score = 0
+let player1Wins = 0
+let player2Wins = 0
 
 //can add more cords in jumps to hop over 3 or more peices
 const moveSet = [
@@ -116,6 +118,8 @@ function setupBoard() {
       boardContainer.appendChild(square)
     }
   }
+  startSound.currentTime = 0
+  startSound.play()
 }
 
 //creates and adds appends the piece to the square
@@ -131,6 +135,11 @@ function handleClick(event) {
   const square = event.target.closest(".square") //current clicked
   const row = parseInt(square.dataset.row)
   const col = parseInt(square.dataset.col)
+
+  if (board[row][col] === currentPlayer) {
+    soundClick.currentTime = 0
+    soundClick.play()
+  }
 
   if (selectedPiece) {
     //if selectedPiece is not empty
@@ -161,6 +170,8 @@ function handleClick(event) {
 function movePiece(fromRow, fromCol, toRow, toCol, valid) {
   //check if valid move
   if (!valid) return
+  moveSound.currentTime = 0
+  moveSound.play()
 
   if (!gameStarted) {
     gameStarted = true // Set the flag to true when the game starts
@@ -184,6 +195,8 @@ function movePiece(fromRow, fromCol, toRow, toCol, valid) {
 
   //clear the border
   fromSquare.style.border = "none"
+
+  highlightMovablePieces()
 }
 
 function highlightMovablePieces() {
@@ -382,7 +395,6 @@ function newGame() {
   resetScores() // Reset scores
 }
 
-
 //add a popup for the settings for changing colors and pieces
 function openSettings() {
   const settingsPopup = document.getElementById("settingsPopup")
@@ -434,6 +446,14 @@ function closeHelp() {
   helpPopup.style.display = "none"
 }
 
+// const helpSound = new Audio('buttonclick.mp3')
+
+// const helpButton = document.getElementById("helpButton")
+
+// helpButton.addEventListener('click', () => {
+//   helpSound.play()
+// })
+
 //function to change the names of the players
 function updatePlayerNames() {
   const player1Name = document.getElementById("player1").value || "Player 1"
@@ -465,6 +485,9 @@ function updateScore(capturingPlayer) {
   // Update the score display
   document.getElementById("score").textContent =
     `${player1Name}: ${player1Score} | ${player2Name}: ${player2Score}`
+
+  sound.currentTime = 0
+  sound.play()
 }
 
 function resetScores() {
@@ -487,12 +510,33 @@ function resetTime() {
     `Red Time Left: ${formatTime(redTime)} | Black Time Left: ${formatTime(blackTime)}`
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+  setupBoard()
+  startTimer()
+  highlightMovablePieces()
+  //connects the new game button to the function
+  document.getElementById("newGameButton").addEventListener("click", newGame)
+})
 
-document.addEventListener('DOMContentLoaded', function() {
-  setupBoard();
-  startTimer();
-  highlightMovablePieces();
-//connects the new game button to the function
-document.getElementById('newGameButton').addEventListener('click', newGame)
-});
+const sound = new Audio("sounds/boom.mov")
+const buttons = document.querySelectorAll(".button")
+const soundClick = new Audio("sounds/buttonclick.mp3")
+const startSound = new Audio("sounds/board_start.mp3")
+const moveSound = new Audio("sounds/moving.mp3")
+const takeSound = new Audio("sounds/take.mp3")
 
+buttons.forEach((button) => {
+  button.addEventListener("click", () => {
+    sound.currentTime = 0
+    sound.play()
+  })
+})
+
+function endGame() {
+  clearInterval(timerInterval) // Stop the timer
+  boardContainer.innerHTML = "" // Clear the board
+  alert("Game Over! Refresh the page to play again.")
+  resetScores() // Reset scores
+  resetTime() // Reset time
+  gameStarted = false // Reset game started flag
+}
