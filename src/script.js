@@ -393,7 +393,6 @@ function newGame() {
   gameStarted = false // Reset game started flag
   highlightMovablePieces()
   resetScores() // Reset scores
-
 }
 
 //add a popup for the settings for changing colors and pieces
@@ -487,8 +486,8 @@ function updateScore(capturingPlayer) {
   document.getElementById("score").textContent =
     `${player1Name}: ${player1Score} | ${player2Name}: ${player2Score}`
 
-    sound.currentTime = 0
-    sound.play()
+  sound.currentTime = 0
+  sound.play()
 }
 
 function resetScores() {
