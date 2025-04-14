@@ -10,6 +10,8 @@ let timerInterval // Timer interval
 let gameStarted = false // Flag to check if the game has started
 let player1Score = 0
 let player2Score = 0
+let player1Wins = 0
+let player2Wins = 0
 
 //can add more cords in jumps to hop over 3 or more peices
 const moveSet = [
@@ -116,6 +118,8 @@ function setupBoard() {
       boardContainer.appendChild(square)
     }
   }
+  startSound.currentTime = 0
+  startSound.play()
 }
 
 //creates and adds appends the piece to the square
@@ -166,9 +170,8 @@ function handleClick(event) {
 function movePiece(fromRow, fromCol, toRow, toCol, valid) {
   //check if valid move
   if (!valid) return
-
-  sound.currentTime = 0
-  sound.play()
+  moveSound.currentTime = 0
+  moveSound.play()
 
   if (!gameStarted) {
     gameStarted = true // Set the flag to true when the game starts
@@ -390,6 +393,7 @@ function newGame() {
   gameStarted = false // Reset game started flag
   highlightMovablePieces()
   resetScores() // Reset scores
+
 }
 
 //add a popup for the settings for changing colors and pieces
@@ -482,6 +486,9 @@ function updateScore(capturingPlayer) {
   // Update the score display
   document.getElementById("score").textContent =
     `${player1Name}: ${player1Score} | ${player2Name}: ${player2Score}`
+
+    sound.currentTime = 0
+    sound.play()
 }
 
 function resetScores() {
@@ -515,6 +522,9 @@ document.addEventListener("DOMContentLoaded", function () {
 const sound = new Audio("sounds/boom.mov")
 const buttons = document.querySelectorAll(".button")
 const soundClick = new Audio("sounds/buttonclick.mp3")
+const startSound = new Audio("sounds/board_start.mp3")
+const moveSound = new Audio("sounds/moving.mp3")
+const takeSound = new Audio("sounds/take.mp3")
 
 buttons.forEach((button) => {
   button.addEventListener("click", () => {
@@ -522,3 +532,12 @@ buttons.forEach((button) => {
     sound.play()
   })
 })
+
+function endGame() {
+  clearInterval(timerInterval) // Stop the timer
+  boardContainer.innerHTML = "" // Clear the board
+  alert("Game Over! Refresh the page to play again.")
+  resetScores() // Reset scores
+  resetTime() // Reset time
+  gameStarted = false // Reset game started flag
+}
