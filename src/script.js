@@ -1,3 +1,12 @@
+
+// to do
+// fix the sounds
+// fix the king color when changing the colors
+// add a end game popup
+//add a end game noise
+
+
+
 var boardContainer = document.getElementById("boardContainer")
 const rows = 8,
   cols = 8
