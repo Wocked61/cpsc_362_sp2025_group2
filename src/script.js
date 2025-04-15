@@ -90,6 +90,14 @@ function formatTime(seconds) {
 function switchPlayer() {
   clearInterval(timerInterval) // Stop the current timer before switching players
   currentPlayer = currentPlayer === "red" ? "black" : "red" // Switch to the other player
+  const player1Name = document.getElementById("player1").value || "Player 1";
+  const player2Name = document.getElementById("player2").value || "Player 2";
+  const playerTurnElement = document.querySelector(".player-turn");
+  
+  if (playerTurnElement) {
+      playerTurnElement.textContent = `${currentPlayer === "red" ? player1Name : player2Name}'s Turn`;
+  }
+
   startTimer() // Start the timer for the next player
 }
 
@@ -200,7 +208,7 @@ function movePiece(fromRow, fromCol, toRow, toCol, valid) {
   checkIfKing(toRow, toCol)
 
   //switch player
-  currentPlayer = currentPlayer == "red" ? "black" : "red"
+  switchPlayer();
 
   //clear the border
   fromSquare.style.border = "none"
@@ -534,6 +542,7 @@ function updatePlayerNames() {
   if (scoreElement) {
     scoreElement.textContent = `${player1Name}: 0 | ${player2Name}: 0`
   }
+
 }
 
 function updateScore(capturingPlayer) {
