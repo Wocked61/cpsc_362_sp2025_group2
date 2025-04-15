@@ -333,7 +333,7 @@ function checkIfKing(row, col) {
         // Get the current piece color and make it darker
         const currentColor = window.getComputedStyle(toKing.firstChild).backgroundColor;
         const hexColor = rgbToHex(currentColor);
-        const darkerColor = darkenColor(hexColor, 15);
+        const darkerColor = darkenColor(hexColor, 20);
         toKing.firstChild.style.backgroundColor = darkerColor;
     }
 }
@@ -481,7 +481,7 @@ function saveSettings() {
   })
 
     // Update king colors (slightly darker shade)
-    const darkerRed = darkenColor(redColor, 15);
+    const darkerRed = darkenColor(redColor, 20);
     const darkerBlack = darkenColor(blackColor, 20);
 
     // Update king colors with darker shades
