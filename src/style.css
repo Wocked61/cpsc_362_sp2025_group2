@@ -58,10 +58,12 @@
 
 .red.king {
   background-color: darkred;
+  cursor: pointer;
 }
 
 .black.king {
   background-color: gray;
+  cursor: pointer;
 }
 
 .piece {

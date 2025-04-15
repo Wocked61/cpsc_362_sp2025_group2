@@ -324,15 +324,33 @@ function removePiece(row, col) {
 //converts piece
 function checkIfKing(row, col) {
   if (currentPlayer == "red" && row == 7) {
-    toKing = getSquare(row, col)
-    toKing.firstChild.classList.add("king")
-    toKing.firstChild.dataset.king = "true"
-  }
-  if (currentPlayer == "black" && row == 0) {
-    toKing = getSquare(row, col)
-    toKing.firstChild.classList.add("king")
-    toKing.firstChild.dataset.king = "true"
-  }
+    const toKing = getSquare(row, col);
+    // Check if piece is not already a king
+    if (toKing.firstChild.dataset.king !== "true") {
+        toKing.firstChild.classList.add("king");
+        toKing.firstChild.dataset.king = "true";
+        
+        // Get the current piece color and make it darker
+        const currentColor = window.getComputedStyle(toKing.firstChild).backgroundColor;
+        const hexColor = rgbToHex(currentColor);
+        const darkerColor = darkenColor(hexColor, 15);
+        toKing.firstChild.style.backgroundColor = darkerColor;
+    }
+}
+if (currentPlayer == "black" && row == 0) {
+    const toKing = getSquare(row, col);
+    // Check if piece is not already a king
+    if (toKing.firstChild.dataset.king !== "true") {
+        toKing.firstChild.classList.add("king");
+        toKing.firstChild.dataset.king = "true";
+        
+        // Get the current piece color and make it darker
+        const currentColor = window.getComputedStyle(toKing.firstChild).backgroundColor;
+        const hexColor = rgbToHex(currentColor);
+        const darkerColor = darkenColor(hexColor, 20);
+        toKing.firstChild.style.backgroundColor = darkerColor;
+    }
+}
 }
 
 //move over 1 or move peice
@@ -424,25 +442,62 @@ function closeSettings() {
   settingsPopup.style.display = "none"
 }
 
+function rgbToHex(rgb) {
+  if (rgb.startsWith('#')) return rgb;
+  const values = rgb.match(/\d+/g);
+  if (!values) return '#000000';
+  const r = parseInt(values[0]);
+  const g = parseInt(values[1]);
+  const b = parseInt(values[2]);
+  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+function darkenColor(color, percent) {
+  const num = parseInt(color.replace("#", ""), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = (num >> 16) - amt;
+  const G = (num >> 8 & 0x00FF) - amt;
+  const B = (num & 0x0000FF) - amt;
+  return "#" + (
+      0x1000000 +
+      (Math.max(Math.min(R, 255), 0)) * 0x10000 +
+      (Math.max(Math.min(G, 255), 0)) * 0x100 +
+      (Math.max(Math.min(B, 255), 0))
+  ).toString(16).slice(1);
+}
+
+
 function saveSettings() {
   const redColor = document.getElementById("redColor").value
   const blackColor = document.getElementById("blackColor").value
   const newTime = document.getElementById("gameTimer").value * 60
 
   // Update piece colors
-  document.querySelectorAll(".piece.red").forEach((piece) => {
+  document.querySelectorAll(".piece.red:not(.king)").forEach((piece) => {
     piece.style.backgroundColor = redColor
   })
-  document.querySelectorAll(".piece.black").forEach((piece) => {
+  document.querySelectorAll(".piece.black:not(.king)").forEach((piece) => {
     piece.style.backgroundColor = blackColor
   })
 
+    // Update king colors (slightly darker shade)
+    const darkerRed = darkenColor(redColor, 15);
+    const darkerBlack = darkenColor(blackColor, 20);
+
+    // Update king colors with darker shades
+    document.querySelectorAll(".piece.red.king").forEach((piece) => {
+        piece.style.backgroundColor = darkerRed;
+    });
+    document.querySelectorAll(".piece.black.king").forEach((piece) => {
+        piece.style.backgroundColor = darkerBlack;
+    });
   // Update timer
   redTime = newTime
   blackTime = newTime
 
   closeSettings()
 }
+
 
 //help popup open and close functions
 function openHelp() {
@@ -541,11 +596,3 @@ buttons.forEach((button) => {
   })
 })
 
-function endGame() {
-  clearInterval(timerInterval) // Stop the timer
-  boardContainer.innerHTML = "" // Clear the board
-  alert("Game Over! Refresh the page to play again.")
-  resetScores() // Reset scores
-  resetTime() // Reset time
-  gameStarted = false // Reset game started flag
-}
