@@ -1,9 +1,10 @@
 
 // to do
 // fix the sounds
-// fix the king color when changing the colors
 // add a end game popup
 //add a end game noise
+//add a promotion sound for king
+//add change board color option
 
 
 
@@ -343,6 +344,9 @@ function checkIfKing(row, col) {
         const hexColor = rgbToHex(currentColor);
         const darkerColor = darkenColor(hexColor, 20);
         toKing.firstChild.style.backgroundColor = darkerColor;
+        promoteSound.currentTime = 0
+        promoteSound.play()
+
     }
 }
 if (currentPlayer == "black" && row == 0) {
@@ -357,6 +361,9 @@ if (currentPlayer == "black" && row == 0) {
         const hexColor = rgbToHex(currentColor);
         const darkerColor = darkenColor(hexColor, 20);
         toKing.firstChild.style.backgroundColor = darkerColor;
+
+        promoteSound.currentTime = 0
+        promoteSound.play()
     }
 }
 }
@@ -597,6 +604,7 @@ const soundClick = new Audio("sounds/buttonclick.mp3")
 const startSound = new Audio("sounds/board_start.mp3")
 const moveSound = new Audio("sounds/moving.mp3")
 const takeSound = new Audio("sounds/take.mp3")
+const promoteSound = new Audio("sounds/promote.mp3")
 
 buttons.forEach((button) => {
   button.addEventListener("click", () => {
