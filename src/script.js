@@ -138,9 +138,10 @@ function setupBoard() {
       boardContainer.appendChild(square)
     }
   }
-  startSound.currentTime = 0
-  startSound.play()
+  document.addEventListener('click', initializeAudio, { once: true });
 }
+
+
 
 //creates and adds appends the piece to the square
 function addPiece(square, color) {
@@ -441,17 +442,23 @@ function newGame() {
 
 //add a popup for the settings for changing colors and pieces
 function openSettings() {
-  const settingsPopup = document.getElementById("settingsPopup")
-  settingsPopup.style.display = "block"
+  const settingsPopup = document.getElementById("settingsPopup");
+  settingsPopup.style.display = "block";
 
-  // Load current settings
-  document.getElementById("redColor").value = rgbToHex(
-    getComputedStyle(redPiece).backgroundColor,
-  )
-  document.getElementById("blackColor").value = rgbToHex(
-    getComputedStyle(blackPiece).backgroundColor,
-  )
-  document.getElementById("gameTimer").value = Math.floor(redTime / 60)
+  const redPiece = document.querySelector(".piece.red");
+  const blackPiece = document.querySelector(".piece.black");
+
+  if (redPiece) {
+    document.getElementById("redColor").value = rgbToHex(
+      getComputedStyle(redPiece).backgroundColor
+    );
+  }
+  if (blackPiece) {
+    document.getElementById("blackColor").value = rgbToHex(
+      getComputedStyle(blackPiece).backgroundColor
+    );
+  }
+  document.getElementById("gameTimer").value = Math.floor(redTime / 60);
 }
 
 function closeSettings() {
@@ -616,3 +623,9 @@ buttons.forEach((button) => {
   })
 })
 
+function initializeAudio() {
+  // Play the start sound only after first click
+  startSound.play().catch(error => {
+    console.log("Audio play failed:", error);
+  });
+}

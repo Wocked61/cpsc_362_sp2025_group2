@@ -75,12 +75,12 @@
 
 .red {
   background-color: red;
-  border: 1px solid #000;
+  border: 2px solid #000;
 }
 
 .black {
   background-color: black;
-  border: 1px solid #000;
+  border: 2px solid #000;
 }
 
 /* New CSS for highlighted movable pieces */
