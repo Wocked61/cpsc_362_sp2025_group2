@@ -118,8 +118,7 @@ function setupBoard() {
       boardContainer.appendChild(square)
     }
   }
-  startSound.currentTime = 0
-  startSound.play()
+
 }
 
 //creates and adds appends the piece to the square
@@ -165,3 +164,8 @@ function handleClick(event) {
     square.style.border = "3px solid yellow" // Highlight selected piece
   }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  setupBoard();
+  startTimer();
+});
