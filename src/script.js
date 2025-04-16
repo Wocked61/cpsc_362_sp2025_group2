@@ -1,10 +1,10 @@
 
 // to do
-// fix the sounds
-// add a end game popup
+//fix the sounds
+//add a end game popup
 //add a end game noise
-//add a promotion sound for king
 //add change board color option
+// wins and losses
 
 
 
@@ -107,6 +107,8 @@ function endGame() {
   clearInterval(timerInterval) // Stop the timer
   boardContainer.innerHTML = "" // Clear the board
   alert("Game Over! Refresh the page to play again.")
+  winNoise.currentTime = 0
+  winNoise.play()
 }
 //makes board
 function setupBoard() {
@@ -605,6 +607,7 @@ const startSound = new Audio("sounds/board_start.mp3")
 const moveSound = new Audio("sounds/moving.mp3")
 const takeSound = new Audio("sounds/take.mp3")
 const promoteSound = new Audio("sounds/promote.mp3")
+const winNoise = new Audio("sounds/yippee-tbh.mp3")
 
 buttons.forEach((button) => {
   button.addEventListener("click", () => {
