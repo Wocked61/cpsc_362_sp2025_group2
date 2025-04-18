@@ -1,10 +1,11 @@
 
 // to do
-//fix the sounds
-//add a end game popup
-//add a end game noise
-//add change board color option
+// add change board color option
 // wins and losses
+// save settings when new game??
+// show available moves for pieces
+// improve design???
+
 
 
 
@@ -153,6 +154,7 @@ function setupBoard() {
       boardContainer.appendChild(square)
     }
   }
+  enableDragAndDrop();
 }
 
 
@@ -670,4 +672,57 @@ function closeGameOver() {
 function startNewGame() {
   closeGameOver();
   newGame();
+}
+
+
+//drag and drop functionality
+function enableDragAndDrop() {
+  const pieces = document.querySelectorAll('.piece');
+  pieces.forEach(piece => {
+      piece.draggable = true;
+      piece.addEventListener('dragstart', handleDragStart);
+      piece.addEventListener('dragend', handleDragEnd);
+  });
+
+  const squares = document.querySelectorAll('.square');
+  squares.forEach(square => {
+      square.addEventListener('dragover', handleDragOver);
+      square.addEventListener('drop', handleDrop);
+  });
+}
+
+function handleDragStart(e) {
+  if (board[e.target.parentNode.dataset.row][e.target.parentNode.dataset.col] !== currentPlayer) {
+      e.preventDefault();
+      return;
+  }
+  e.target.classList.add('dragging');
+  selectedPiece = {
+      row: parseInt(e.target.parentNode.dataset.row),
+      col: parseInt(e.target.parentNode.dataset.col),
+      element: e.target.parentNode
+  };
+}
+
+function handleDragEnd(e) {
+  e.target.classList.remove('dragging');
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  const square = e.target.closest('.square');
+  const toRow = parseInt(square.dataset.row);
+  const toCol = parseInt(square.dataset.col);
+
+  if (selectedPiece) {
+      const valid = validMove(selectedPiece.row, selectedPiece.col, toRow, toCol);
+      if (valid) {
+          movePiece(selectedPiece.row, selectedPiece.col, toRow, toCol, valid);
+      }
+      selectedPiece = null;
+  }
 }
