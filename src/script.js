@@ -579,7 +579,7 @@ function updateScore(capturingPlayer) {
   if (capturingPlayer === 1) {
     player1Score += 1;
 } else {
-    player2Score += 2;
+    player2Score += 1;
 }
 
 const player1Name = document.getElementById("player1").value || "Player 1";
@@ -659,6 +659,7 @@ function showGameOver(winner, score, reason) {
   gameEndReason.textContent = reason;
   
   popup.style.display = 'block';
+  gameStarted = false;
 }
 
 function closeGameOver() {
