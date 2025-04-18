@@ -64,8 +64,7 @@ function startTimer() {
         `Red Time Left: ${formatTime(redTime)} | Black Time Left: ${formatTime(blackTime)}`
       if (redTime <= 0) {
         clearInterval(timerInterval)
-        alert("Red player ran out of time! Black wins.")
-        endGame()
+        endGame("Red player ran out of time!")
       }
     } else if (currentPlayer === "black") {
       blackTime-- // Decrease black's timer
@@ -73,8 +72,7 @@ function startTimer() {
         `Red Time Left: ${formatTime(redTime)} | Black Time Left: ${formatTime(blackTime)}`
       if (blackTime <= 0) {
         clearInterval(timerInterval)
-        alert("Black player ran out of time! Red wins.")
-        endGame()
+        endGame("Black player ran out of time!")
       }
     }
   }, 1000) // Update every second
@@ -96,19 +94,36 @@ function switchPlayer() {
   const playerTurnElement = document.querySelector(".player-turn");
   
   if (playerTurnElement) {
-      playerTurnElement.textContent = `${currentPlayer === "red" ? player1Name : player2Name}'s Turn`;
+      playerTurnElement.textContent = `${currentPlayer === "red" ? player2Name : player1Name}'s Turn`;
   }
 
   startTimer() // Start the timer for the next player
 }
 
 // End the game
-function endGame() {
-  clearInterval(timerInterval) // Stop the timer
-  boardContainer.innerHTML = "" // Clear the board
-  alert("Game Over! Refresh the page to play again.")
-  winNoise.currentTime = 0
-  winNoise.play()
+function endGame(reason) {
+  clearInterval(timerInterval);
+  gameStarted = false;
+  
+  const player1Name = document.getElementById("player1").value || "Player 1";
+  const player2Name = document.getElementById("player2").value || "Player 2";
+  
+  // Determine winner based on current game state
+  const redPieces = document.querySelectorAll('.piece.red').length;
+  const blackPieces = document.querySelectorAll('.piece.black').length;
+  
+  let winner;
+  if (reason.includes("time")) {
+      winner = currentPlayer === "red" ? player1Name : player2Name;
+  } else {
+      winner = redPieces === 0 ? player1Name : player2Name;
+  }
+  
+  const score = `${player2Score} - ${player1Score}`;
+  
+  showGameOver(winner, score, reason);
+  winNoise.currentTime = 0;
+  winNoise.play();
 }
 //makes board
 function setupBoard() {
@@ -138,7 +153,6 @@ function setupBoard() {
       boardContainer.appendChild(square)
     }
   }
-  document.addEventListener('click', initializeAudio, { once: true });
 }
 
 
@@ -563,32 +577,41 @@ function updatePlayerNames() {
 
 function updateScore(capturingPlayer) {
   if (capturingPlayer === 1) {
-    player1Score += 1
-  } else {
-    player2Score += 1
-  }
+    player1Score += 1;
+} else {
+    player2Score += 2;
+}
 
-  const player1Name = document.getElementById("player1").value || "Player 1"
-  const player2Name = document.getElementById("player2").value || "Player 2"
+const player1Name = document.getElementById("player1").value || "Player 1";
+const player2Name = document.getElementById("player2").value || "Player 2";
 
-  // Update the score display
-  document.getElementById("score").textContent =
-    `${player1Name}: ${player1Score} | ${player2Name}: ${player2Score}`
+// Update the score display
+document.getElementById("score").textContent =
+    `${player1Name}: ${player1Score} | ${player2Name}: ${player2Score}`;
 
-  sound.currentTime = 0
-  sound.play()
+const redPieces = document.querySelectorAll('.piece.red').length;
+const blackPieces = document.querySelectorAll('.piece.black').length;
+
+if (redPieces === 0) {
+    endGame("Black captured all pieces!");
+} else if (blackPieces === 0) {
+    endGame("Red captured all pieces!");
+}
+
+sound.currentTime = 0;
+sound.play();
 }
 
 function resetScores() {
-  player1Score = 0
-  player2Score = 0
+  player1Score = 0;
+  player2Score = 0;
 
-  const player1Name = document.getElementById("player1").value || "Player 1"
-  const player2Name = document.getElementById("player2").value || "Player 2"
-
+  const player1Name = document.getElementById("player1").value || "Player 1";
+  const player2Name = document.getElementById("player2").value || "Player 2";
+  
   // Update the score display
   document.getElementById("score").textContent =
-    `${player1Name}: ${player1Score} | ${player2Name}: ${player2Score}`
+      `${player1Name}: ${player1Score} | ${player2Name}: ${player2Score}`;
 }
 
 function resetTime() {
@@ -603,6 +626,8 @@ document.addEventListener("DOMContentLoaded", function () {
   setupBoard()
   startTimer()
   highlightMovablePieces()
+  startSound.currentTime = 0
+  startSound.play()
   //connects the new game button to the function
   document.getElementById("newGameButton").addEventListener("click", newGame)
 })
@@ -623,9 +648,25 @@ buttons.forEach((button) => {
   })
 })
 
-function initializeAudio() {
-  // Play the start sound only after first click
-  startSound.play().catch(error => {
-    console.log("Audio play failed:", error);
-  });
+function showGameOver(winner, score, reason) {
+  const popup = document.getElementById('gameOverPopup');
+  const winnerText = document.getElementById('winnerText');
+  const finalScore = document.getElementById('finalScore');
+  const gameEndReason = document.getElementById('gameEndReason');
+  
+  winnerText.textContent = `${winner} wins!`;
+  finalScore.textContent = `Final Score: ${score}`;
+  gameEndReason.textContent = reason;
+  
+  popup.style.display = 'block';
+}
+
+function closeGameOver() {
+  const popup = document.getElementById('gameOverPopup');
+  popup.style.display = 'none';
+}
+
+function startNewGame() {
+  closeGameOver();
+  newGame();
 }

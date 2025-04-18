@@ -350,3 +350,24 @@ select {
 .help-text li {
   margin: 8px 0;
 }
+
+.game-over-content {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.game-over-content p {
+  margin: 10px 0;
+  font-size: 1.2em;
+}
+
+#winnerText {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#gameEndReason {
+  color: #666;
+  font-style: italic;
+}
