@@ -27,7 +27,7 @@ h1 {
 
 /* Button styling */
 #startBtn {
-  background-color: #2196F3;
+  background-color: #2196f3;
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -38,7 +38,7 @@ h1 {
 }
 
 #startBtn:hover {
-  background-color: #1976D2;
+  background-color: #1976d2;
 }
 
 /* Console area to log game messages */
