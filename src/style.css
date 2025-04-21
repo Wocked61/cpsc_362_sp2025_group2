@@ -77,7 +77,7 @@
 
 .piece.dragging {
   opacity: 0.5;
-  cursor: grabbing;
+  cursor: grab;
 }
 .red {
   background-color: red;
