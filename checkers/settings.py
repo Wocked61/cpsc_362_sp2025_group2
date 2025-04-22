@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-p=rcm4fe*yel$6wswn#8i8xt+5$p5kvz85-vj#ur(z93r6+-)!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     #own
     "pages_app.apps.PagesAppConfig",
     "game_state_app.apps.GameStateAppConfig",
+    "player_app.apps.PlayerAppConfig",
 ]
 
 MIDDLEWARE = [
@@ -82,9 +83,13 @@ WSGI_APPLICATION = "checkers.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": 'checkersdb',
+        "USER": 'epo',
+        "PASSWORD": 'Coffee1020',
+        "HOST": '',
+        "PORT": '5432',
+    },
 }
 
 
