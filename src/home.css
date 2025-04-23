@@ -56,6 +56,7 @@ body {
   justify-content: center;
   align-items: center;
   background-color: #808080;
+  flex-direction: column;
 }
 
 footer {
@@ -79,3 +80,47 @@ footer {
   color: #fff2f2;
   padding: 1rem;
 }
+
+.box{
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.boxes {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  width: 250px;
+  height: 300px;
+  border: 5px solid black;
+  margin: 20px;
+  text-align: center;
+  align-items: center;
+}
+.box-link {
+  text-decoration: none;
+  cursor: pointer;
+  display: block;
+}
+
+.box-link:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+  .game-image{
+    width: 250px;
+    height: 250px;
+  }
+
+  .game-name{
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: larger;
+    color: white;
+    text-align: center;
+    align-items: center;
+  }

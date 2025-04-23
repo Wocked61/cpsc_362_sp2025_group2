@@ -58,10 +58,12 @@
 
 .red.king {
   background-color: darkred;
+  cursor: pointer;
 }
 
 .black.king {
   background-color: gray;
+  cursor: pointer;
 }
 
 .piece {
@@ -69,16 +71,22 @@
   height: 40px;
   border-radius: 50%;
   cursor: pointer;
+  cursor: grab;
+  user-select: none;
 }
 
+.piece.dragging {
+  opacity: 0.5;
+  cursor: grab;
+}
 .red {
   background-color: red;
-  border: 1px solid #000;
+  border: 2px solid #000;
 }
 
 .black {
   background-color: black;
-  border: 1px solid #000;
+  border: 2px solid #000;
 }
 
 /* New CSS for highlighted movable pieces */
@@ -348,3 +356,25 @@ select {
 .help-text li {
   margin: 8px 0;
 }
+
+.game-over-content {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.game-over-content p {
+  margin: 10px 0;
+  font-size: 1.2em;
+}
+
+#winnerText {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#gameEndReason {
+  color: #666;
+  font-style: italic;
+}
+

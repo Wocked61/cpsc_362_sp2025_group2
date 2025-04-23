@@ -32,30 +32,12 @@
           <!-- Toolbar with buttons -->
           <div class="toolbar">
             <button id="newGameButton" class="button">New Game</button>
-            <!--
-            <script>
-              let play = document.getElementById("newGameButton");
-                function playMusic() {
-                  let audio = new Audio("sounds/boom.mov");
-                  audio.play()
-                }
-                play.addEventListener("click", playMusic);
-            </script> 
-          -->
+
             <button id="settings" class="button" onclick="openSettings()">
               Settings
             </button>
             <button class="button" onclick="openHelp()">Help</button>
-            <!--
-            <script>
-              let button = document.getElementsByClassName("button");
-                function playMusic() {
-                  let audio = new Audio("sounds/boom.mov");
-                  audio.play();
-                }
-                play.addEventListener("click", playMusic);
-            </script>
-          --></div>
+          </div>
         </div>
 
         <div class="board">
@@ -143,6 +125,21 @@
           </ul>
         </div>
         <button onclick="closeHelp()" class="button">Close</button>
+      </div>
+    </div>
+
+    <div id="gameOverPopup" class="popup">
+      <div class="popup-content">
+        <h2>Game Over!</h2>
+        <div class="game-over-content">
+          <p id="winnerText">Player wins!</p>
+          <p id="finalScore">Final Score: </p>
+          <p id="gameEndReason"></p>
+        </div>
+        <div class="center">
+          <button onclick="startNewGame()" class="button">New Game</button>
+          <button onclick="closeGameOver()" class="button">Close</button>
+        </div>
       </div>
     </div>
 
