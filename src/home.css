@@ -81,7 +81,7 @@ footer {
   padding: 1rem;
 }
 
-.box{
+.box {
   margin: 10px;
   display: flex;
   justify-content: center;
@@ -111,16 +111,16 @@ footer {
   transition: transform 0.3s ease;
 }
 
-  .game-image{
-    width: 250px;
-    height: 250px;
-  }
+.game-image {
+  width: 250px;
+  height: 250px;
+}
 
-  .game-name{
-    font-family: sans-serif;
-    font-weight: bold;
-    font-size: larger;
-    color: white;
-    text-align: center;
-    align-items: center;
-  }
+.game-name {
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: larger;
+  color: white;
+  text-align: center;
+  align-items: center;
+}

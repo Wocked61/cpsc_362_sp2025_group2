@@ -1,5 +1,3 @@
-
-
 html,
 body {
   height: 100%;
@@ -23,7 +21,6 @@ body {
   width: fit-content;
   margin: 20px auto;
 }
-
 
 .square {
   width: 50px;
@@ -87,7 +84,6 @@ body {
 .square.highlight:hover {
   background-color: rgba(0, 255, 0, 0.4); /* Brighter green on hover */
 }
-
 
 .title {
   font-family: sans-serif;
@@ -156,7 +152,6 @@ footer {
   align-items: center;
   padding: 20px;
 }
-
 
 #timer {
   font-size: 24px;
