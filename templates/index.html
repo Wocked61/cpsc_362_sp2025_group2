@@ -1,15 +1,6 @@
-<!doctype html>
 {% extends "main.html" %}
 {% load static %}
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Checkers</title>
-  </head>
-
-  <body>
-    {% block content %}
+{% block content %}
     <link rel="stylesheet" href="{% static 'style.css' %}"/>
     <div class="container">
       <div id="timer">Red Time Left: 3:00 | Black Time Left: 3:00</div>
@@ -24,6 +15,7 @@
           <!-- Toolbar with buttons -->
           <div class="toolbar">
             <button id="newGameButton" class="button">New Game</button>
+
             <button id="settings" class="button" onclick="openSettings()">
               Settings
             </button>
@@ -119,8 +111,32 @@
       </div>
     </div>
 
+    <div id="gameOverPopup" class="popup">
+      <div class="popup-content">
+        <h2>Game Over!</h2>
+        <div class="game-over-content">
+          <p id="winnerText">Player wins!</p>
+          <p id="finalScore">Final Score: </p>
+          <p id="gameEndReason"></p>
+        </div>
+        <div class="center">
+          <button onclick="startNewGame()" class="button">New Game</button>
+          <button onclick="closeGameOver()" class="button">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer">
+        <div class="footer-content">
+          <p class="footer-text">Checkers Game</p>
+          <p class="footer-text">Created by Group 2</p>
+          <p class="footer-text">CPSC 362 - Spring 2025</p>
+        </div>
+      </div>
+    </footer>
+
+
     <script src="{% static 'script.js' %}?query=string" id="query"></script>
 
-    {% endblock content %}
-  </body>
-</html>
+{% endblock content %}

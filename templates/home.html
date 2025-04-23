@@ -1,28 +1,30 @@
-<!doctype html>
 {% extends "main.html" %}
 {% load static %}
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{% static 'home.css' %}"/>
-    <title>homepage</title>
-  </head>
-  <body>
-    {% block content %}
-    <div class="container">
-      <div class="box">
-        <h1>Welcome to the Checkers and Chess Game!</h1>
-        <p>
-          Experience the thrill of strategy and competition with our online
-          Checkers and Chess game.
-        </p>
-        <p>
-          Play against friends or challenge the computer. Choose your game mode
-          and start playing!
-        </p>
-      </div>
+{% block content %}
+<link rel="stylesheet" href="{% static 'home.css' %}"/>
+<div class="container">
+  <h1>Welcome to the Checkers and Chess Game!</h1>      
+  <p>
+    Experience the thrill of strategy and competition with our online
+    Checkers and Chess game.
+  </p>
+  <p>
+    Play against friends or challenge the computer. Choose your game mode
+    and start playing!
+  </p>
+  <div class="box">
+    <a href="{% url 'checkers' %}" class="box-link">
+    <div class = "boxes">
+      <img src="{% static 'checkers.png' %}" alt="Checkers" class="game-image"/>
+      <p class="game-name">Checkers</p>
     </div>
-    {% endblock content %}
-  </body>
-</html>
+    </a>
+    <a href="{% url 'chess' %}" class="box-link">
+    <div class="boxes">
+      <img src="{% static 'checkers.png' %}" alt="Chess" class="game-image"/>
+      <p class="game-name">Chess</p>
+    </div>
+    </a>
+  </div>
+</div>
+{% endblock content %}

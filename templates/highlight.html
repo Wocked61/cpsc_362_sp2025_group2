@@ -1,0 +1,30 @@
+<!doctype html>
+{% load static %}
+  <link rel="stylesheet" href="{% static 'highlight.css' %}"/>
+  </head>
+  <body>
+    <div class="board">
+      <!-- A smaller 4x4 checkers board -->
+      <div class="square piece red"></div>
+      <div class="square"></div>
+      <div class="square piece black"></div>
+      <div class="square"></div>
+
+      <div class="square"></div>
+      <div class="square piece red"></div>
+      <div class="square"></div>
+      <div class="square piece black"></div>
+
+      <div class="square piece black"></div>
+      <div class="square"></div>
+      <div class="square piece red"></div>
+      <div class="square"></div>
+
+      <div class="square"></div>
+      <div class="square piece black"></div>
+      <div class="square"></div>
+      <div class="square piece red"></div>
+    </div>    
+    <script src="{% static 'script.js' %}"></script>
+  </body>
+</html>

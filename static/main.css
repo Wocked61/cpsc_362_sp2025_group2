@@ -50,6 +50,15 @@ body {
   color: inherit;
 }
 
+.container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #808080;
+  flex-direction: column;
+}
+
 footer {
   background-color: #424242;
   width: 100%;
