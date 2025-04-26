@@ -5,6 +5,9 @@
 // save settings when new game??
 // show available moves for pieces
 // improve design???
+// make easier accessibility for king promotion
+// fix issues that arised
+// fix the highlight feature
 
 
 
@@ -729,3 +732,4 @@ function handleDrop(e) {
       selectedPiece = null;
   }
 }
+
