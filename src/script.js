@@ -5,7 +5,6 @@
 // show available moves for pieces
 // improve design???
 // fix issues that arised
-// add a endgame popup when there are no valid moves
 
 
 var boardContainer = document.getElementById("boardContainer")
@@ -175,7 +174,7 @@ function endGame(reason) {
   if (reason.includes("time")) {
     winner = currentPlayer === "red" ? player1Name : player2Name
   } else if (reason.includes("no valid moves")) {
-    winner = currentPlayer === "red" ? player2Name : player1Name
+    winner = currentPlayer === "black" ? player2Name : player1Name
   } else {
     winner = redPieces === 0 ? player1Name : player2Name
   }
@@ -187,6 +186,7 @@ function endGame(reason) {
   
   showGameOver(winner, score, reason)
 }
+
 //makes board
 function setupBoard() {
   boardContainer.innerHTML = ""
