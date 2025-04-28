@@ -5,6 +5,12 @@
 // save settings when new game??
 // show available moves for pieces
 // improve design???
+// make easier accessibility for king promotion
+// fix issues that arised
+// fix the highlight feature
+
+
+
 
 var boardContainer = document.getElementById("boardContainer")
 const rows = 8,
@@ -21,7 +27,8 @@ let player2Score = 0
 let player1Wins = 0
 let player2Wins = 0
 
-//sounds
+//sounds for the game
+//make them functions later
 const sound = new Audio("sounds/boom.mov")
 const buttons = document.querySelectorAll(".button")
 const soundClick = new Audio("sounds/buttonclick.mp3")
@@ -30,7 +37,6 @@ const moveSound = new Audio("sounds/moving.mp3")
 const takeSound = new Audio("sounds/take.mp3")
 const promoteSound = new Audio("sounds/promote.mp3")
 const winNoise = new Audio("sounds/yippee-tbh.mp3")
-
 //can add more cords in jumps to hop over 3 or more peices
 const moveSet = [
   { piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0] }, //right
@@ -642,6 +648,7 @@ document.addEventListener("DOMContentLoaded", function () {
 })
 
 
+
 buttons.forEach((button) => {
   button.addEventListener("click", () => {
     sound.currentTime = 0
@@ -725,3 +732,4 @@ function handleDrop(e) {
       selectedPiece = null;
   }
 }
+
