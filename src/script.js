@@ -4,9 +4,7 @@
 // save settings when new game??
 // show available moves for pieces
 // improve design???
-// make easier accessibility for king promotion
 // fix issues that arised
-// fix new game button timer
 // fix end game popup timer
 
 
@@ -110,6 +108,13 @@ function startTimer() {
   }, 1000) // Update every second
 }
 
+//pause Timer
+function pauseTime() {
+  clearInterval(timerInterval);  // Stop the timer
+  timerInterval = null;  // Clear the interval reference
+}
+
+
 // Helper function to format time in MM:SS
 function formatTime(seconds) {
   const minutes = Math.floor(seconds / 60)
@@ -134,7 +139,12 @@ function switchPlayer() {
 
 // End the game
 function endGame(reason) {
-  clearInterval(timerInterval)
+  // Clear interval and stop timer immediately
+  if (timerInterval) {
+    clearInterval(timerInterval)
+    timerInterval = null
+  }
+  
   gameStarted = false
 
   const player1Name = document.getElementById("player1").value || "Player 1"
@@ -153,9 +163,10 @@ function endGame(reason) {
 
   const score = `${player2Score} - ${player1Score}`
 
-  showGameOver(winner, score, reason)
   winNoise.currentTime = 0
   winNoise.play()
+  
+  showGameOver(winner, score, reason)
 }
 //makes board
 function setupBoard() {
@@ -600,13 +611,6 @@ function closeHelp() {
   helpPopup.style.display = "none"
 }
 
-// const helpSound = new Audio('buttonclick.mp3')
-
-// const helpButton = document.getElementById("helpButton")
-
-// helpButton.addEventListener('click', () => {
-//   helpSound.play()
-// })
 
 //function to change the names of the players
 function updatePlayerNames() {
@@ -643,10 +647,17 @@ function updateScore(capturingPlayer) {
   const redPieces = document.querySelectorAll(".piece.red").length
   const blackPieces = document.querySelectorAll(".piece.black").length
 
-  if (redPieces === 0) {
-    endGame("Black captured all pieces!")
-  } else if (blackPieces === 0) {
-    endGame("Red captured all pieces!")
+  if (redPieces === 0 || blackPieces === 0) {
+    clearInterval(timerInterval)
+    timerInterval = null
+    gameStarted = false
+    
+    if (redPieces === 0) {
+      endGame("Black captured all pieces!")
+    } else {
+      endGame("Red captured all pieces!")
+    }
+    return
   }
 
   sound.currentTime = 0
@@ -674,27 +685,56 @@ function resetTime() {
 }
 
 function showGameOver(winner, score, reason) {
+
   const popup = document.getElementById("gameOverPopup")
   const winnerText = document.getElementById("winnerText")
   const finalScore = document.getElementById("finalScore")
   const gameEndReason = document.getElementById("gameEndReason")
+
 
   winnerText.textContent = `${winner} wins!`
   finalScore.textContent = `Final Score: ${score}`
   gameEndReason.textContent = reason
 
   popup.style.display = "block"
+
+  endGame(reason)
   gameStarted = false
+
 }
 
 function closeGameOver() {
   const popup = document.getElementById("gameOverPopup")
   popup.style.display = "none"
+
+  const squares = document.querySelectorAll(".square")
+  squares.forEach(square => {
+    square.removeEventListener("click", handleClick)
+    square.removeEventListener("dragover", handleDragOver)
+    square.removeEventListener("drop", handleDrop)
+  })
+
+  const pieces = document.querySelectorAll(".piece")
+  pieces.forEach(piece => {
+    piece.draggable = false
+    piece.removeEventListener("dragstart", handleDragStart)
+    piece.removeEventListener("dragend", handleDragEnd)
+  })
+
+  if (selectedPiece) {
+    selectedPiece.element.style.border = "none"
+    selectedPiece = null
+  }
+
+  document.querySelectorAll(".square").forEach(square => {
+    square.style.border = "none"
+  })
 }
 
 function startNewGame() {
   closeGameOver()
   newGame()
+  pauseTime()
 }
 
 //drag and drop functionality
