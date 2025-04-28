@@ -4,6 +4,11 @@
 // save settings when new game??
 // show available moves for pieces
 // improve design???
+// make easier accessibility for king promotion
+// fix issues that arised
+// fix the highlight feature
+// fix new game button timer
+// fix end game popup timer
 
 var boardContainer = document.getElementById("boardContainer")
 const rows = 8,
@@ -19,6 +24,18 @@ let player1Score = 0
 let player2Score = 0
 let player1Wins = 0
 let player2Wins = 0
+
+//sounds for the game
+//make them functions later
+const sound = new Audio("sounds/boom.mov")
+const buttons = document.querySelectorAll(".button")
+const soundClick = new Audio("sounds/buttonclick.mp3")
+const startSound = new Audio("sounds/board_start.mp3")
+const moveSound = new Audio("sounds/moving.mp3")
+const takeSound = new Audio("sounds/take.mp3")
+const promoteSound = new Audio("sounds/promote.mp3")
+const winNoise = new Audio("sounds/yippee-tbh.mp3")
+
 
 //can add more cords in jumps to hop over 3 or more peices
 const moveSet = [
@@ -629,14 +646,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("newGameButton").addEventListener("click", newGame)
 })
 
-const sound = new Audio("sounds/boom.mov")
-const buttons = document.querySelectorAll(".button")
-const soundClick = new Audio("sounds/buttonclick.mp3")
-const startSound = new Audio("sounds/board_start.mp3")
-const moveSound = new Audio("sounds/moving.mp3")
-const takeSound = new Audio("sounds/take.mp3")
-const promoteSound = new Audio("sounds/promote.mp3")
-const winNoise = new Audio("sounds/yippee-tbh.mp3")
+
 
 buttons.forEach((button) => {
   button.addEventListener("click", () => {
