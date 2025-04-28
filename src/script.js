@@ -5,7 +5,7 @@
 // show available moves for pieces
 // improve design???
 // fix issues that arised
-// fix end game popup timer
+// add a endgame popup when there are no valid moves
 
 
 var boardContainer = document.getElementById("boardContainer")
@@ -22,7 +22,6 @@ let player2Score = 0
 let player1Wins = 0
 let player2Wins = 0
 
-
 //sounds for the game
 //make them functions later
 const sound = new Audio("sounds/boom.mov")
@@ -33,8 +32,6 @@ const moveSound = new Audio("sounds/moving.mp3")
 const takeSound = new Audio("sounds/take.mp3")
 const promoteSound = new Audio("sounds/promote.mp3")
 const winNoise = new Audio("sounds/yippee-tbh.mp3")
-
-
 
 //can add more cords in jumps to hop over 3 or more peices
 const moveSet = [
@@ -130,11 +127,31 @@ function switchPlayer() {
   const player2Name = document.getElementById("player2").value || "Player 2"
   const playerTurnElement = document.querySelector(".player-turn")
 
+  if (!checkForValidMoves()) {
+    endGame(`${currentPlayer === "red" ? "Red" : "Black"} has no valid moves!`)
+    return
+  }
+
   if (playerTurnElement) {
     playerTurnElement.textContent = `${currentPlayer === "red" ? player2Name : player1Name}'s Turn`
   }
 
   startTimer() // Start the timer for the next player
+}
+
+//helper function to check if there are valid moves for the current player that doesnt break the highlight feature
+function checkForValidMoves() {
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      if (board[row][col] === currentPlayer) {
+        const moves = getValidMoves(row, col)
+        if (moves.length > 0) {
+          return true // Found at least one valid move
+        }
+      }
+    }
+  }
+  return false // No valid moves found
 }
 
 // End the game
@@ -157,6 +174,8 @@ function endGame(reason) {
   let winner
   if (reason.includes("time")) {
     winner = currentPlayer === "red" ? player1Name : player2Name
+  } else if (reason.includes("no valid moves")) {
+    winner = currentPlayer === "red" ? player2Name : player1Name
   } else {
     winner = redPieces === 0 ? player1Name : player2Name
   }
