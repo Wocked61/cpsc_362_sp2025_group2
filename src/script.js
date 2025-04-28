@@ -4,15 +4,12 @@
 // save settings when new game??
 // show available moves for pieces
 // improve design???
+// make easier accessibility for king promotion
+// fix issues that arised
+// fix the highlight feature
+// fix new game button timer
+// fix end game popup timer
 
-const sound = new Audio("sounds/boom.mov")
-const buttons = document.querySelectorAll(".button")
-const soundClick = new Audio("sounds/buttonclick.mp3")
-const startSound = new Audio("sounds/board_start.mp3")
-const moveSound = new Audio("sounds/moving.mp3")
-const takeSound = new Audio("sounds/take.mp3")
-const promoteSound = new Audio("sounds/promote.mp3")
-const winNoise = new Audio("sounds/yippee-tbh.mp3")
 
 var boardContainer = document.getElementById("boardContainer")
 const rows = 8,
@@ -28,6 +25,18 @@ let player1Score = 0
 let player2Score = 0
 let player1Wins = 0
 let player2Wins = 0
+
+
+//sounds for the game
+//make them functions later
+const sound = new Audio("sounds/boom.mov")
+const buttons = document.querySelectorAll(".button")
+const soundClick = new Audio("sounds/buttonclick.mp3")
+const startSound = new Audio("sounds/board_start.mp3")
+const moveSound = new Audio("sounds/moving.mp3")
+const takeSound = new Audio("sounds/take.mp3")
+const promoteSound = new Audio("sounds/promote.mp3")
+const winNoise = new Audio("sounds/yippee-tbh.mp3")
 
 
 
@@ -76,8 +85,8 @@ const kingMoveSet = [
 
   {piece: "black", enemy: "red", jumps: [1, 1, 2, 2, 1, 3, 0, 0, 0, 4]}, //right up 
   {piece: "black", enemy: "red", jumps: [1, -1, 2, -2, 1, -3, 0, 0, 0, -4]}, //right down 
-  
 ]
+
 // Timer functionality
 function startTimer() {
   clearInterval(timerInterval) // Clear the previous timer
@@ -278,22 +287,18 @@ function highlightMovablePieces() {
   }
 }
 
-// Helper function to get valid moves for a piece
+//Helper function to get valid moves for a piece
 function getValidMoves(row, col) {
   const validMoves = []
+  const directions = []
 
   // Define movement directions based on player and whether it's a king
-  const directions = []
-  if (board[row][col] === "red") {
-    directions.push([1, 1], [1, -1]) // Red moves forward
-    if (getSquare(row, col).firstChild.dataset.king === "true") {
-      directions.push([-1, 1], [-1, -1]) // Kings move backward as well
-    }
-  } else if (board[row][col] === "black") {
-    directions.push([-1, 1], [-1, -1]) // Black moves forward
-    if (getSquare(row, col).firstChild.dataset.king === "true") {
-      directions.push([1, 1], [1, -1]) // Kings move backward as well
-    }
+  if (getSquare(row, col).firstChild.dataset.king === "true") {
+    directions.push([1, 1], [1, -1], [-1, 1] ,[-1, -1])
+  } else if (board[row][col] === "red") {
+    directions.push([1, 1], [1, -1])
+  } else {
+    directions.push([-1, 1], [-1, -1])
   }
 
   // Check each direction for valid moves
@@ -302,15 +307,26 @@ function getValidMoves(row, col) {
     const newCol = col + colDiff
 
     // Ensure the move is within bounds and valid
-    if (
-      newRow >= 0 &&
-      newRow < rows &&
-      newCol >= 0 &&
-      newCol < cols &&
-      board[newRow][newCol] === null &&
-      validMove(row, col, newRow, newCol)
-    ) {
-      validMoves.push({ row: newRow, col: newCol })
+    if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+      if (board[newRow][newCol] === null) {
+        validMoves.push({ row: newRow, col: newCol })
+      } else {
+        nextRow = newRow
+        nextCol = newCol
+        if (rowDiff > 0) {
+          nextRow++
+        } else {
+          nextRow--
+        }
+        if (colDiff > 0) {
+          nextCol++
+        } else {
+          nextCol--
+        }
+        if (nextRow >= 0 && nextRow < rows && nextCol >= 0 && nextCol < cols && board[nextRow][nextCol] === null && board[row][col] != board[newRow][newCol]) {
+          validMoves.push({ row: nextRow, col: nextCol })
+        }
+      }
     }
   })
 
