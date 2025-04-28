@@ -118,7 +118,6 @@ function setupBoard() {
       boardContainer.appendChild(square)
     }
   }
-
 }
 
 //creates and adds appends the piece to the square
@@ -165,7 +164,7 @@ function handleClick(event) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  setupBoard();
-  startTimer();
-});
+document.addEventListener("DOMContentLoaded", function () {
+  setupBoard()
+  startTimer()
+})
