@@ -6,14 +6,12 @@
 // improve design???
 // make easier accessibility for king promotion
 // fix issues that arised
-// fix the highlight feature
 // fix new game button timer
 // fix end game popup timer
 
 
 var boardContainer = document.getElementById("boardContainer")
-const rows = 8,
-  cols = 8
+const rows = 8, cols = 8
 let board = []
 let currentPlayer = "black"
 let selectedPiece = null

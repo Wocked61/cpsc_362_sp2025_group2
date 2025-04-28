@@ -61,6 +61,22 @@
   cursor: pointer;
 }
 
+.red.king::after {
+  content: "♔";  /* Unicode crown symbol */
+  margin: 7px;
+  transform: translate(-50%, -50%);
+  color: red;
+  font-size: 24px;
+}
+
+.black.king::after {
+  content: "♔";  /* Unicode crown symbol */
+  transform: translate(-40%, -40%);
+  margin: 7px;
+  color: black;
+  font-size: 24px;
+}
+
 .black.king {
   background-color: gray;
   cursor: pointer;
@@ -225,7 +241,7 @@ footer {
 }
 
 .box {
-  width: 350px;
+  width: 400px;
   height: 300px;
   border: 2px solid #000;
   justify-content: center;
@@ -235,8 +251,6 @@ footer {
 }
 
 .box-settings {
-  width: 350px;
-  height: 300px;
   width: 400px;
   height: 150px;
   border: 2px solid #000;
