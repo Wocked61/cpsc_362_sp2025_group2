@@ -10,6 +10,7 @@
 // fix new game button timer
 // fix end game popup timer
 
+
 var boardContainer = document.getElementById("boardContainer")
 const rows = 8,
   cols = 8
@@ -25,6 +26,7 @@ let player2Score = 0
 let player1Wins = 0
 let player2Wins = 0
 
+
 //sounds for the game
 //make them functions later
 const sound = new Audio("sounds/boom.mov")
@@ -37,23 +39,52 @@ const promoteSound = new Audio("sounds/promote.mp3")
 const winNoise = new Audio("sounds/yippee-tbh.mp3")
 
 
+
 //can add more cords in jumps to hop over 3 or more peices
 const moveSet = [
   { piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0] }, //right
   { piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 3, -3, 4, -4, 4, 0] }, //left
   { piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -3, 3, -4, 4, -4, 0] }, //right
-  { piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]} //left
+  {
+    piece: "black",
+    enemy: "red",
+    jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0],
+  }, //left
 ]
 const kingMoveSet = [
   //add jump down then up for left and right
   { piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0] }, //right
   { piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 3, -3, 4, -4, 4, 0] }, //left
   { piece: "red", enemy: "black", jumps: [-1, 1, -2, 2, -3, 3, -4, 4, -4, 0] }, //right
-  { piece: "red", enemy: "black", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]}, //left
+  {
+    piece: "red",
+    enemy: "black",
+    jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0],
+  }, //left
+
+  //moves as king to the sides
+  {piece: "red", enemy: "black", jumps: [-1, 1, -2, 2, -1, 3, 0, 0, 0, 4]}, //left down 
+  {piece: "red", enemy: "black", jumps: [-1, -1, -2, -2, -1, -3, 0, 0, 0, -4]}, //left up 
+  {piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 1, -3, 0, 0, 0,-4]}, //right down 
+  {piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 1, 3, 0, 0, 0, 4]}, //right up 
+  
+
+
   { piece: "black", enemy: "red", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0] }, //right
   { piece: "black", enemy: "red", jumps: [1, -1, 2, -2, 3, -3, 4, -4, 4, 0] }, //left
   { piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -3, 3, -4, 4, -4, 0] }, //right
-  { piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0]} //left
+  {
+    piece: "black",
+    enemy: "red",
+    jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0],
+  }, //left
+
+  //moves as king to the sides
+  {piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -1, -3, 0, 0, 0, -4]}, //left up 
+  {piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -1, 3, 0, 0, 0, 4]}, //left down 
+
+  {piece: "black", enemy: "red", jumps: [1, 1, 2, 2, 1, 3, 0, 0, 0, 4]}, //right up 
+  {piece: "black", enemy: "red", jumps: [1, -1, 2, -2, 1, -3, 0, 0, 0, -4]}, //right down 
 ]
 
 // Timer functionality
@@ -403,7 +434,8 @@ function hops(fromRow, fromCol, toRow, toCol, moves) {
   let i = 0
   j = 1
   for (; j < jumps.length; ) {
-    if (fromRow + jumps[i] == toRow && fromCol + jumps[j] == toCol) {
+    //make sure toRow and toCol is in moves and does not go out of board
+    if ((fromRow + jumps[i] == toRow && fromCol + jumps[j] == toCol)&&((fromRow+jumps[2] < 8 && fromRow+jumps[2] >= 0) && (fromCol+jumps[3] < 8 && fromCol+jumps[3] >= 0))) {
       if (
         board[fromRow][fromCol] == piece &&
         board[fromRow + jumps[0]][fromCol + jumps[1]] == enemy &&
@@ -435,12 +467,19 @@ function hops(fromRow, fromCol, toRow, toCol, moves) {
           fromRow + jumps[8] == toRow &&
           fromCol + jumps[9] == toCol
         ) {
-          removePiece(fromRow + jumps[4], fromCol + jumps[1])
-          removePiece(fromRow + jumps[0], fromCol + jumps[1])
-          // Update score for double capture
-          updateScore(currentPlayer === "red" ? 1 : 2)
-          updateScore(currentPlayer === "red" ? 1 : 2)
-          return true
+            if(jumps[6]==0 && jumps[7]==0){ //checks if a king move out in
+                removePiece(fromRow+jumps[4],fromCol+jumps[5]);
+                removePiece(fromRow+jumps[0],fromCol+jumps[1]);
+                updateScore(currentPlayer === "red" ? 1 : 2)
+                updateScore(currentPlayer === "red" ? 1 : 2)
+                return true;  
+              }else{
+                removePiece(fromRow+jumps[4],fromCol+jumps[1]);
+                removePiece(fromRow+jumps[0],fromCol+jumps[1]);
+                updateScore(currentPlayer === "red" ? 1 : 2)
+                updateScore(currentPlayer === "red" ? 1 : 2)
+                return true;
+              }
         }
       }
     } else i = i + 2
@@ -636,25 +675,6 @@ function resetTime() {
     `Red Time Left: ${formatTime(redTime)} | Black Time Left: ${formatTime(blackTime)}`
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  setupBoard()
-  startTimer()
-  highlightMovablePieces()
-  startSound.currentTime = 0
-  startSound.play()
-  //connects the new game button to the function
-  document.getElementById("newGameButton").addEventListener("click", newGame)
-})
-
-
-
-buttons.forEach((button) => {
-  button.addEventListener("click", () => {
-    sound.currentTime = 0
-    sound.play()
-  })
-})
-
 function showGameOver(winner, score, reason) {
   const popup = document.getElementById("gameOverPopup")
   const winnerText = document.getElementById("winnerText")
@@ -733,3 +753,21 @@ function handleDrop(e) {
     selectedPiece = null
   }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    setupBoard()
+    startTimer()
+    highlightMovablePieces()
+    startSound.currentTime = 0
+    startSound.play()
+    //connects the new game button to the function
+    document.getElementById("newGameButton").addEventListener("click", newGame)
+  })
+  
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      sound.currentTime = 0
+      sound.play()
+    })
+  })
+  
