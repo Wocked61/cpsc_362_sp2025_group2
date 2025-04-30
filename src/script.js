@@ -188,33 +188,38 @@ function endGame(reason) {
 
 //makes board
 function setupBoard() {
-  boardContainer.innerHTML = ""
+  boardContainer.innerHTML = "";
+  const lightSquareColor = document.getElementById("light")?.value || "#f5f5dc";
+  const darkSquareColor = document.getElementById("dark")?.value || "#a62b2b"; 
+
   for (let row = 0; row < rows; row++) {
-    board[row] = [] //make 2d
+    board[row] = [];
     for (let col = 0; col < cols; col++) {
-      const square = document.createElement("div")
-      square.classList.add("square", (row + col) % 2 === 0 ? "light" : "dark") //adds square light or square dark class
-      square.dataset.row = row //stores row
-      square.dataset.col = col //stores col
-      square.addEventListener("click", handleClick)
-      if ((row + col) % 2 === 1) {
-        // Only on dark squares
+      const square = document.createElement("div");
+      const isLight = (row + col) % 2 === 0;
+      square.classList.add("square", isLight ? "light" : "dark");
+      square.style.backgroundColor = isLight ? lightSquareColor : darkSquareColor;
+      square.dataset.row = row;
+      square.dataset.col = col;
+      square.addEventListener("click", handleClick);
+
+      if (!isLight) {
         if (row < 3) {
-          addPiece(square, "red")
-          board[row][col] = "red"
+          addPiece(square, "red");
+          board[row][col] = "red";
         } else if (row > 4) {
-          addPiece(square, "black")
-          board[row][col] = "black"
+          addPiece(square, "black");
+          board[row][col] = "black";
         } else {
-          board[row][col] = null
+          board[row][col] = null;
         }
       } else {
-        board[row][col] = null
+        board[row][col] = null;
       }
-      boardContainer.appendChild(square)
+      boardContainer.appendChild(square);
     }
   }
-  enableDragAndDrop()
+  enableDragAndDrop();
 }
 
 //creates and adds appends the piece to the square
@@ -530,6 +535,7 @@ function newGame() {
   currentPlayer = "black" // Reset current player to black
   setupBoard() // Set up the board again
   resetTime() //restart the timer
+  clearInterval(timerInterval) // Clear the timer interval
   gameStarted = false // Reset game started flag
   highlightMovablePieces()
   resetScores() // Reset scores
@@ -553,6 +559,17 @@ function openSettings() {
       getComputedStyle(blackPiece).backgroundColor,
     )
   }
+
+  const lightSquare = document.querySelector(".square.light");
+  const darkSquare = document.querySelector(".square.dark");
+
+  if (lightSquare) {
+      document.getElementById("lightSquareColor").value = rgbToHex(getComputedStyle(lightSquare).backgroundColor);
+  }
+  if (darkSquare) {
+      document.getElementById("darkSquareColor").value = rgbToHex(getComputedStyle(darkSquare).backgroundColor);
+  }
+
   document.getElementById("gameTimer").value = Math.floor(redTime / 60)
 }
 
@@ -593,6 +610,8 @@ function darkenColor(color, percent) {
 function saveSettings() {
   const redColor = document.getElementById("redColor").value
   const blackColor = document.getElementById("blackColor").value
+  const lightSquareColor = document.getElementById("lightSquareColor").value;
+  const darkSquareColor = document.getElementById("darkSquareColor").value;
   const newTime = document.getElementById("gameTimer").value * 60
 
   // Update piece colors
@@ -614,6 +633,15 @@ function saveSettings() {
   document.querySelectorAll(".piece.black.king").forEach((piece) => {
     piece.style.backgroundColor = darkerBlack
   })
+
+    // Update board colors
+    document.querySelectorAll(".square.light").forEach(square => {
+    square.style.backgroundColor = lightSquareColor;
+    });
+    document.querySelectorAll(".square.dark").forEach(square => {
+        square.style.backgroundColor = darkSquareColor;
+    });
+
   // Update timer
   redTime = newTime
   blackTime = newTime
@@ -826,6 +854,7 @@ function handleDrop(e) {
     highlightMovablePieces()
   }
 }
+
 
 
 function clearValidMoveIndicators() {
