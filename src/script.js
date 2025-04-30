@@ -59,8 +59,6 @@ const kingMoveSet = [
   {piece: "red", enemy: "black", jumps: [-1, -1, -2, -2, -1, -3, 0, 0, 0, -4]}, //left up 
   {piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 1, -3, 0, 0, 0,-4]}, //right down 
   {piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 1, 3, 0, 0, 0, 4]}, //right up 
-  
-
 
   { piece: "black", enemy: "red", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0] }, //right
   { piece: "black", enemy: "red", jumps: [1, -1, 2, -2, 3, -3, 4, -4, 4, 0] }, //left
