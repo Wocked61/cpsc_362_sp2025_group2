@@ -1,11 +1,10 @@
 // to do
-// add change board color option
 // wins and losses
 // save settings when new game??
-// show available moves for pieces
 // improve design???
 // fix issues that arised
 // fix the last attack not updating
+// make the sounds into functions for functionality
 
 
 var boardContainer = document.getElementById("boardContainer")
@@ -21,17 +20,35 @@ let player1Score = 0
 let player2Score = 0
 let player1Wins = 0
 let player2Wins = 0
+let soundEnabled = true;
 
 //sounds for the game
 //make them functions later
-const sound = new Audio("sounds/boom.mov")
+const sounds = {
+  boom: new Audio("sounds/boom.mov"),
+  click: new Audio("sounds/buttonclick.mp3"),
+  start: new Audio("sounds/board_start.mp3"),
+  move: new Audio("sounds/moving.mp3"),
+  take: new Audio("sounds/take.mp3"),
+  promote: new Audio("sounds/promote.mp3"),
+  win: new Audio("sounds/yippee-tbh.mp3")
+};
+
+
+
 const buttons = document.querySelectorAll(".button")
-const soundClick = new Audio("sounds/buttonclick.mp3")
-const startSound = new Audio("sounds/board_start.mp3")
-const moveSound = new Audio("sounds/moving.mp3")
-const takeSound = new Audio("sounds/take.mp3")
-const promoteSound = new Audio("sounds/promote.mp3")
-const winNoise = new Audio("sounds/yippee-tbh.mp3")
+
+
+function playSound(soundName) {
+  if (sounds[soundName]) {
+      sounds[soundName].currentTime = 0;
+      sounds[soundName].play();
+  }
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+}
 
 //can add more cords in jumps to hop over 3 or more peices
 const moveSet = [
@@ -180,8 +197,7 @@ function endGame(reason) {
 
   const score = `${player2Score} - ${player1Score}`
 
-  winNoise.currentTime = 0
-  winNoise.play()
+  playSound('win');
   
   showGameOver(winner, score, reason)
 }
@@ -237,8 +253,7 @@ function handleClick(event) {
   const col = parseInt(square.dataset.col)
 
   if (board[row][col] === currentPlayer) {
-    soundClick.currentTime = 0
-    soundClick.play()
+    playSound('click');
   }
 
   clearValidMoveIndicators()
@@ -273,8 +288,7 @@ function handleClick(event) {
 function movePiece(fromRow, fromCol, toRow, toCol, valid) {
   //check if valid move
   if (!valid) return
-  moveSound.currentTime = 0
-  moveSound.play()
+  playSound('move');
 
   if (!gameStarted) {
     gameStarted = true // Set the flag to true when the game starts
@@ -457,8 +471,7 @@ function checkIfKing(row, col) {
       const darkerColor = darkenColor(hexColor, 20)
       toKing.firstChild.style.backgroundColor = darkerColor
 
-      promoteSound.currentTime = 0
-      promoteSound.play()
+      playSound('promote');
     }
   }
 }
@@ -709,8 +722,7 @@ function updateScore(capturingPlayer) {
     return
   }
 
-  sound.currentTime = 0
-  sound.play()
+  playSound('boom');
 }
 
 function resetScores() {
@@ -840,8 +852,7 @@ function handleDrop(e) {
   if (selectedPiece) {
     const valid = validMove(selectedPiece.row, selectedPiece.col, toRow, toCol)
     if (valid) {
-      moveSound.currentTime = 0
-      moveSound.play()
+      playSound('move');
       const fromSquare = getSquare(selectedPiece.row, selectedPiece.col)
       const piece = fromSquare.firstChild
       square.appendChild(piece)
@@ -884,14 +895,12 @@ document.addEventListener("DOMContentLoaded", function () {
     setupBoard()
     startTimer()
     highlightMovablePieces()
-    startSound.currentTime = 0
-    startSound.play()
+    playSound('start');
     document.getElementById("newGameButton").addEventListener("click", newGame)
   })
   
   buttons.forEach((button) => {
     button.addEventListener("click", () => {
-      sound.currentTime = 0
-      sound.play()
+        playSound('boom');
     })
   })
