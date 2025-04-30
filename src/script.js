@@ -800,26 +800,41 @@ function handleDrop(e) {
   const toRow = parseInt(square.dataset.row)
   const toCol = parseInt(square.dataset.col)
 
+  // Clear valid move indicators
+  clearValidMoveIndicators()
+
+  // If the target square already has a piece, return
+  if (square.hasChildNodes()) {
+    selectedPiece = null
+    return
+  }
+
   if (selectedPiece) {
     const valid = validMove(selectedPiece.row, selectedPiece.col, toRow, toCol)
     if (valid) {
-      movePiece(selectedPiece.row, selectedPiece.col, toRow, toCol, valid)
+      moveSound.currentTime = 0
+      moveSound.play()
+      const fromSquare = getSquare(selectedPiece.row, selectedPiece.col)
+      const piece = fromSquare.firstChild
+      square.appendChild(piece)
+      board[toRow][toCol] = board[selectedPiece.row][selectedPiece.col]
+      board[selectedPiece.row][selectedPiece.col] = null
+      checkIfKing(toRow, toCol)
+      switchPlayer()
     }
     selectedPiece = null
+    highlightMovablePieces()
   }
 }
 
 
 function clearValidMoveIndicators() {
-  document.querySelectorAll('.square').forEach(square => {
-    if (square.style.border === '2px solid blue') {
-      square.style.border = 'none'
-    }
+  document.querySelectorAll('.valid-move-indicator').forEach(indicator => {
+    indicator.remove()
   })
 }
 
 function showValidMoves(row, col) {
-  
   clearValidMoveIndicators()
   
   // If the clicked piece doesn't belong to current player, return
@@ -830,7 +845,9 @@ function showValidMoves(row, col) {
   const validMoves = getValidMoves(row, col)
   validMoves.forEach(move => {
     const square = getSquare(move.row, move.col)
-    square.style.border = '2px solid blue'
+    const indicator = document.createElement('div')
+    indicator.className = 'valid-move-indicator'
+    square.appendChild(indicator)
   })
 }
 
