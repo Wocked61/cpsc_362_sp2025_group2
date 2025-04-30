@@ -5,6 +5,7 @@
 // show available moves for pieces
 // improve design???
 // fix issues that arised
+// fix the last attack not updating
 
 
 var boardContainer = document.getElementById("boardContainer")
@@ -226,7 +227,7 @@ function addPiece(square, color) {
 
 //click on square
 function handleClick(event) {
-  const square = event.target.closest(".square") //current clicked
+  const square = event.target.closest(".square")
   const row = parseInt(square.dataset.row)
   const col = parseInt(square.dataset.col)
 
@@ -235,28 +236,31 @@ function handleClick(event) {
     soundClick.play()
   }
 
+  clearValidMoveIndicators()
+
   if (selectedPiece) {
-    //if selectedPiece is not empty
     let valid = validMove(selectedPiece.row, selectedPiece.col, row, col)
 
-    //change selected square
-    if (
-      board[row][col] == currentPlayer &&
-      board[selectedPiece.row][selectedPiece.col] == currentPlayer
-    ) {
+    if (board[row][col] == currentPlayer) {
+      // Selecting a new piece of the same color
       selectedPiece.element.style.border = "none"
       selectedPiece = { row, col, element: square }
+      highlightMovablePieces()
       square.style.border = "3px solid yellow"
+      showValidMoves(row, col)
     } else if (!valid) {
-      //if trys to move where antoher is
       console.log("NON VALID MOVE")
+      highlightMovablePieces()
     } else {
       movePiece(selectedPiece.row, selectedPiece.col, row, col, valid)
-      selectedPiece = ""
+      selectedPiece = null
+      highlightMovablePieces()
     }
   } else if (board[row][col] === currentPlayer) {
     selectedPiece = { row, col, element: square }
-    square.style.border = "3px solid yellow" // Highlight selected piece
+    highlightMovablePieces()
+    square.style.border = "3px solid yellow"
+    showValidMoves(row, col)
   }
 }
 
@@ -771,19 +775,15 @@ function enableDragAndDrop() {
 }
 
 function handleDragStart(e) {
-  if (
-    board[e.target.parentNode.dataset.row][e.target.parentNode.dataset.col] !==
-    currentPlayer
-  ) {
-    e.preventDefault()
-    return
+  if (board[e.target.parentNode.dataset.row][e.target.parentNode.dataset.col] !== currentPlayer) {
+    e.preventDefault();
+    return;
   }
-  e.target.classList.add("dragging")
-  selectedPiece = {
-    row: parseInt(e.target.parentNode.dataset.row),
-    col: parseInt(e.target.parentNode.dataset.col),
-    element: e.target.parentNode,
-  }
+  e.target.classList.add("dragging");
+  const row = parseInt(e.target.parentNode.dataset.row);
+  const col = parseInt(e.target.parentNode.dataset.col);
+  selectedPiece = { row, col, element: e.target.parentNode };
+  showValidMoves(row, col);
 }
 
 function handleDragEnd(e) {
@@ -809,13 +809,37 @@ function handleDrop(e) {
   }
 }
 
+
+function clearValidMoveIndicators() {
+  document.querySelectorAll('.square').forEach(square => {
+    if (square.style.border === '2px solid blue') {
+      square.style.border = 'none'
+    }
+  })
+}
+
+function showValidMoves(row, col) {
+  
+  clearValidMoveIndicators()
+  
+  // If the clicked piece doesn't belong to current player, return
+  if (board[row][col] !== currentPlayer) {
+    return
+  }
+
+  const validMoves = getValidMoves(row, col)
+  validMoves.forEach(move => {
+    const square = getSquare(move.row, move.col)
+    square.style.border = '2px solid blue'
+  })
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     setupBoard()
     startTimer()
     highlightMovablePieces()
     startSound.currentTime = 0
     startSound.play()
-    //connects the new game button to the function
     document.getElementById("newGameButton").addEventListener("click", newGame)
   })
   
@@ -825,4 +849,3 @@ document.addEventListener("DOMContentLoaded", function () {
       sound.play()
     })
   })
-  

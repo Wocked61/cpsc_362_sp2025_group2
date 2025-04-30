@@ -48,6 +48,18 @@
     box-shadow 0.1s ease;
 }
 
+.move-indicator {
+  width: 30px;
+  height: 30px;
+  background-color: rgba(128, 128, 128, 0.5);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
 .dark {
   background-color: brown;
 }
