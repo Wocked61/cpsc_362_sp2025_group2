@@ -46,28 +46,17 @@ body {
 .piece {
   width: 70px;
   height: 70px;
-  border-radius: 50%;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 50px;
   user-select: none;
-  transition: transform 0.2s all 0.3s ease;;
+  transition: transform 0.2s all 0.3s ease;
 }
 
 .piece:hover {
   transform: scale(1.1);
-}
-
-.red {
-  background-color: red;
-  border: 1px solid #000;
-}
-
-.black {
-  background-color: black;
-  border: 1px solid #000;
 }
 
 /* New CSS for highlighted movable pieces */
@@ -285,7 +274,7 @@ footer {
   background-color: #f7ec84 !important;
 }
 
-.piece.white.king::after { content: '♔'; color: white; }
+.piece.white.king::after { content: '♔'; color: white;}
 .piece.white.queen::after { content: '♕'; color: white; }
 .piece.white.rook::after { content: '♖'; color: white; }
 .piece.white.bishop::after { content: '♗'; color: white; }
