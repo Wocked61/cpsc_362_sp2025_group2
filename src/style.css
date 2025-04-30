@@ -400,3 +400,16 @@ select {
   color: #666;
   font-style: italic;
 }
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+#soundToggle {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}

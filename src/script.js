@@ -4,8 +4,9 @@
 // improve design???
 // fix issues that arised
 // fix the last attack not updating
-// make the sounds into functions for functionality
-
+// show dead pieces on the side of the board
+// add a sound for regular takes
+// add a setting for changing the take sound
 
 var boardContainer = document.getElementById("boardContainer")
 const rows = 8, cols = 8
@@ -40,7 +41,7 @@ const buttons = document.querySelectorAll(".button")
 
 
 function playSound(soundName) {
-  if (sounds[soundName]) {
+  if (soundEnabled && sounds[soundName]) {
       sounds[soundName].currentTime = 0;
       sounds[soundName].play();
   }
@@ -48,6 +49,16 @@ function playSound(soundName) {
 
 function toggleSound() {
   soundEnabled = !soundEnabled;
+}
+
+function updateSoundToggle() {
+  const soundToggle = document.getElementById("soundToggle");
+  soundToggle.checked = soundEnabled;
+}
+
+function handleSoundToggle() {
+  const soundToggle = document.getElementById("soundToggle");
+  soundEnabled = soundToggle.checked;
 }
 
 //can add more cords in jumps to hop over 3 or more peices
@@ -584,6 +595,7 @@ function openSettings() {
   }
 
   document.getElementById("gameTimer").value = Math.floor(redTime / 60)
+  updateSoundToggle();
 }
 
 function closeSettings() {
@@ -626,6 +638,8 @@ function saveSettings() {
   const lightSquareColor = document.getElementById("lightSquareColor").value;
   const darkSquareColor = document.getElementById("darkSquareColor").value;
   const newTime = document.getElementById("gameTimer").value * 60
+
+  handleSoundToggle();
 
   // Update piece colors
   document.querySelectorAll(".piece.red:not(.king)").forEach((piece) => {
