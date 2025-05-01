@@ -319,6 +319,17 @@ select {
   margin-right: 10px;
 }
 
+/***.setting-item {
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#volumeControl {
+  width: 150px;
+}
+***/
 .popup-content button {
   margin: 10px 5px;
   padding: 5px 15px;

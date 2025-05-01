@@ -75,8 +75,12 @@
             </select>
           </div>
         </div>
+        </div>
+        <div id="scoreboard" style="margin-top: 10px;">
+          <h3>Score</h3>
+          <p id="scoreText">Player 1: 0 | Player 2: 0</p>
+        </div>
       </div>
-    </div>
 
     <div id="settingsPopup" class="popup">
       <div class="popup-content">
@@ -97,6 +101,11 @@
           <button onclick="saveSettings()" class="center">Save</button>
           <button onclick="closeSettings()" class="center">Cancel</button>
         </div>
+        <!-- <div class="setting-item">
+          <label for="volumeControl">Volume:</label>
+          <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5">
+          <span id="volumeValue">100%</span>
+        </div> -->
       </div>
     </div>
 
@@ -130,7 +139,7 @@
 
     <div id="gameOverPopup" class="popup">
       <div class="popup-content">
-        <h2>Game Over!</h2>
+          <h2>Game Over!</h2>
         <div class="game-over-content">
           <p id="winnerText">Player wins!</p>
           <p id="finalScore">Final Score:</p>
@@ -155,5 +164,8 @@
 
     <script src="script.js?query=string" id="query"></script>
     <script></script>
+    <!-- <audio id="moveSound" src="sounds/move.mp3"></audio>
+    <audio id="soundClick" src="sounds/click.mp3"></audio>
+    <audio id="winNoise" src="sounds/win.mp3"></audio> -->
   </body>
 </html>

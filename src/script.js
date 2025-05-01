@@ -116,9 +116,9 @@ function endGame(reason) {
     winner = redPieces === 0 ? player1Name : player2Name
   }
 
-  const score = `${player2Score} - ${player1Score}`
+const score = `${player2Score} - ${player1Score}`
 
-  showGameOver(winner, score, reason)
+showGameOver(winner, score, reason)
   winNoise.currentTime = 0
   winNoise.play()
 }
@@ -578,9 +578,9 @@ function updatePlayerNames() {
 
 function updateScore(capturingPlayer) {
   if (capturingPlayer === 1) {
-    player1Score += 1
-  } else {
     player2Score += 1
+  } else {
+    player1Score += 1
   }
 
   const player1Name = document.getElementById("player1").value || "Player 1"
@@ -726,4 +726,19 @@ function handleDrop(e) {
     }
     selectedPiece = null
   }
+}
+
+function updateScores() {
+  document.getElementById("redScore").textContent = `Black Wins: ${player1Score}`;
+  document.getElementById("blackScore").textContent = `Red Wins: ${player2Score}`;
+}
+
+function redPlayerWins() {
+  player2Score++;
+  updateScores();
+}
+
+function blackPlayerWins() {
+  player1Score++;
+  updateScores();
 }
