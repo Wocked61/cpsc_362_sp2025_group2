@@ -1,5 +1,4 @@
 // to do
-// wins and losses
 // save settings when new game??
 // improve design???
 // fix issues that arised
@@ -34,6 +33,7 @@ const sounds = {
   promote: new Audio("sounds/promote.mp3"),
   win: new Audio("sounds/yippee-tbh.mp3")
 };
+
 
 
 
@@ -189,33 +189,49 @@ function checkForValidMoves() {
 function endGame(reason) {
   // Clear interval and stop timer immediately
   if (timerInterval) {
-    clearInterval(timerInterval)
-    timerInterval = null
+    clearInterval(timerInterval);
+    timerInterval = null;
   }
   
-  gameStarted = false
+  gameStarted = false;
 
-  const player1Name = document.getElementById("player1").value || "Player 1"
-  const player2Name = document.getElementById("player2").value || "Player 2"
+  const player1Name = document.getElementById("player1").value || "Player 1";
+  const player2Name = document.getElementById("player2").value || "Player 2";
 
   // Determine winner based on current game state
-  const redPieces = document.querySelectorAll(".piece.red").length
-  const blackPieces = document.querySelectorAll(".piece.black").length
+  const redPieces = document.querySelectorAll(".piece.red").length;
+  const blackPieces = document.querySelectorAll(".piece.black").length;
 
-  let winner
+  let winner;
+  
+  // Handle all win conditions here consistently
   if (reason.includes("time")) {
-    winner = currentPlayer === "red" ? player1Name : player2Name
+    if (currentPlayer === "red") {
+      winner = player1Name;
+      blackPlayerWins(); // Black wins if red ran out of time
+    } else {
+      winner = player2Name;
+      redPlayerWins(); // Red wins if black ran out of time
+    }
   } else if (reason.includes("no valid moves")) {
-    winner = currentPlayer === "black" ? player2Name : player1Name
-  } else {
-    winner = redPieces === 0 ? player1Name : player2Name
+    if (currentPlayer === "black") {
+      winner = player2Name;
+      redPlayerWins(); // Red wins if black has no moves
+    } else {
+      winner = player1Name;
+      blackPlayerWins(); // Black wins if red has no moves
+    }
+  } else if (reason.includes("Black captured")) {
+    winner = player1Name;
+    blackPlayerWins(); // Black wins if they captured all red pieces
+  } else if (reason.includes("Red captured")) {
+    winner = player2Name;
+    redPlayerWins(); // Red wins if they captured all black pieces
   }
 
-  const score = `${player2Score} - ${player1Score}`
-
+  const score = `${player2Score} - ${player1Score}`;
   playSound('win');
-  
-  showGameOver(winner, score, reason)
+  showGameOver(winner, score, reason);
 }
 
 //makes board
@@ -560,14 +576,16 @@ function getSquare(row, col) {
 //add a function for the new game button
 
 function newGame() {
-  boardContainer.innerHTML = "" // Clear the board
-  currentPlayer = "black" // Reset current player to black
-  setupBoard() // Set up the board again
-  resetTime() //restart the timer
-  clearInterval(timerInterval) // Clear the timer interval
-  gameStarted = false // Reset game started flag
-  highlightMovablePieces()
-  resetScores() // Reset scores
+  boardContainer.innerHTML = ""; // Clear the board
+  currentPlayer = "black"; // Reset current player to black
+  setupBoard(); // Set up the board again
+  resetTime(); // Restart the timer
+  clearInterval(timerInterval); // Clear the timer interval
+  gameStarted = false; // Reset game started flag
+  highlightMovablePieces();
+  resetScores(); // Reset scores for the current game
+  updateScores(); // Update the display to show current game scores and total wins
+  playSound('start');
 }
 
 //add a popup for the settings for changing colors and pieces
@@ -708,14 +726,24 @@ function updatePlayerNames() {
   const scoreElement = document.querySelector(".score")
   if (scoreElement) {
     scoreElement.textContent = `${player1Name}: 0 | ${player2Name}: 0`
+    
+    const savedPlayer1Wins = localStorage.getItem('checkers_player1Wins') || 0;
+    const savedPlayer2Wins = localStorage.getItem('checkers_player2Wins') || 0;
+    
+    localStorage.setItem('checkers_player1Name', player1Name);
+    localStorage.setItem('checkers_player2Name', player2Name);
+    
+    // Just update display without incrementing
+    document.getElementById("scoreText").textContent = 
+      `${player1Name} : ${player1Wins} | ${player2Name} : ${player2Wins}`;
   }
 }
 
 function updateScore(capturingPlayer) {
   if (capturingPlayer === 1) {
-    player1Score += 1
-  } else {
     player2Score += 1
+  } else {
+    player1Score += 1
   }
 
   const player1Name = document.getElementById("player1").value || "Player 1"
@@ -728,21 +756,26 @@ function updateScore(capturingPlayer) {
   const redPieces = document.querySelectorAll(".piece.red").length
   const blackPieces = document.querySelectorAll(".piece.black").length
 
+  // Check if the game is over because a player has no pieces left
   if (redPieces === 0 || blackPieces === 0) {
     clearInterval(timerInterval)
     timerInterval = null
     gameStarted = false
     
     if (redPieces === 0) {
-      endGame("Black captured all pieces!")
+      // Show game over but DON'T count win here - let endGame handle it
+      const player1Name = document.getElementById("player1").value || "Player 1";
+      endGame("Black captured all pieces!"); // Use endGame instead of directly showing
     } else {
-      endGame("Red captured all pieces!")
+      const player2Name = document.getElementById("player2").value || "Player 2";
+      endGame("Red captured all pieces!"); // Use endGame instead of directly showing
     }
     return
   }
 
   playSound('boom');
 }
+
 
 function resetScores() {
   player1Score = 0
@@ -765,22 +798,22 @@ function resetTime() {
 }
 
 function showGameOver(winner, score, reason) {
+  if (document.getElementById("gameOverPopup").style.display === "block") {
+    return;
+  }
 
-  const popup = document.getElementById("gameOverPopup")
-  const winnerText = document.getElementById("winnerText")
-  const finalScore = document.getElementById("finalScore")
-  const gameEndReason = document.getElementById("gameEndReason")
+  const popup = document.getElementById("gameOverPopup");
+  const winnerText = document.getElementById("winnerText");
+  const finalScore = document.getElementById("finalScore");
+  const gameEndReason = document.getElementById("gameEndReason");
 
+  winnerText.textContent = `${winner} wins!`;
+  finalScore.textContent = `Final Score: ${score}`;
+  gameEndReason.textContent = reason;
 
-  winnerText.textContent = `${winner} wins!`
-  finalScore.textContent = `Final Score: ${score}`
-  gameEndReason.textContent = reason
-
-  popup.style.display = "block"
-
-  endGame(reason)
-  gameStarted = false
-
+  popup.style.display = "block";
+  
+  gameStarted = false;
 }
 
 function closeGameOver() {
@@ -885,6 +918,87 @@ function handleDrop(e) {
   }
 }
 
+function updateScores() {
+  const player1Name = document.getElementById("player1").value || "Player 1";
+  const player2Name = document.getElementById("player2").value || "Player 2";
+    
+  // Update the wins display
+  document.getElementById("scoreText").textContent = 
+    `${player1Name} : ${player1Wins} | ${player2Name} : ${player2Wins}`;
+}
+
+
+function redPlayerWins() {
+  player2Wins++;
+  updateScores();
+
+  saveWinsToStorage();
+}
+
+function blackPlayerWins() {
+  player1Wins++;
+  updateScores();
+
+  saveWinsToStorage();
+}
+
+function saveWinsToStorage() {
+  const player1Name = document.getElementById("player1").value || "Player 1";
+  const player2Name = document.getElementById("player2").value || "Player 2";
+  
+  localStorage.setItem('checkers_player1Wins', player1Wins);
+  localStorage.setItem('checkers_player2Wins', player2Wins);
+  localStorage.setItem('checkers_player1Name', player1Name);
+  localStorage.setItem('checkers_player2Name', player2Name);
+}
+
+function loadWinsFromStorage() {
+  player1Wins = parseInt(localStorage.getItem('checkers_player1Wins')) || 0;
+  player2Wins = parseInt(localStorage.getItem('checkers_player2Wins')) || 0;
+  
+  const savedPlayer1Name = localStorage.getItem('checkers_player1Name');
+  const savedPlayer2Name = localStorage.getItem('checkers_player2Name');
+  
+  if (savedPlayer1Name) {
+    document.getElementById("player1").value = savedPlayer1Name;
+  }
+  
+  if (savedPlayer2Name) {
+    document.getElementById("player2").value = savedPlayer2Name;
+  }
+  
+  updateScores();
+}
+
+function addResetWinsButton() {
+  const settingsPopup = document.getElementById("settingsPopup");
+  
+  // Check if button already exists
+  if (!document.getElementById("resetWinsButton")) {
+    const resetWinsButton = document.createElement("button");
+    resetWinsButton.id = "resetWinsButton";
+    resetWinsButton.className = "button";
+    resetWinsButton.textContent = "Reset Win Records";
+    resetWinsButton.addEventListener("click", resetWins);
+    
+    // Find a good place to add the button in the settings popup
+    const settingGroup = document.createElement("div");
+    settingGroup.className = "setting-group";
+    settingGroup.appendChild(resetWinsButton);
+    
+    const popupContent = settingsPopup.querySelector(".popup-content");
+    if (popupContent) {
+      popupContent.appendChild(settingGroup);
+    }
+  }
+}
+
+function resetWins() {
+  player1Wins = 0;
+  player2Wins = 0;
+  saveWinsToStorage();
+  updateScores();
+}
 
 
 function clearValidMoveIndicators() {
@@ -912,10 +1026,13 @@ function showValidMoves(row, col) {
 
 document.addEventListener("DOMContentLoaded", function () {
     setupBoard()
+    loadWinsFromStorage()
     startTimer()
     highlightMovablePieces()
     playSound('start');
     document.getElementById("newGameButton").addEventListener("click", newGame)
+    addResetWinsButton();
+    updatePlayerNames();
   })
   
   buttons.forEach((button) => {

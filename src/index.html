@@ -24,7 +24,13 @@
       <div class="skeleton">
         <div class="box">
           <!-- Game Information Display -->
+           
           <div class="game-info">
+            <div>
+              <h4>Wins</h4>
+              <p id="scoreText">Player 1: 0 | Player 2: 0</p>
+            </div>
+            <h4>Score</h4>
             <p class="player-turn">Player 1's Turn</p>
             <p id="score" class="score">Player 1: 0 | Player 2: 0</p>
           </div>
@@ -37,6 +43,7 @@
               Settings
             </button>
             <button class="button" onclick="openHelp()">Help</button>
+            <button class="button" onclick="resetWins()">Reset Wins</button>
           </div>
         </div>
 
@@ -100,6 +107,11 @@
       <div class="setting-row">
         <label for="soundToggle">Sound Effects:</label>
         <input type="checkbox" id="soundToggle" checked>
+    </div>
+    <div class="setting-item">
+      <label for="volumeControl">Volume:</label>
+      <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5">
+      <span id="volumeValue">100%</span>
     </div>
         <div class="setting-group">
           <label>Game Timer (minutes):</label>
