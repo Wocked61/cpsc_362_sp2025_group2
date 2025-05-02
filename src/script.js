@@ -43,10 +43,15 @@ const buttons = document.querySelectorAll(".button")
 function playSound(soundName) {
   if (soundEnabled && sounds[soundName]) {
       sounds[soundName].currentTime = 0;
-      sounds[soundName].play();
+      try {
+          sounds[soundName].play().catch(error => {
+              console.error("Sound play error:", error);
+          });
+      } catch (error) {
+          console.error("Sound playback error:", error);
+      }
   }
 }
-
 function toggleSound() {
   soundEnabled = !soundEnabled;
 }

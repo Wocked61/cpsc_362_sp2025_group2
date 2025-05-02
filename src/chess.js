@@ -13,6 +13,14 @@ let player1Wins = 0
 let player2Wins = 0
 let soundEnabled = true;
 
+let draggedPiece = null;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+let originalX = 0;
+let originalY = 0;
+let startPosRow = 0;
+let startPosCol = 0;
+
 let castlingRights = {
     white: { kingSide: true, queenSide: true },
     black: { kingSide: true, queenSide: true }
@@ -84,26 +92,34 @@ const sounds = {
   function playSound(soundName) {
     if (soundEnabled && sounds[soundName]) {
         sounds[soundName].currentTime = 0;
-        sounds[soundName].play();
+        try {
+            sounds[soundName].play().catch(error => {
+                console.error("Sound play error:", error);
+            });
+        } catch (error) {
+            console.error("Sound playback error:", error);
+        }
     }
-  }
+}
 
 function setupBoard() {
-    boardContainer.innerHTML = ""
+    boardContainer.innerHTML = "";
     for (let row = 0; row < rows; row++) {
-        board[row] = []
+        board[row] = [];
         for (let col = 0; col < cols; col++) {
-            const square = document.createElement("div")
-            square.classList.add("square", (row + col) % 2 === 0 ? "light" : "dark")
-            square.dataset.row = row
-            square.dataset.col = col
-            square.addEventListener("click", handleClick)
-            boardContainer.appendChild(square)
-            board[row][col] = null
+            const square = document.createElement("div");
+            square.classList.add("square", (row + col) % 2 === 0 ? "light" : "dark");
+            square.dataset.row = row;
+            square.dataset.col = col;
+            square.addEventListener("click", handleClick);
+            
+            boardContainer.appendChild(square);
+            board[row][col] = null;
         }
     }
     
-    setupPieces()
+    setupPieces();
+    enableDragAndDrop(); // Ensure this is called after pieces are created
 }
 
 function setupPieces() {
@@ -133,6 +149,14 @@ function addPiece(row, col, color, type) {
     piece.classList.add("piece", color, type)
     piece.dataset.type = type
     piece.dataset.color = color
+
+    piece.draggable = true;
+    piece.addEventListener("dragstart", handleDragStart);
+    piece.addEventListener("dragend", handleDragEnd);
+    piece.addEventListener("touchstart", handleTouchStart, { passive: false });
+    piece.addEventListener("touchmove", handleTouchMove, { passive: false });
+    piece.addEventListener("touchend", handleTouchEnd);
+
     square.appendChild(piece)
     board[row][col] = {type, color}
 }
@@ -512,6 +536,8 @@ function checkGameState() {
 
 
 function handleClick(event) {
+    if (draggedPiece) return;
+    
     const square = event.target.closest('.square');
     if (!square) return;
     
@@ -559,6 +585,7 @@ function handleClick(event) {
         }
     }
 }
+
 
 function handleMove(startRow, startCol, endRow, endCol) {
     const piece = board[startRow][startCol];
@@ -804,15 +831,16 @@ function endGame() {
     board = [];
     currentPlayer = "white";
     selectedPiece = null;
-    whiteTime = 180; // 3 minutes per player
+    draggedPiece = null;
+    whiteTime = 180;
     blackTime = 180;
     gameStarted = true;
     player1Score = 0;
     player2Score = 0;
     
     castlingRights = {
-      white: { kingSide: true, queenSide: true },
-      black: { kingSide: true, queenSide: true }
+        white: { kingSide: true, queenSide: true },
+        black: { kingSide: true, queenSide: true }
     };
     
     lastPawnDoubleMove = null;
@@ -829,15 +857,10 @@ function endGame() {
     
     updateTimerDisplay();
     
-    setupBoard();
-    
-    const squares = document.querySelectorAll('.square');
-    squares.forEach(square => {
-      square.addEventListener('click', handleClick);
-    });
+    setupBoard(); // This now calls enableDragAndDrop internally
     
     startTimer();
-  }
+}
   
   function updateTimerDisplay() {
     const timerElement = document.getElementById("timer");
@@ -1060,16 +1083,248 @@ function showCheckIndicator(kingColor) {
     }
 }
 
+function handleDragStart(e) {
+    const piece = e.target;
+    const square = piece.parentElement;
+    const row = parseInt(square.dataset.row);
+    const col = parseInt(square.dataset.col);
+    
+    const pieceObj = board[row][col];
+    if (!pieceObj || pieceObj.color !== currentPlayer) {
+        e.preventDefault();
+        return false;
+    }
+    
+    // Set data for the drag operation
+    e.dataTransfer.setData("text/plain", `${row},${col}`);
+    
+    // Set custom drag image (transparent) to hide the default
+    const img = new Image();
+    img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+    e.dataTransfer.setDragImage(img, 0, 0);
+    
+    clearValidMoves();
+    showValidMoves(row, col);
+    
+    draggedPiece = piece;
+    startPosRow = row;
+    startPosCol = col;
+    
+    // Store the original position
+    const rect = piece.getBoundingClientRect();
+    originalX = rect.left;
+    originalY = rect.top;
+    
+    // Add a class for styling
+    piece.classList.add("dragging");
+    
+    // Create a clone for visual feedback during drag
+    const clone = piece.cloneNode(true);
+    clone.id = "drag-clone";
+    clone.style.position = "fixed";
+    clone.style.left = rect.left + "px";
+    clone.style.top = rect.top + "px";
+    clone.style.zIndex = "1000";
+    clone.style.pointerEvents = "none";
+    clone.style.opacity = "0.8";
+    document.body.appendChild(clone);
+    
+    // Calculate offset
+    dragOffsetX = e.clientX - rect.left;
+    dragOffsetY = e.clientY - rect.top;
+    
+    square.classList.add("selected");
+    
+    return true;
+}
+
+function handleDragOver(e) {
+    if (draggedPiece) {
+        e.preventDefault(); 
+        
+        const clone = document.getElementById("drag-clone");
+        if (clone) {
+            clone.style.left = (e.clientX - dragOffsetX) + "px";
+            clone.style.top = (e.clientY - dragOffsetY) + "px";
+        }
+    }
+}
+
+function handleDragEnd(e) {
+    if (!draggedPiece) return;
+    
+    const clone = document.getElementById("drag-clone");
+    if (clone) {
+        document.body.removeChild(clone);
+    }
+    
+    // Remove selected class
+    const sourceSquare = getSquare(startPosRow, startPosCol);
+    if (sourceSquare) {
+        sourceSquare.classList.remove("selected");
+    }
+    
+    draggedPiece.classList.remove("dragging");
+    draggedPiece = null;
+    clearValidMoves();
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    if (!draggedPiece) return;
+    
+    const targetSquare = e.target.closest('.square');
+    if (!targetSquare) {
+        handleDragEnd(e);
+        return;
+    }
+    
+    const endRow = parseInt(targetSquare.dataset.row);
+    const endCol = parseInt(targetSquare.dataset.col);
+    
+    // Try to make the move
+    const moveSuccess = handleMove(startPosRow, startPosCol, endRow, endCol);
+    
+    // Clean up the drag operation
+    const clone = document.getElementById("drag-clone");
+    if (clone) {
+        document.body.removeChild(clone);
+    }
+    
+    const sourceSquare = getSquare(startPosRow, startPosCol);
+    if (sourceSquare) {
+        sourceSquare.classList.remove("selected");
+    }
+    
+    clearValidMoves();
+    draggedPiece = null;
+}
+
+function handleTouchStart(e) {
+    if (!gameStarted) return;
+    
+    // Prevent default to avoid scrolling
+    e.preventDefault();
+    
+    const piece = e.target;
+    const square = piece.parentElement;
+    const row = parseInt(square.dataset.row);
+    const col = parseInt(square.dataset.col);
+    
+    const pieceObj = board[row][col];
+    if (!pieceObj || pieceObj.color !== currentPlayer) {
+        return;
+    }
+    
+    clearValidMoves();
+    showValidMoves(row, col);
+    
+    draggedPiece = piece;
+    startPosRow = row;
+    startPosCol = col;
+    
+    // Store the original position
+    const rect = piece.getBoundingClientRect();
+    originalX = rect.left;
+    originalY = rect.top;
+    
+    // Add a class for styling
+    piece.classList.add("dragging");
+    
+    // Create a clone for visual feedback
+    const clone = piece.cloneNode(true);
+    clone.id = "drag-clone";
+    clone.style.position = "fixed";
+    clone.style.left = rect.left + "px";
+    clone.style.top = rect.top + "px";
+    clone.style.zIndex = "1000";
+    clone.style.opacity = "0.8";
+    clone.style.pointerEvents = "none";
+    document.body.appendChild(clone);
+    
+    // Calculate touch point offset
+    const touch = e.touches[0];
+    dragOffsetX = touch.clientX - rect.left;
+    dragOffsetY = touch.clientY - rect.top;
+    
+    square.classList.add("selected");
+}
+
+function handleTouchMove(e) {
+    if (!draggedPiece) return;
+    
+    // Prevent default to avoid scrolling
+    e.preventDefault();
+    
+    const touch = e.touches[0];
+    
+    // Move the clone to follow the finger
+    const clone = document.getElementById("drag-clone");
+    if (clone) {
+        clone.style.left = (touch.clientX - dragOffsetX) + "px";
+        clone.style.top = (touch.clientY - dragOffsetY) + "px";
+    }
+}
+
+
+function handleTouchEnd(e) {
+    if (!draggedPiece) return;
+    
+    const touch = e.changedTouches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    const targetSquare = element ? element.closest('.square') : null;
+    
+    if (targetSquare) {
+        const endRow = parseInt(targetSquare.dataset.row);
+        const endCol = parseInt(targetSquare.dataset.col);
+        
+        // Try to make the move
+        handleMove(startPosRow, startPosCol, endRow, endCol);
+    }
+    
+    // Clean up
+    const sourceSquare = getSquare(startPosRow, startPosCol);
+    if (sourceSquare) {
+        sourceSquare.classList.remove("selected");
+    }
+    
+    clearValidMoves();
+    draggedPiece.classList.remove("dragging");
+    draggedPiece = null;
+    
+    const clone = document.getElementById("drag-clone");
+    if (clone) {
+        document.body.removeChild(clone);
+    }
+}
+
+function enableDragAndDrop() {
+    const pieces = document.querySelectorAll(".piece");
+    pieces.forEach((piece) => {
+        piece.draggable = true;
+        piece.addEventListener("dragstart", handleDragStart);
+        piece.addEventListener("dragend", handleDragEnd);
+        piece.addEventListener("touchstart", handleTouchStart, { passive: false });
+        piece.addEventListener("touchmove", handleTouchMove, { passive: false });
+        piece.addEventListener("touchend", handleTouchEnd);
+    });
+
+    const squares = document.querySelectorAll(".square");
+    squares.forEach((square) => {
+        square.addEventListener("dragover", handleDragOver);
+        square.addEventListener("drop", handleDrop);
+    });
+}
+
 function clearCheckIndicator() {
     document.querySelectorAll('.check').forEach(square => {
         square.classList.remove('check');
     });
 }
 
-
   document.addEventListener("DOMContentLoaded", function() {
-      setupBoard();
-      playSound('start');
+    setupBoard();
+    playSound('start');
       
       if (!document.getElementById('timer')) {
           const timerDisplay = document.createElement('div');

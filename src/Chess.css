@@ -15,11 +15,10 @@ body {
 #boardContainer {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  width: 100%;
-  height: 100%;
+  width: 640px;
+  height: 640px;
   gap: 0;
   border: 10px solid black;
-  margin: 20px auto;
 }
 
 .square {
@@ -57,22 +56,6 @@ body {
 
 .piece:hover {
   transform: scale(1.1);
-}
-
-/* New CSS for highlighted movable pieces */
-.square.highlight {
-  border: 2px solid green; /* Green border to indicate movable pieces */
-  background-color: rgba(
-    0,
-    255,
-    0,
-    0.2
-  ); /* Light green background for emphasis */
-}
-
-/* Hover effect for enhanced interactivity */
-.square.highlight:hover {
-  background-color: rgba(0, 255, 0, 0.4); /* Brighter green on hover */
 }
 
 .title {
@@ -146,8 +129,9 @@ footer {
 }
 
 .board {
-  width: 640px;
-  height: 640px;
+  max-width: fit-content;
+  display: flex;
+  margin: 20px auto;
   border: 2px solid #333;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
@@ -304,6 +288,22 @@ footer {
   pointer-events: none;
 }
 
+
+.piece {
+    cursor: grab;
+}
+.piece.dragging {
+    opacity: 0.6;
+    cursor: grabbing;
+}
+#drag-clone {
+    pointer-events: none;
+    opacity: 0.8;
+    z-index: 1000;
+}
+.square.valid-drop {
+    box-shadow: inset 0 0 15px rgba(0, 255, 0, 0.7);
+}
 
 .piece.white.king::after { content: '♔'; color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
 .piece.white.queen::after { content: '♕'; color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
