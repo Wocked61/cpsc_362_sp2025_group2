@@ -2,10 +2,10 @@
 // save settings when new game??
 // improve design???
 // fix issues that arised
-// fix the last attack not updating
 // show dead pieces on the side of the board
 // add a sound for regular takes
 // add a setting for changing the take sound
+
 
 var boardContainer = document.getElementById("boardContainer")
 const rows = 8, cols = 8
@@ -21,6 +21,7 @@ let player2Score = 0
 let player1Wins = 0
 let player2Wins = 0
 let soundEnabled = true;
+let winAlreadyProcessed = false;
 
 //sounds for the game
 //make them functions later
@@ -167,7 +168,7 @@ function switchPlayer() {
     playerTurnElement.textContent = `${currentPlayer === "red" ? player2Name : player1Name}'s Turn`
   }
 
-  startTimer() // Start the timer for the next player
+  startTimer()
 }
 
 //helper function to check if there are valid moves for the current player that doesnt break the highlight feature
@@ -182,52 +183,73 @@ function checkForValidMoves() {
       }
     }
   }
-  return false // No valid moves found
+  return false 
 }
 
 // End the game
 function endGame(reason) {
-  // Clear interval and stop timer immediately
+  if (winAlreadyProcessed) {
+    console.log("Win already processed, skipping counter increment");
+    
+    const player1Name = document.getElementById("player1").value || "Player 1";
+    const player2Name = document.getElementById("player2").value || "Player 2";
+    let winner;
+    
+    if (reason.includes("time")) {
+      winner = currentPlayer === "red" ? player1Name : player2Name;
+    } else if (reason.includes("no valid moves")) {
+      winner = currentPlayer === "black" ? player2Name : player1Name;
+    } else if (reason.includes("Black captured")) {
+      winner = player1Name;
+    } else if (reason.includes("Red captured")) {
+      winner = player2Name;
+    }
+    
+    const score = `${player2Score} - ${player1Score}`;
+    playSound('win');
+    showGameOver(winner, score, reason);
+    return;
+  }
+
   if (timerInterval) {
     clearInterval(timerInterval);
     timerInterval = null;
   }
   
   gameStarted = false;
+  winAlreadyProcessed = true;
 
   const player1Name = document.getElementById("player1").value || "Player 1";
   const player2Name = document.getElementById("player2").value || "Player 2";
 
-  // Determine winner based on current game state
-  const redPieces = document.querySelectorAll(".piece.red").length;
-  const blackPieces = document.querySelectorAll(".piece.black").length;
-
   let winner;
   
-  // Handle all win conditions here consistently
   if (reason.includes("time")) {
     if (currentPlayer === "red") {
       winner = player1Name;
-      blackPlayerWins(); // Black wins if red ran out of time
+      player1Wins++;
     } else {
       winner = player2Name;
-      redPlayerWins(); // Red wins if black ran out of time
+      player2Wins++; 
     }
   } else if (reason.includes("no valid moves")) {
     if (currentPlayer === "black") {
       winner = player2Name;
-      redPlayerWins(); // Red wins if black has no moves
+      player2Wins++;
     } else {
       winner = player1Name;
-      blackPlayerWins(); // Black wins if red has no moves
+      player1Wins++;
     }
   } else if (reason.includes("Black captured")) {
     winner = player1Name;
-    blackPlayerWins(); // Black wins if they captured all red pieces
+    player1Wins++;
   } else if (reason.includes("Red captured")) {
     winner = player2Name;
-    redPlayerWins(); // Red wins if they captured all black pieces
+    player2Wins++;
   }
+
+  updateScores();
+  saveWinsToStorage();
 
   const score = `${player2Score} - ${player1Score}`;
   playSound('win');
@@ -294,7 +316,6 @@ function handleClick(event) {
     let valid = validMove(selectedPiece.row, selectedPiece.col, row, col)
 
     if (board[row][col] == currentPlayer) {
-      // Selecting a new piece of the same color
       selectedPiece.element.style.border = "none"
       selectedPiece = { row, col, element: square }
       highlightMovablePieces()
@@ -318,38 +339,31 @@ function handleClick(event) {
 
 //move piece
 function movePiece(fromRow, fromCol, toRow, toCol, valid) {
-  //check if valid move
   if (!valid) return
   playSound('move');
 
   if (!gameStarted) {
-    gameStarted = true // Set the flag to true when the game starts
-    startTimer() // Start the timer when the game starts
+    gameStarted = true
+    startTimer()
   }
 
-  //update visuals
   const fromSquare = getSquare(fromRow, fromCol)
   const toSquare = getSquare(toRow, toCol)
   toSquare.append(fromSquare.firstChild)
 
-  //change the array
   board[toRow][toCol] = board[fromRow][fromCol]
   board[fromRow][fromCol] = null
 
-  //check if should be king
   checkIfKing(toRow, toCol)
 
-  //switch player
   switchPlayer()
 
-  //clear the border
   fromSquare.style.border = "none"
 
   highlightMovablePieces()
 }
 
 function highlightMovablePieces() {
-  // Clear previous highlights
   document.querySelectorAll(".square").forEach((square) => {
     square.style.border = "none"
   })
@@ -357,11 +371,10 @@ function highlightMovablePieces() {
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       if (board[row][col] === currentPlayer) {
-        // Check if the piece has any valid moves
         const moves = getValidMoves(row, col)
         if (moves.length > 0) {
           const square = getSquare(row, col)
-          square.style.border = "2px solid green" // Highlight movable pieces
+          square.style.border = "2px solid green"
         }
       }
     }
@@ -373,7 +386,6 @@ function getValidMoves(row, col) {
   const validMoves = []
   const directions = []
 
-  // Define movement directions based on player and whether it's a king
   if (getSquare(row, col).firstChild.dataset.king === "true") {
     directions.push([1, 1], [1, -1], [-1, 1] ,[-1, -1])
   } else if (board[row][col] === "red") {
@@ -382,12 +394,10 @@ function getValidMoves(row, col) {
     directions.push([-1, 1], [-1, -1])
   }
 
-  // Check each direction for valid moves
   directions.forEach(([rowDiff, colDiff]) => {
     const newRow = row + rowDiff
     const newCol = col + colDiff
 
-    // Ensure the move is within bounds and valid
     if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
       if (board[newRow][newCol] === null) {
         validMoves.push({ row: newRow, col: newCol })
@@ -415,12 +425,11 @@ function getValidMoves(row, col) {
 }
 
 function validMove(fromRow, fromCol, toRow, toCol) {
-  if (board[toRow][toCol] != null) return false //must move to an empty square
+  if (board[toRow][toCol] != null) return false
 
   const rowDiff = toRow - fromRow
   const colDiff = Math.abs(toCol - fromCol)
 
-  //chek if in bounds of board
   for (let x of moveSet) {
     if (getSquare(fromRow, fromCol).firstChild.dataset.king == "false") {
       if (hops(fromRow, fromCol, toRow, toCol, x)) {
@@ -429,7 +438,6 @@ function validMove(fromRow, fromCol, toRow, toCol) {
     }
   }
 
-  //if king
   if (getSquare(fromRow, fromCol).firstChild.dataset.king == "true") {
     if (
       (fromRow + 1 == toRow && fromCol + 1 == toCol) ||
@@ -447,9 +455,6 @@ function validMove(fromRow, fromCol, toRow, toCol) {
     return false
   }
 
-  //checks if single square move is valid
-  //with colDiff check if trying to move to far to right or left
-  //with rowDiff it checks if trying to move back
   if (
     colDiff != 1 ||
     (currentPlayer == "red" && rowDiff != 1) ||
@@ -461,74 +466,62 @@ function validMove(fromRow, fromCol, toRow, toCol) {
   return true
 }
 
-//take piece
 function removePiece(row, col) {
   const removeSquare = getSquare(row, col)
   removeSquare.innerHTML = ""
   board[row][col] = null
 }
 
-//converts piece
 function checkIfKing(row, col) {
   if (currentPlayer == "red" && row == 7) {
     const toKing = getSquare(row, col)
-    // Check if piece is not already a king
     if (toKing.firstChild.dataset.king !== "true") {
       toKing.firstChild.classList.add("king")
       toKing.firstChild.dataset.king = "true"
 
-      // Get the current piece color and make it darker
       const currentColor = window.getComputedStyle(
         toKing.firstChild,
       ).backgroundColor
       const hexColor = rgbToHex(currentColor)
       const darkerColor = darkenColor(hexColor, 20)
       toKing.firstChild.style.backgroundColor = darkerColor
-      promoteSound.currentTime = 0
-      promoteSound.play()
+      playSound('promote');  
     }
   }
   if (currentPlayer == "black" && row == 0) {
     const toKing = getSquare(row, col)
-    // Check if piece is not already a king
     if (toKing.firstChild.dataset.king !== "true") {
       toKing.firstChild.classList.add("king")
       toKing.firstChild.dataset.king = "true"
 
-      // Get the current piece color and make it darker
       const currentColor = window.getComputedStyle(
         toKing.firstChild,
       ).backgroundColor
       const hexColor = rgbToHex(currentColor)
       const darkerColor = darkenColor(hexColor, 20)
       toKing.firstChild.style.backgroundColor = darkerColor
+      playSound('promote');  
 
-      playSound('promote');
     }
   }
 }
 
-//move over 1 or move peice
 function hops(fromRow, fromCol, toRow, toCol, moves) {
   let { piece, enemy, jumps } = moves
   let i = 0
   j = 1
   for (; j < jumps.length; ) {
-    //make sure toRow and toCol is in moves and does not go out of board
     if ((fromRow + jumps[i] == toRow && fromCol + jumps[j] == toCol)&&((fromRow+jumps[2] < 8 && fromRow+jumps[2] >= 0) && (fromCol+jumps[3] < 8 && fromCol+jumps[3] >= 0))) {
       if (
         board[fromRow][fromCol] == piece &&
         board[fromRow + jumps[0]][fromCol + jumps[1]] == enemy &&
         board[fromRow + jumps[2]][fromCol + jumps[3]] == null
       ) {
-        //single
         if (toRow == fromRow + jumps[2] && toCol == fromCol + jumps[3]) {
           removePiece(fromRow + jumps[0], fromCol + jumps[1])
-          // Update score for single capture
           updateScore(currentPlayer === "red" ? 1 : 2)
           return true
         }
-        //double same (r-r or l-l)
         if (
           board[fromRow + jumps[4]][fromCol + jumps[5]] == enemy &&
           fromRow + jumps[6] == toRow &&
@@ -569,7 +562,6 @@ function hops(fromRow, fromCol, toRow, toCol, moves) {
 
 //gets the square div
 function getSquare(row, col) {
-  //in class square with where .dataset.row and .col = row,col
   return document.querySelector(`.square[data-row="${row}"][data-col="${col}"]`)
 }
 
@@ -582,6 +574,7 @@ function newGame() {
   resetTime(); // Restart the timer
   clearInterval(timerInterval); // Clear the timer interval
   gameStarted = false; // Reset game started flag
+  winAlreadyProcessed = false; // Reset win processed flag
   highlightMovablePieces();
   resetScores(); // Reset scores for the current game
   updateScores(); // Update the display to show current game scores and total wins
@@ -741,41 +734,37 @@ function updatePlayerNames() {
 
 function updateScore(capturingPlayer) {
   if (capturingPlayer === 1) {
-    player2Score += 1
+    player2Score += 1;
   } else {
-    player1Score += 1
+    player1Score += 1;
   }
 
-  const player1Name = document.getElementById("player1").value || "Player 1"
-  const player2Name = document.getElementById("player2").value || "Player 2"
+  const player1Name = document.getElementById("player1").value || "Player 1";
+  const player2Name = document.getElementById("player2").value || "Player 2";
 
   // Update the score display
   document.getElementById("score").textContent =
-    `${player1Name}: ${player1Score} | ${player2Name}: ${player2Score}`
+    `${player1Name}: ${player1Score} | ${player2Name}: ${player2Score}`;
 
-  const redPieces = document.querySelectorAll(".piece.red").length
-  const blackPieces = document.querySelectorAll(".piece.black").length
+  const redPieces = document.querySelectorAll(".piece.red").length;
+  const blackPieces = document.querySelectorAll(".piece.black").length;
 
   // Check if the game is over because a player has no pieces left
   if (redPieces === 0 || blackPieces === 0) {
-    clearInterval(timerInterval)
-    timerInterval = null
-    gameStarted = false
+    clearInterval(timerInterval);
+    timerInterval = null;
+    gameStarted = false;
     
     if (redPieces === 0) {
-      // Show game over but DON'T count win here - let endGame handle it
-      const player1Name = document.getElementById("player1").value || "Player 1";
-      endGame("Black captured all pieces!"); // Use endGame instead of directly showing
+      endGame("Black captured all pieces!");
     } else {
-      const player2Name = document.getElementById("player2").value || "Player 2";
-      endGame("Red captured all pieces!"); // Use endGame instead of directly showing
+      endGame("Red captured all pieces!");
     }
-    return
+    return;
   }
 
   playSound('boom');
 }
-
 
 function resetScores() {
   player1Score = 0
