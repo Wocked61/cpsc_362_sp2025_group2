@@ -508,12 +508,15 @@ function checkGameState() {
     }
 }
 
+
 function handleClick(event) {
     const square = event.target.closest('.square');
     if (!square) return;
     
     const clickedRow = parseInt(square.dataset.row);
     const clickedCol = parseInt(square.dataset.col);
+    
+    clearValidMoves();
     
     if (!selectedPiece) {
         const piece = board[clickedRow][clickedCol];
@@ -524,6 +527,7 @@ function handleClick(event) {
                 element: square.querySelector('.piece')
             };
             square.classList.add('selected');
+            showValidMoves(clickedRow, clickedCol);
         }
         return;
     }
@@ -548,6 +552,7 @@ function handleClick(event) {
                     element: square.querySelector('.piece')
                 };
                 square.classList.add('selected');
+                showValidMoves(clickedRow, clickedCol);
             }
         }
     }
@@ -1001,6 +1006,33 @@ function endGame() {
       };
   }
   
+  function showValidMoves(startRow, startCol) {
+    clearValidMoves();
+    
+    const piece = board[startRow][startCol];
+    if (!piece || piece.color !== currentPlayer) return;
+    
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+            if (validMove(startRow, startCol, row, col)) {
+                const square = getSquare(row, col);
+                if (board[row][col] && board[row][col].color !== currentPlayer) {
+                    square.classList.add('valid-capture');
+                } else {
+                    square.classList.add('valid-move');
+                }
+            }
+        } 
+    }
+}
+
+function clearValidMoves() {
+    document.querySelectorAll('.valid-move, .valid-capture').forEach(square => {
+        square.classList.remove('valid-move', 'valid-capture');
+    });
+}
+
+
   document.addEventListener("DOMContentLoaded", function() {
       setupBoard();
       
