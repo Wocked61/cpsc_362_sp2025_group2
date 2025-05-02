@@ -11,6 +11,7 @@ let player1Score = 0
 let player2Score = 0
 let player1Wins = 0
 let player2Wins = 0
+let soundEnabled = true;
 
 let castlingRights = {
     white: { kingSide: true, queenSide: true },
@@ -68,6 +69,24 @@ const pieceValues = {
     queen: 9,
     king: 0 
 };
+
+const sounds = {
+    boom: new Audio("sounds/boom.mov"),
+    click: new Audio("sounds/buttonclick.mp3"),
+    start: new Audio("sounds/board_start.mp3"),
+    move: new Audio("sounds/moving.mp3"),
+    take: new Audio("sounds/take.mp3"),
+    promote: new Audio("sounds/promote.mp3"),
+    win: new Audio("sounds/yippee-tbh.mp3")
+  };
+  
+  
+  function playSound(soundName) {
+    if (soundEnabled && sounds[soundName]) {
+        sounds[soundName].currentTime = 0;
+        sounds[soundName].play();
+    }
+  }
 
 function setupBoard() {
     boardContainer.innerHTML = ""
@@ -479,6 +498,7 @@ function checkGameState() {
     
     if (hasLegalMoves) {
         if (isCurrentPlayerInCheck) {
+            playSound('boom');
             return 'check';
         }
         return 'ongoing';
@@ -568,7 +588,10 @@ function handleMove(startRow, startCol, endRow, endCol) {
     }
 
     if (capturedPiece) {
+        playSound('take');
         handleCapture(capturedPiece);
+    } else {
+        playSound('move');
     }
 
     if (isPawnDoubleMove) {
@@ -622,6 +645,7 @@ function handleMove(startRow, startCol, endRow, endCol) {
     
     if (piece.type === 'pawn' && (endRow === 0 || endRow === 7)) {
         promotePawn(endRow, endCol);
+        playSound('promote');
     }
     
     const opponentColor = piece.color === 'white' ? 'black' : 'white';
@@ -754,6 +778,10 @@ function endGame() {
     
     const newGameBtn = document.getElementById('new-game-btn') || createNewGameButton();
     newGameBtn.disabled = false;
+    if (gameState === 'checkmate') {
+        playSound('win');
+    }
+
   }
   
   function createNewGameButton() {
@@ -771,6 +799,7 @@ function endGame() {
   
   function resetGame() {
     boardContainer.innerHTML = "";
+    playSound('start');
     
     board = [];
     currentPlayer = "white";
@@ -1040,6 +1069,7 @@ function clearCheckIndicator() {
 
   document.addEventListener("DOMContentLoaded", function() {
       setupBoard();
+      playSound('start');
       
       if (!document.getElementById('timer')) {
           const timerDisplay = document.createElement('div');
@@ -1066,6 +1096,21 @@ function clearCheckIndicator() {
           const controlsContainer = document.getElementById('game-controls') || document.body;
           controlsContainer.appendChild(startBtn);
       }
+
+      if (!document.getElementById('sound-toggle-btn')) {
+        const soundToggleBtn = document.createElement('button');
+        soundToggleBtn.id = 'sound-toggle-btn';
+        soundToggleBtn.textContent = 'Sound: On';
+        soundToggleBtn.classList.add('game-button');
+        soundToggleBtn.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            soundToggleBtn.textContent = soundEnabled ? 'Sound: On' : 'Sound: Off';
+            playSound('click');
+        });
+        
+        const controlsContainer = document.getElementById('game-controls') || document.body;
+        controlsContainer.appendChild(soundToggleBtn);
+    }
       
       updateTimerDisplay();
   });
