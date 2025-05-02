@@ -294,6 +294,17 @@ footer {
   pointer-events: none;
 }
 
+.check::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid rgba(255, 0, 0, 0.5);
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+
 .piece.white.king::after { content: '♔'; color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
 .piece.white.queen::after { content: '♕'; color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
 .piece.white.rook::after { content: '♖'; color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }

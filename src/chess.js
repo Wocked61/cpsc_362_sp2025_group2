@@ -1,7 +1,7 @@
 var boardContainer = document.getElementById("boardContainer")
 const rows = 8, cols = 8
 let board = []
-let currentPlayer = "white"  // Chess traditionally starts with white
+let currentPlayer = "white"
 let selectedPiece = null
 let whiteTime = 180
 let blackTime = 180
@@ -16,7 +16,7 @@ let castlingRights = {
     white: { kingSide: true, queenSide: true },
     black: { kingSide: true, queenSide: true }
 };
-let lastPawnDoubleMove = null; // Track last pawn that moved two squares for en passant
+let lastPawnDoubleMove = null;
 
 let moveHistory = [];
 let moveNumber = 1;
@@ -58,25 +58,7 @@ const movePatterns = {
     ]
 }
 
-// chess peice images. credit to wikimedia.
-const pieceImages = {
-    white: {
-        pawn: "https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt45.svg",
-        rook: "https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg",
-        knight: "https://upload.wikimedia.org/wikipedia/commons/7/70/Chess_nlt45.svg",
-        bishop: "https://upload.wikimedia.org/wikipedia/commons/b/b1/Chess_blt45.svg",
-        queen: "https://upload.wikimedia.org/wikipedia/commons/1/15/Chess_qlt45.svg",
-        king: "https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg"
-    },
-    black: {
-        pawn: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Chess_pdt45.svg",
-        rook: "https://upload.wikimedia.org/wikipedia/commons/f/ff/Chess_rdt45.svg",
-        knight: "https://upload.wikimedia.org/wikipedia/commons/e/ef/Chess_ndt45.svg",
-        bishop: "https://upload.wikimedia.org/wikipedia/commons/9/98/Chess_bdt45.svg",
-        queen: "https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg",
-        king: "https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg"
-    }
-};
+
 
 const pieceValues = {
     pawn: 1,
@@ -569,6 +551,7 @@ function handleMove(startRow, startCol, endRow, endCol) {
     const isCastling = piece.type === 'king' && Math.abs(endCol - startCol) === 2;
     const isPawnDoubleMove = piece.type === 'pawn' && Math.abs(endRow - startRow) === 2;
     
+    
     let isEnPassant = false;
     if (piece.type === 'pawn' && Math.abs(endCol - startCol) === 1 && !capturedPiece) {
         const enPassantRow = piece.color === 'white' ? endRow + 1 : endRow - 1;
@@ -649,8 +632,11 @@ function handleMove(startRow, startCol, endRow, endCol) {
     const isCheckmate = gameState === 'checkmate';
     const isStalemate = gameState === 'stalemate';
     
+
+    clearCheckIndicator();
+
     if (isCheck) {
-        alert(`${currentPlayer.charAt(0).toUpperCase() + currentPlayer.slice(1)} is in check!`);
+        showCheckIndicator(currentPlayer);
     } else if (isCheckmate) {
         alert(`Checkmate! ${piece.color.charAt(0).toUpperCase() + piece.color.slice(1)} wins!`);
         updateWinCount(piece.color);
@@ -1029,6 +1015,25 @@ function endGame() {
 function clearValidMoves() {
     document.querySelectorAll('.valid-move, .valid-capture').forEach(square => {
         square.classList.remove('valid-move', 'valid-capture');
+    });
+}
+
+function showCheckIndicator(kingColor) {
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+            const piece = board[row][col];
+            if (piece && piece.type === 'king' && piece.color === kingColor) {
+                const kingSquare = getSquare(row, col);
+                kingSquare.classList.add('check');
+                return;
+            }
+        }
+    }
+}
+
+function clearCheckIndicator() {
+    document.querySelectorAll('.check').forEach(square => {
+        square.classList.remove('check');
     });
 }
 
