@@ -274,12 +274,12 @@ footer {
   background-color: #f7ec84 !important;
 }
 
-.piece.white.king::after { content: '♔'; color: white;}
-.piece.white.queen::after { content: '♕'; color: white; }
-.piece.white.rook::after { content: '♖'; color: white; }
-.piece.white.bishop::after { content: '♗'; color: white; }
-.piece.white.knight::after { content: '♘'; color: white; }
-.piece.white.pawn::after { content: '♙'; color: white; }
+.piece.white.king::after { content: '♔'; color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+.piece.white.queen::after { content: '♕'; color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+.piece.white.rook::after { content: '♖'; color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+.piece.white.bishop::after { content: '♗'; color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+.piece.white.knight::after { content: '♘'; color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+.piece.white.pawn::after { content: '♙'; color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
 
 .piece.black.king::after { content: '♚'; color: black; }
 .piece.black.queen::after { content: '♛'; color: black; }
