@@ -202,9 +202,11 @@ body {
 }
 
 .board {
-  max-width: fit-content;
   display: flex;
+  flex-direction: row;
+  max-width: fit-content;
   margin: 20px auto;
+  align-items: flex-start;
 }
 
 .image {
@@ -463,4 +465,47 @@ h4 {
   margin: 0;
   padding: 0;
   font-size: 1.2em;
+}
+
+.captured-pieces-container {
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+  width: 150px;
+}
+
+.captured-pieces {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.captured-pieces h3 {
+  color: white;
+  font-size: 16px;
+  margin-top: 0;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.captured-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.captured-piece {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 1px solid #000;
+}
+
+.captured-piece.red {
+  background-color: red;
+}
+
+.captured-piece.black {
+  background-color: black;
 }

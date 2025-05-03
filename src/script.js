@@ -468,8 +468,12 @@ function validMove(fromRow, fromCol, toRow, toCol) {
 
 function removePiece(row, col) {
   const removeSquare = getSquare(row, col)
+  const capturedColor = board[row][col];
+  
   removeSquare.innerHTML = ""
   board[row][col] = null
+  
+  addToCapturedPieces(capturedColor);
 }
 
 function checkIfKing(row, col) {
@@ -578,7 +582,29 @@ function newGame() {
   highlightMovablePieces();
   resetScores(); // Reset scores for the current game
   updateScores(); // Update the display to show current game scores and total wins
+
+  resetCapturedPieces();
+
   playSound('start');
+}
+
+function resetCapturedPieces() {
+  const redCaptured = document.getElementById('red-captured');
+  const blackCaptured = document.getElementById('black-captured');
+  
+  if (redCaptured) {
+    redCaptured.innerHTML = '<h3>Red Captures</h3>';
+    const initialRedRow = document.createElement('div');
+    initialRedRow.classList.add('captured-row');
+    redCaptured.appendChild(initialRedRow);
+  }
+  
+  if (blackCaptured) {
+    blackCaptured.innerHTML = '<h3>Black Captures</h3>';
+    const initialBlackRow = document.createElement('div');
+    initialBlackRow.classList.add('captured-row');
+    blackCaptured.appendChild(initialBlackRow);
+  }
 }
 
 //add a popup for the settings for changing colors and pieces
@@ -991,10 +1017,35 @@ function showValidMoves(row, col) {
   })
 }
 
+function addToCapturedPieces(color) {
+  const container = color === 'red' ? 
+    document.getElementById('black-captured') : 
+    document.getElementById('red-captured');
+  
+  if (container) {
+    const capturedPiece = document.createElement('div');
+    capturedPiece.classList.add('captured-piece', color);
+    
+    let currentRow = container.querySelector('.captured-row:last-child');
+    const piecesPerRow = 5;
+    
+    if (!currentRow || currentRow.children.length >= piecesPerRow) {
+      currentRow = document.createElement('div');
+      currentRow.classList.add('captured-row');
+      container.appendChild(currentRow);
+    }
+    
+    currentRow.appendChild(capturedPiece);
+  }
+}
+
+
 document.getElementById('volumeControl').addEventListener('input', function () {
   const volumeValue = this.value;
   document.getElementById('volumeValue').textContent = `${Math.round(volumeValue * 100)}%`;
 });
+
+
 
 document.addEventListener("DOMContentLoaded", function () {
   setupBoard()
