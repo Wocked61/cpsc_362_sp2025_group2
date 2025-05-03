@@ -235,6 +235,23 @@ body {
   background-color: #f5f5f5;
   border-radius: 8px;
   margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.captured-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  margin-bottom: 4px;
+}
+
+.captured-piece-unicode {
+  font-size: 24px;
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .captured-container h3 {

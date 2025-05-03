@@ -957,10 +957,9 @@ function addToCapturedPieces(piece) {
         document.getElementById('black-captured');
 
     if (container) {
-
         const capturedPiece = document.createElement('div');
 
-        // uni code, not images
+        // Unicode for chess pieces
         const pieceUnicode = {
             king: piece.color === 'white' ? '♔' : '♚',
             queen: piece.color === 'white' ? '♕' : '♛',
@@ -970,12 +969,22 @@ function addToCapturedPieces(piece) {
             pawn: piece.color === 'white' ? '♙' : '♟'
         };
 
-
         capturedPiece.textContent = pieceUnicode[piece.type];
         capturedPiece.classList.add('captured-piece-unicode');
-        container.appendChild(capturedPiece);
+
+
+        let currentRow = container.querySelector('.captured-row:last-child');
+        const piecesPerRow = 8;
+        
+        if (!currentRow || currentRow.children.length >= piecesPerRow) {
+            currentRow = document.createElement('div');
+            currentRow.classList.add('captured-row');
+            container.appendChild(currentRow);
+        }
+        
+        currentRow.appendChild(capturedPiece);
     }
-};
+}
 
 
 function getSquare(row, col) {
