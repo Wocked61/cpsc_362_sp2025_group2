@@ -43,14 +43,14 @@ const buttons = document.querySelectorAll(".button")
 
 function playSound(soundName) {
   if (soundEnabled && sounds[soundName]) {
-      sounds[soundName].currentTime = 0;
-      try {
-          sounds[soundName].play().catch(error => {
-              console.error("Sound play error:", error);
-          });
-      } catch (error) {
-          console.error("Sound playback error:", error);
-      }
+    sounds[soundName].currentTime = 0;
+    try {
+      sounds[soundName].play().catch(error => {
+        console.error("Sound play error:", error);
+      });
+    } catch (error) {
+      console.error("Sound playback error:", error);
+    }
   }
 }
 function toggleSound() {
@@ -90,10 +90,10 @@ const kingMoveSet = [
   }, //left
 
   //moves as king to the sides
-  {piece: "red", enemy: "black", jumps: [-1, 1, -2, 2, -1, 3, 0, 0, 0, 4]}, //left down 
-  {piece: "red", enemy: "black", jumps: [-1, -1, -2, -2, -1, -3, 0, 0, 0, -4]}, //left up 
-  {piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 1, -3, 0, 0, 0,-4]}, //right down 
-  {piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 1, 3, 0, 0, 0, 4]}, //right up 
+  { piece: "red", enemy: "black", jumps: [-1, 1, -2, 2, -1, 3, 0, 0, 0, 4] }, //left down 
+  { piece: "red", enemy: "black", jumps: [-1, -1, -2, -2, -1, -3, 0, 0, 0, -4] }, //left up 
+  { piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 1, -3, 0, 0, 0, -4] }, //right down 
+  { piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 1, 3, 0, 0, 0, 4] }, //right up 
 
   { piece: "black", enemy: "red", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0] }, //right
   { piece: "black", enemy: "red", jumps: [1, -1, 2, -2, 3, -3, 4, -4, 4, 0] }, //left
@@ -105,11 +105,11 @@ const kingMoveSet = [
   }, //left
 
   //moves as king to the sides
-  {piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -1, -3, 0, 0, 0, -4]}, //left up 
-  {piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -1, 3, 0, 0, 0, 4]}, //left down 
+  { piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -1, -3, 0, 0, 0, -4] }, //left up 
+  { piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -1, 3, 0, 0, 0, 4] }, //left down 
 
-  {piece: "black", enemy: "red", jumps: [1, 1, 2, 2, 1, 3, 0, 0, 0, 4]}, //right up 
-  {piece: "black", enemy: "red", jumps: [1, -1, 2, -2, 1, -3, 0, 0, 0, -4]}, //right down 
+  { piece: "black", enemy: "red", jumps: [1, 1, 2, 2, 1, 3, 0, 0, 0, 4] }, //right up 
+  { piece: "black", enemy: "red", jumps: [1, -1, 2, -2, 1, -3, 0, 0, 0, -4] }, //right down 
 ]
 
 // Timer functionality
@@ -183,18 +183,18 @@ function checkForValidMoves() {
       }
     }
   }
-  return false 
+  return false
 }
 
 // End the game
 function endGame(reason) {
   if (winAlreadyProcessed) {
     console.log("Win already processed, skipping counter increment");
-    
+
     const player1Name = document.getElementById("player1").value || "Player 1";
     const player2Name = document.getElementById("player2").value || "Player 2";
     let winner;
-    
+
     if (reason.includes("time")) {
       winner = currentPlayer === "red" ? player1Name : player2Name;
     } else if (reason.includes("no valid moves")) {
@@ -204,7 +204,7 @@ function endGame(reason) {
     } else if (reason.includes("Red captured")) {
       winner = player2Name;
     }
-    
+
     const score = `${player2Score} - ${player1Score}`;
     playSound('win');
     showGameOver(winner, score, reason);
@@ -215,7 +215,7 @@ function endGame(reason) {
     clearInterval(timerInterval);
     timerInterval = null;
   }
-  
+
   gameStarted = false;
   winAlreadyProcessed = true;
 
@@ -223,14 +223,14 @@ function endGame(reason) {
   const player2Name = document.getElementById("player2").value || "Player 2";
 
   let winner;
-  
+
   if (reason.includes("time")) {
     if (currentPlayer === "red") {
       winner = player1Name;
       player1Wins++;
     } else {
       winner = player2Name;
-      player2Wins++; 
+      player2Wins++;
     }
   } else if (reason.includes("no valid moves")) {
     if (currentPlayer === "black") {
@@ -260,7 +260,7 @@ function endGame(reason) {
 function setupBoard() {
   boardContainer.innerHTML = "";
   const lightSquareColor = document.getElementById("light")?.value || "#f5f5dc";
-  const darkSquareColor = document.getElementById("dark")?.value || "#a62b2b"; 
+  const darkSquareColor = document.getElementById("dark")?.value || "#a62b2b";
 
   for (let row = 0; row < rows; row++) {
     board[row] = [];
@@ -387,7 +387,7 @@ function getValidMoves(row, col) {
   const directions = []
 
   if (getSquare(row, col).firstChild.dataset.king === "true") {
-    directions.push([1, 1], [1, -1], [-1, 1] ,[-1, -1])
+    directions.push([1, 1], [1, -1], [-1, 1], [-1, -1])
   } else if (board[row][col] === "red") {
     directions.push([1, 1], [1, -1])
   } else {
@@ -485,7 +485,7 @@ function checkIfKing(row, col) {
       const hexColor = rgbToHex(currentColor)
       const darkerColor = darkenColor(hexColor, 20)
       toKing.firstChild.style.backgroundColor = darkerColor
-      playSound('promote');  
+      playSound('promote');
     }
   }
   if (currentPlayer == "black" && row == 0) {
@@ -500,7 +500,7 @@ function checkIfKing(row, col) {
       const hexColor = rgbToHex(currentColor)
       const darkerColor = darkenColor(hexColor, 20)
       toKing.firstChild.style.backgroundColor = darkerColor
-      playSound('promote');  
+      playSound('promote');
 
     }
   }
@@ -510,8 +510,8 @@ function hops(fromRow, fromCol, toRow, toCol, moves) {
   let { piece, enemy, jumps } = moves
   let i = 0
   j = 1
-  for (; j < jumps.length; ) {
-    if ((fromRow + jumps[i] == toRow && fromCol + jumps[j] == toCol)&&((fromRow+jumps[2] < 8 && fromRow+jumps[2] >= 0) && (fromCol+jumps[3] < 8 && fromCol+jumps[3] >= 0))) {
+  for (; j < jumps.length;) {
+    if ((fromRow + jumps[i] == toRow && fromCol + jumps[j] == toCol) && ((fromRow + jumps[2] < 8 && fromRow + jumps[2] >= 0) && (fromCol + jumps[3] < 8 && fromCol + jumps[3] >= 0))) {
       if (
         board[fromRow][fromCol] == piece &&
         board[fromRow + jumps[0]][fromCol + jumps[1]] == enemy &&
@@ -540,19 +540,19 @@ function hops(fromRow, fromCol, toRow, toCol, moves) {
           fromRow + jumps[8] == toRow &&
           fromCol + jumps[9] == toCol
         ) {
-            if(jumps[6]==0 && jumps[7]==0){ //checks if a king move out in
-                removePiece(fromRow+jumps[4],fromCol+jumps[5]);
-                removePiece(fromRow+jumps[0],fromCol+jumps[1]);
-                updateScore(currentPlayer === "red" ? 1 : 2)
-                updateScore(currentPlayer === "red" ? 1 : 2)
-                return true;  
-              }else{
-                removePiece(fromRow+jumps[4],fromCol+jumps[1]);
-                removePiece(fromRow+jumps[0],fromCol+jumps[1]);
-                updateScore(currentPlayer === "red" ? 1 : 2)
-                updateScore(currentPlayer === "red" ? 1 : 2)
-                return true;
-              }
+          if (jumps[6] == 0 && jumps[7] == 0) { //checks if a king move out in
+            removePiece(fromRow + jumps[4], fromCol + jumps[5]);
+            removePiece(fromRow + jumps[0], fromCol + jumps[1]);
+            updateScore(currentPlayer === "red" ? 1 : 2)
+            updateScore(currentPlayer === "red" ? 1 : 2)
+            return true;
+          } else {
+            removePiece(fromRow + jumps[4], fromCol + jumps[1]);
+            removePiece(fromRow + jumps[0], fromCol + jumps[1]);
+            updateScore(currentPlayer === "red" ? 1 : 2)
+            updateScore(currentPlayer === "red" ? 1 : 2)
+            return true;
+          }
         }
       }
     } else i = i + 2
@@ -604,10 +604,10 @@ function openSettings() {
   const darkSquare = document.querySelector(".square.dark");
 
   if (lightSquare) {
-      document.getElementById("lightSquareColor").value = rgbToHex(getComputedStyle(lightSquare).backgroundColor);
+    document.getElementById("lightSquareColor").value = rgbToHex(getComputedStyle(lightSquare).backgroundColor);
   }
   if (darkSquare) {
-      document.getElementById("darkSquareColor").value = rgbToHex(getComputedStyle(darkSquare).backgroundColor);
+    document.getElementById("darkSquareColor").value = rgbToHex(getComputedStyle(darkSquare).backgroundColor);
   }
 
   document.getElementById("gameTimer").value = Math.floor(redTime / 60)
@@ -677,13 +677,13 @@ function saveSettings() {
     piece.style.backgroundColor = darkerBlack
   })
 
-    // Update board colors
-    document.querySelectorAll(".square.light").forEach(square => {
+  // Update board colors
+  document.querySelectorAll(".square.light").forEach(square => {
     square.style.backgroundColor = lightSquareColor;
-    });
-    document.querySelectorAll(".square.dark").forEach(square => {
-        square.style.backgroundColor = darkSquareColor;
-    });
+  });
+  document.querySelectorAll(".square.dark").forEach(square => {
+    square.style.backgroundColor = darkSquareColor;
+  });
 
   // Update timer
   redTime = newTime
@@ -719,15 +719,15 @@ function updatePlayerNames() {
   const scoreElement = document.querySelector(".score")
   if (scoreElement) {
     scoreElement.textContent = `${player1Name}: 0 | ${player2Name}: 0`
-    
+
     const savedPlayer1Wins = localStorage.getItem('checkers_player1Wins') || 0;
     const savedPlayer2Wins = localStorage.getItem('checkers_player2Wins') || 0;
-    
+
     localStorage.setItem('checkers_player1Name', player1Name);
     localStorage.setItem('checkers_player2Name', player2Name);
-    
+
     // Just update display without incrementing
-    document.getElementById("scoreText").textContent = 
+    document.getElementById("scoreText").textContent =
       `${player1Name} : ${player1Wins} | ${player2Name} : ${player2Wins}`;
   }
 }
@@ -754,7 +754,7 @@ function updateScore(capturingPlayer) {
     clearInterval(timerInterval);
     timerInterval = null;
     gameStarted = false;
-    
+
     if (redPieces === 0) {
       endGame("Black captured all pieces!");
     } else {
@@ -801,7 +801,7 @@ function showGameOver(winner, score, reason) {
   gameEndReason.textContent = reason;
 
   popup.style.display = "block";
-  
+
   gameStarted = false;
 }
 
@@ -910,9 +910,9 @@ function handleDrop(e) {
 function updateScores() {
   const player1Name = document.getElementById("player1").value || "Player 1";
   const player2Name = document.getElementById("player2").value || "Player 2";
-    
+
   // Update the wins display
-  document.getElementById("scoreText").textContent = 
+  document.getElementById("scoreText").textContent =
     `${player1Name} : ${player1Wins} | ${player2Name} : ${player2Wins}`;
 }
 
@@ -934,7 +934,7 @@ function blackPlayerWins() {
 function saveWinsToStorage() {
   const player1Name = document.getElementById("player1").value || "Player 1";
   const player2Name = document.getElementById("player2").value || "Player 2";
-  
+
   localStorage.setItem('checkers_player1Wins', player1Wins);
   localStorage.setItem('checkers_player2Wins', player2Wins);
   localStorage.setItem('checkers_player1Name', player1Name);
@@ -944,18 +944,18 @@ function saveWinsToStorage() {
 function loadWinsFromStorage() {
   player1Wins = parseInt(localStorage.getItem('checkers_player1Wins')) || 0;
   player2Wins = parseInt(localStorage.getItem('checkers_player2Wins')) || 0;
-  
+
   const savedPlayer1Name = localStorage.getItem('checkers_player1Name');
   const savedPlayer2Name = localStorage.getItem('checkers_player2Name');
-  
+
   if (savedPlayer1Name) {
     document.getElementById("player1").value = savedPlayer1Name;
   }
-  
+
   if (savedPlayer2Name) {
     document.getElementById("player2").value = savedPlayer2Name;
   }
-  
+
   updateScores();
 }
 
@@ -976,7 +976,7 @@ function clearValidMoveIndicators() {
 
 function showValidMoves(row, col) {
   clearValidMoveIndicators()
-  
+
   // If the clicked piece doesn't belong to current player, return
   if (board[row][col] !== currentPlayer) {
     return
@@ -991,24 +991,24 @@ function showValidMoves(row, col) {
   })
 }
 
-document.getElementById('volumeControl').addEventListener('input', function() {
+document.getElementById('volumeControl').addEventListener('input', function () {
   const volumeValue = this.value;
   document.getElementById('volumeValue').textContent = `${Math.round(volumeValue * 100)}%`;
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-    setupBoard()
-    loadWinsFromStorage()
-    startTimer()
-    highlightMovablePieces()
-    playSound('start');
-    document.getElementById("newGameButton").addEventListener("click", newGame)
-    addResetWinsButton();
-    updatePlayerNames();
+  setupBoard()
+  loadWinsFromStorage()
+  startTimer()
+  highlightMovablePieces()
+  playSound('start');
+  document.getElementById("newGameButton").addEventListener("click", newGame)
+  addResetWinsButton();
+  updatePlayerNames();
+})
+
+buttons.forEach((button) => {
+  button.addEventListener("click", () => {
+    playSound('boom');
   })
-  
-  buttons.forEach((button) => {
-    button.addEventListener("click", () => {
-        playSound('boom');
-    })
-  })
+})
