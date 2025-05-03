@@ -110,6 +110,23 @@ footer {
 .box-link:hover {
   transform: scale(1.05);
   transition: transform 0.3s ease;
+  padding: 2px; 
+  border-radius: 8px;
+  background: linear-gradient(270deg, #860c0c, #670d13, #0f5e29);
+  background-size: 300% 300%;
+  animation: animatedGradient 4s ease infinite;
+}
+
+@keyframes animatedGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .game-image {

@@ -12,6 +12,7 @@ let player2Score = 0
 let player1Wins = 0
 let player2Wins = 0
 let soundEnabled = true;
+let timerStarted = false;
 
 let draggedPiece = null;
 let dragOffsetX = 0;
@@ -784,12 +785,25 @@ function handleMove(startRow, startCol, endRow, endCol) {
         isCastling
     );
 
-    // Restart the timer if needed
+   // Restart the timer if needed
     if (gameStarted) {
         startTimer();
     }
 
-    return true;
+
+    //i was trying to fix the timer cause it starts for the wrong player but i can't get it to work
+    /*** 
+    currentPlayer = currentPlayer === 'white' ? 'black' : 'white';
+    updateTimerDisplay();
+
+   
+    if (!timerStarted) {
+        startTimer();
+        timerStarted = true; 
+    }
+    */
+
+   return true;
 }
 
 function promotePawn(row, col) {
@@ -1300,7 +1314,7 @@ function showCheckIndicator(kingColor) {
     }
 }
 
-function handleDragStart(e) {
+function handleDragStart(e) { 
     const piece = e.target;
     const square = piece.parentElement;
     const row = parseInt(square.dataset.row);
@@ -1312,6 +1326,12 @@ function handleDragStart(e) {
         return false;
     }
 
+    
+    if (!timerStarted) {
+        startTimer();
+        timerStarted = true;
+    }
+    
     // Set data for the drag operation
     e.dataTransfer.setData("text/plain", `${row},${col}`);
 
@@ -1709,7 +1729,7 @@ document.addEventListener("DOMContentLoaded", function () {
     playSound('start');
 
     gameStarted = true;
-    startTimer();
+    //startTimer(); i took this line out so that the timer doesn't start automatically
 
     const dragStyle = document.createElement('style');
     dragStyle.textContent = `

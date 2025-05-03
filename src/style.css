@@ -222,7 +222,7 @@ body {
   align-items: center;
   padding: 20px;
   background: linear-gradient(135deg, #0f4425, #082c13);
-  /* Blue gradient */
+  /* green gradient */
   border-radius: 12px;
   box-shadow: 0 0 20px #2ba446, 0 0 40px #0d7333;
   animation: containerGlow 3s ease-in-out infinite;
