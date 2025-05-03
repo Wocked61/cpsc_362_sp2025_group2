@@ -794,37 +794,132 @@ function handleMove(startRow, startCol, endRow, endCol) {
 
 function promotePawn(row, col) {
     const piece = board[row][col];
-    const promotion = prompt("Promote pawn to: (queen, rook, bishop, knight)", "queen");
     
-    let newType;
-    switch(promotion.toLowerCase()) {
-        case "rook":
-            newType = "rook";
-            break;
-        case "bishop":
-            newType = "bishop";
-            break;
-        case "knight":
-            newType = "knight";
-            break;
-        default:
-            newType = "queen";
-    }
+    // general box for promote
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'promotion-overlay';
+    modalOverlay.style.position = 'fixed';
+    modalOverlay.style.top = '0';
+    modalOverlay.style.left = '0';
+    modalOverlay.style.width = '100%';
+    modalOverlay.style.height = '100%';
+    modalOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    modalOverlay.style.display = 'flex';
+    modalOverlay.style.justifyContent = 'center';
+    modalOverlay.style.alignItems = 'center';
+    modalOverlay.style.zIndex = '2000';
     
-    board[row][col] = {
-        type: newType,
-        color: piece.color
-    };
+    // dialog for promotion
+    const promotionDialog = document.createElement('div');
+    promotionDialog.className = 'promotion-dialog';
+    promotionDialog.style.backgroundColor = '#333';
+    promotionDialog.style.borderRadius = '8px';
+    promotionDialog.style.padding = '15px';
+    promotionDialog.style.boxShadow = '0 0 20px rgba(0, 0, 0, 0.5)';
+    promotionDialog.style.textAlign = 'center';
     
-    const square = getSquare(row, col);
-    square.innerHTML = "";
+    // title
+    const title = document.createElement('h3');
+    title.textContent = 'Promote Pawn to:';
+    title.style.color = '#fff';
+    title.style.marginTop = '0';
+    title.style.marginBottom = '15px';
+    promotionDialog.appendChild(title);
     
-    const pieceElement = document.createElement("div");
-    pieceElement.classList.add("piece", piece.color, newType);
-    pieceElement.dataset.type = newType;
-    pieceElement.dataset.color = piece.color;
-    square.appendChild(pieceElement);
+    // individual containers for pieces
+    const piecesContainer = document.createElement('div');
+    piecesContainer.style.display = 'flex';
+    piecesContainer.style.justifyContent = 'center';
+    piecesContainer.style.gap = '10px';
+    
+    // Create pieces to choose from
+    const pieceTypes = ['queen', 'rook', 'bishop', 'knight'];
+    
+    pieceTypes.forEach(type => {
+        const pieceContainer = document.createElement('div');
+        pieceContainer.style.width = '60px';
+        pieceContainer.style.height = '60px';
+        pieceContainer.style.backgroundColor = '#555';
+        pieceContainer.style.borderRadius = '4px';
+        pieceContainer.style.cursor = 'pointer';
+        pieceContainer.style.display = 'flex';
+        pieceContainer.style.justifyContent = 'center';
+        pieceContainer.style.alignItems = 'center';
+        pieceContainer.style.transition = 'transform 0.2s';
+        
+        // create the actual piece boxes
+        const pieceElement = document.createElement('div');
+        pieceElement.classList.add('piece', piece.color, type);
+        pieceElement.style.width = '50px';
+        pieceElement.style.height = '50px';
+        pieceContainer.appendChild(pieceElement);
+        
+        // hover
+        pieceContainer.addEventListener('mouseenter', () => {
+            pieceContainer.style.transform = 'scale(1.1)';
+            pieceContainer.style.backgroundColor = '#777';
+        });
+        
+        pieceContainer.addEventListener('mouseleave', () => {
+            pieceContainer.style.transform = 'scale(1.0)';
+            pieceContainer.style.backgroundColor = '#555';
+        });
+        
+        // Add click handler
+        pieceContainer.addEventListener('click', () => {
+            // Update the board data
+            board[row][col] = {
+                type: type,
+                color: piece.color
+            };
+            
+            // keep updating the UI
+            const square = getSquare(row, col);
+            square.innerHTML = "";
+            const newPiece = document.createElement("div");
+            newPiece.classList.add("piece", piece.color, type);
+            newPiece.dataset.type = type;
+            newPiece.dataset.color = piece.color;
+            newPiece.draggable = true;
+            
+            //  drag event listeners to the new piece
+            newPiece.addEventListener("dragstart", handleDragStart);
+            newPiece.addEventListener("dragend", handleDragEnd);
+            newPiece.addEventListener("touchstart", handleTouchStart, { passive: false });
+            newPiece.addEventListener("touchmove", handleTouchMove, { passive: false });
+            newPiece.addEventListener("touchend", handleTouchEnd);
+            
+            square.appendChild(newPiece);
+            
+            document.body.removeChild(modalOverlay);
+            
+            // Update move notation to include the promotion type
+            if (moveHistory.length > 0) {
+                const lastMove = moveHistory[moveHistory.length - 1];
+                const promotionChar = type === 'knight' ? 'N' : type.charAt(0).toUpperCase();
+                if (lastMove.notation.includes('=')) {
+                    lastMove.notation = lastMove.notation.replace(/=./, `=${promotionChar}`);
+                } else {
+                    lastMove.notation += `=${promotionChar}`;
+                }
+                updateMoveDisplay();
+            }
+            
+            //play sound move when promo
+            playSound('move');
+            
+            // Continue with game logic
+            checkGameState();
+        });
+        
+        piecesContainer.appendChild(pieceContainer);
+    });
+    
+    promotionDialog.appendChild(piecesContainer);
+    modalOverlay.appendChild(promotionDialog);
+    document.body.appendChild(modalOverlay);
 }
+
 
 function updateWinCount(color) {
     if (color === "white") {
