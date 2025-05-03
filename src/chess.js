@@ -765,11 +765,11 @@ function handleMove(startRow, startCol, endRow, endCol) {
     if (isCheck) {
         showCheckIndicator(currentPlayer);
     } else if (isCheckmate) {
-        alert(`Checkmate! ${piece.color.charAt(0).toUpperCase() + piece.color.slice(1)} wins!`);
+        showGameOverIndicator('Checkmate');
         updateWinCount(piece.color);
         endGame();
     } else if (isStalemate) {
-        alert('Stalemate! The game is a draw.');
+        showGameOverIndicator('Stalemate');
         endGame();
     }
     
@@ -924,32 +924,48 @@ function promotePawn(row, col) {
 function updateWinCount(color) {
     if (color === "white") {
         player1Wins++;
-        document.getElementById("player1-wins").textContent = player1Wins;
     } else {
         player2Wins++;
-        document.getElementById("player2-wins").textContent = player2Wins;
+    }
+    
+    const scoreElement = document.getElementById("scoreText");
+    if (scoreElement) {
+        scoreElement.textContent = `White: ${player1Wins} | Black: ${player2Wins}`;
     }
 }
-
 function handleCapture(capturedPiece) {
     const points = pieceValues[capturedPiece.type];
     if (capturedPiece.color === 'black') {
         player1Score += points;
-        updateScore('player1-score', player1Score);
     } else {
         player2Score += points;
-        updateScore('player2-score', player2Score);
+    }
+    
+
+    const materialScoreElement = document.getElementById('score');
+    if (materialScoreElement) {
+        const scoreDifference = player1Score - player2Score;
+        const sign = scoreDifference > 0 ? '+' : '';
+        
+        materialScoreElement.innerHTML = `Material: White ${player1Score} - Black ${player2Score} <span class="diff">(${sign}${scoreDifference})</span>`;
+        
+
+        const diffElement = materialScoreElement.querySelector('.diff');
+        if (diffElement) {
+
+            diffElement.classList.remove('positive', 'negative');
+            
+            if (scoreDifference > 0) {
+                diffElement.classList.add('positive');
+            } else if (scoreDifference < 0) {
+                diffElement.classList.add('negative');
+            }
+        }
     }
     
     addToCapturedPieces(capturedPiece);
 }
 
-function updateScore(elementId, score) {
-    const scoreElement = document.getElementById(elementId);
-    if (scoreElement) {
-        scoreElement.textContent = score;
-    }
-}
 
 function addToCapturedPieces(piece) {
     const container = piece.color === 'black' ? 
@@ -1008,19 +1024,7 @@ function endGame() {
 
   }
   
-  function createNewGameButton() {
-    const newGameBtn = document.createElement('button');
-    newGameBtn.id = 'new-game-btn';
-    newGameBtn.textContent = 'New Game';
-    newGameBtn.classList.add('game-button');
-    newGameBtn.addEventListener('click', resetGame);
-    
-    const controlsContainer = document.getElementById('game-controls') || document.body;
-    controlsContainer.appendChild(newGameBtn);
-    
-    return newGameBtn;
-  }
-  
+
   function resetGame() {
     boardContainer.innerHTML = "";
     playSound('start');
@@ -1035,6 +1039,11 @@ function endGame() {
     player1Score = 0;
     player2Score = 0;
     
+    const materialScoreElement = document.getElementById('score');
+    if (materialScoreElement) {
+        materialScoreElement.innerHTML = `Material: White 0 - Black 0 <span class="diff">(0)</span>`;
+    }
+
     castlingRights = {
         white: { kingSide: true, queenSide: true },
         black: { kingSide: true, queenSide: true }
@@ -1061,13 +1070,14 @@ function endGame() {
         blackCaptured.appendChild(initialBlackRow);
     }
     
-    updateScore('player1-score', 0);
-    updateScore('player2-score', 0);
+    const currentTurnElement = document.getElementById('current-turn');
+    if (currentTurnElement) {
+        currentTurnElement.textContent = `White's Turn`;
+    }
     
-    updateTimerDisplay();
-    
+
     setupBoard();
-    
+    updateTimerDisplay();
     startTimer();
 }
   
@@ -1599,7 +1609,9 @@ function closeHelp() {
     playSound('click');
 }
 
-function showGameOver(winner, reason) {
+function showGameOverIndicator(reason) {
+    const winner = currentPlayer === 'white' ? 'black' : 'white';
+    
     const winnerText = document.getElementById('winnerText');
     const finalScore = document.getElementById('finalScore');
     const gameEndReason = document.getElementById('gameEndReason');
@@ -1617,6 +1629,7 @@ function showGameOver(winner, reason) {
     document.getElementById('gameOverPopup').style.display = 'flex';
 }
 
+
 function closeGameOver() {
     document.getElementById('gameOverPopup').style.display = 'none';
     playSound('click');
@@ -1625,6 +1638,15 @@ function closeGameOver() {
 function startNewGame() {
     closeGameOver();
     resetGame();
+    setupBoard();
+
+    const currentTurnElement = document.getElementById('current-turn');
+    if (currentTurnElement) {
+        currentTurnElement.textContent = `White's Turn`;
+    }
+    gameStarted = true;
+    startTimer();
+    
 }
 
 function resetWins() {
@@ -1637,28 +1659,18 @@ function resetWins() {
 function endGame() {
     gameStarted = false;
     clearInterval(timerInterval);
+    const squares = document.querySelectorAll('.square');
+    squares.forEach(square => {
+        square.removeEventListener('click', handleClick);
+    });
     
-    let winner = null;
-    let reason = '';
+    const newGameBtn = document.getElementById('new-game-btn') || createNewGameButton();
+    newGameBtn.disabled = false;
     
-    const gameState = checkGameState();
-    if (gameState === 'checkmate') {
-        winner = currentPlayer === 'white' ? 'black' : 'white';
-        updateWinCount(winner);
-        reason = 'Checkmate';
-    } else if (gameState === 'stalemate') {
-        reason = 'Stalemate';
-    } else if (whiteTime <= 0) {
-        winner = 'black';
-        updateWinCount(winner);
-        reason = 'Time out';
-    } else if (blackTime <= 0) {
-        winner = 'white';
-        updateWinCount(winner);
-        reason = 'Time out';
+    if (checkGameState() === 'checkmate') {
+        playSound('win');
     }
-    
-    showGameOver(winner, reason);
+
 }
 
 document.addEventListener('DOMContentLoaded', function() {

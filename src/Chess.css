@@ -487,3 +487,16 @@ footer {
   color: #fff2f2;
   padding: 1rem;
 }
+
+.score .diff {
+  font-weight: bold;
+  color: #a0a0ff;
+}
+
+.score .diff.positive {
+  color: #a0d7ff;
+}
+
+.score .diff.negative {
+  color: #ff9e9e;
+}
