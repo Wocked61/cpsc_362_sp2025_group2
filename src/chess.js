@@ -955,13 +955,28 @@ function addToCapturedPieces(piece) {
     const container = piece.color === 'black' ? 
         document.getElementById('white-captured') : 
         document.getElementById('black-captured');
-    
+
     if (container) {
-        const pieceElement = document.createElement('div');
-        pieceElement.classList.add('captured-piece', piece.color, piece.type);
-        container.appendChild(pieceElement);
+
+        const capturedPiece = document.createElement('div');
+
+        // uni code, not images
+        const pieceUnicode = {
+            king: piece.color === 'white' ? '♔' : '♚',
+            queen: piece.color === 'white' ? '♕' : '♛',
+            rook: piece.color === 'white' ? '♖' : '♜',
+            bishop: piece.color === 'white' ? '♗' : '♝',
+            knight: piece.color === 'white' ? '♘' : '♞',
+            pawn: piece.color === 'white' ? '♙' : '♟'
+        };
+
+
+        capturedPiece.textContent = pieceUnicode[piece.type];
+        capturedPiece.classList.add('captured-piece-unicode');
+        container.appendChild(capturedPiece);
     }
-}
+};
+
 
 function getSquare(row, col) {
     return document.querySelector(`.square[data-row="${row}"][data-col="${col}"]`);
