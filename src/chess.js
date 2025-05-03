@@ -21,6 +21,9 @@ let originalY = 0;
 let startPosRow = 0;
 let startPosCol = 0;
 
+let lightSquareColor = '#f0d9b5'; // Default light square color
+let darkSquareColor = '#b58863';
+
 let castlingRights = {
     white: { kingSide: true, queenSide: true },
     black: { kingSide: true, queenSide: true }
@@ -101,6 +104,138 @@ const sounds = {
         }
     }
 }
+
+
+function createColorPickers() {
+    const controlsContainer = document.getElementById('game-controls') || document.body;
+    
+    // Create container for color pickers
+    const colorPickerContainer = document.createElement('div');
+    colorPickerContainer.id = 'color-picker-container';
+    colorPickerContainer.classList.add('color-picker-container');
+    
+    // Light squares color picker
+    const lightSquareLabel = document.createElement('label');
+    lightSquareLabel.textContent = 'Light Squares: ';
+    lightSquareLabel.setAttribute('for', 'light-square-color');
+    
+    const lightSquarePicker = document.createElement('input');
+    lightSquarePicker.type = 'color';
+    lightSquarePicker.id = 'light-square-color';
+    lightSquarePicker.value = lightSquareColor;
+    lightSquarePicker.addEventListener('input', (e) => {
+      lightSquareColor = e.target.value;
+      updateBoardColors();
+      playSound('click');
+    });
+    
+    // Dark squares color picker
+    const darkSquareLabel = document.createElement('label');
+    darkSquareLabel.textContent = 'Dark Squares: ';
+    darkSquareLabel.setAttribute('for', 'dark-square-color');
+    
+    const darkSquarePicker = document.createElement('input');
+    darkSquarePicker.type = 'color';
+    darkSquarePicker.id = 'dark-square-color';
+    darkSquarePicker.value = darkSquareColor;
+    darkSquarePicker.addEventListener('input', (e) => {
+      darkSquareColor = e.target.value;
+      updateBoardColors();
+      playSound('click');
+    });
+
+    const resetColorsBtn = document.createElement('button');
+    resetColorsBtn.id = 'reset-colors-btn';
+    resetColorsBtn.textContent = 'Reset Colors';
+    resetColorsBtn.classList.add('game-button');
+    resetColorsBtn.addEventListener('click', () => {
+      lightSquareColor = '#f0d9b5';
+      darkSquareColor = '#b58863';
+      
+      // Update the color picker input values
+      document.getElementById('light-square-color').value = lightSquareColor;
+      document.getElementById('dark-square-color').value = darkSquareColor;
+      
+      updateBoardColors();
+      playSound('click');
+    });
+    
+    // Append all elements to the container
+    colorPickerContainer.appendChild(lightSquareLabel);
+    colorPickerContainer.appendChild(lightSquarePicker);
+    colorPickerContainer.appendChild(document.createElement('br'));
+    colorPickerContainer.appendChild(darkSquareLabel);
+    colorPickerContainer.appendChild(darkSquarePicker);
+    colorPickerContainer.appendChild(document.createElement('br'));
+    colorPickerContainer.appendChild(resetColorsBtn);
+    
+    // Add container to the controls
+    controlsContainer.appendChild(colorPickerContainer);
+    
+    // Add some CSS for the color picker container
+    const style = document.createElement('style');
+    style.textContent = `
+      .color-picker-container {
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f5f5f5;
+      }
+      
+      .color-picker-container label {
+        margin-right: 5px;
+        font-weight: bold;
+      }
+      
+      .color-picker-container input[type="color"] {
+        margin-bottom: 8px;
+        cursor: pointer;
+      }
+      
+      #reset-colors-btn {
+        margin-top: 5px;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  // Function to update the board colors
+  function updateBoardColors() {
+    const squares = document.querySelectorAll('.square');
+    squares.forEach(square => {
+      if (square.classList.contains('light')) {
+        square.style.backgroundColor = lightSquareColor;
+      } else if (square.classList.contains('dark')) {
+        square.style.backgroundColor = darkSquareColor;
+      }
+    });
+  }
+  
+  // Modify the setupBoard function to incorporate color styling
+  function applyInitialBoardColors() {
+    // Add CSS to set the initial board colors
+    const boardStyle = document.createElement('style');
+    boardStyle.textContent = `
+      .square.light {
+        background-color: ${lightSquareColor};
+      }
+      
+      .square.dark {
+        background-color: ${darkSquareColor};
+      }
+    `;
+    document.head.appendChild(boardStyle);
+  }
+  
+  // Add this to your DOMContentLoaded event listener
+  document.addEventListener("DOMContentLoaded", function() {
+    // Existing setup code remains...
+    
+    // Add color pickers
+    createColorPickers();
+    applyInitialBoardColors();
+  });
 
 function setupBoard() {
     boardContainer.innerHTML = "";
