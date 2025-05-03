@@ -671,13 +671,8 @@ function handleMove(startRow, startCol, endRow, endCol) {
     const isCastling = piece.type === 'king' && Math.abs(endCol - startCol) === 2;
     const isPawnDoubleMove = piece.type === 'pawn' && Math.abs(endRow - startRow) === 2;
     
-    
     let isEnPassant = false;
-    const currentTurnElement = document.getElementById('current-turn');
-    if (currentTurnElement) {
-        currentTurnElement.textContent = `${currentPlayer.charAt(0).toUpperCase() + currentPlayer.slice(1)}'s Turn`;
-    }
-
+    
     if (piece.type === 'pawn' && Math.abs(endCol - startCol) === 1 && !capturedPiece) {
         const enPassantRow = piece.color === 'white' ? endRow + 1 : endRow - 1;
         const enPassantPiece = board[enPassantRow][endCol];
@@ -689,6 +684,7 @@ function handleMove(startRow, startCol, endRow, endCol) {
             capturedPawnSquare.innerHTML = '';
             board[enPassantRow][endCol] = null;
             isEnPassant = true;
+            playSound('take');
         }
     }
 
@@ -753,15 +749,20 @@ function handleMove(startRow, startCol, endRow, endCol) {
         playSound('promote');
     }
     
+
     const opponentColor = piece.color === 'white' ? 'black' : 'white';
     currentPlayer = opponentColor;
     
+    const currentTurnElement = document.getElementById('current-turn');
+    if (currentTurnElement) {
+        currentTurnElement.textContent = `${currentPlayer.charAt(0).toUpperCase() + currentPlayer.slice(1)}'s Turn`;
+    }
+
     const gameState = checkGameState();
     const isCheck = gameState === 'check';
     const isCheckmate = gameState === 'checkmate';
     const isStalemate = gameState === 'stalemate';
     
-
     clearCheckIndicator();
 
     if (isCheck) {
@@ -775,6 +776,7 @@ function handleMove(startRow, startCol, endRow, endCol) {
         endGame();
     }
     
+    // Record the move
     addMoveToHistory(
         piece,
         {row: startRow, col: startCol},
@@ -785,6 +787,7 @@ function handleMove(startRow, startCol, endRow, endCol) {
         isCastling
     );
     
+    // Restart the timer if needed
     if (gameStarted) {
         startTimer();
     }
@@ -1196,7 +1199,7 @@ function handleDragStart(e) {
     // Add a class for styling
     piece.classList.add("dragging");
     
-    // Create a clone for visual feedback during drag
+    // Create a clone for visual feedback during drag WITHOUT changing opacity
     const clone = piece.cloneNode(true);
     clone.id = "drag-clone";
     clone.style.position = "fixed";
@@ -1204,7 +1207,7 @@ function handleDragStart(e) {
     clone.style.top = rect.top + "px";
     clone.style.zIndex = "1000";
     clone.style.pointerEvents = "none";
-    clone.style.opacity = "0.8";
+    // Keep original opacity
     document.body.appendChild(clone);
     
     // Calculate offset
@@ -1236,13 +1239,14 @@ function handleDragEnd(e) {
         document.body.removeChild(clone);
     }
     
-    // Remove selected class
     const sourceSquare = getSquare(startPosRow, startPosCol);
     if (sourceSquare) {
         sourceSquare.classList.remove("selected");
     }
     
     draggedPiece.classList.remove("dragging");
+    draggedPiece.style.opacity = "1";
+    
     draggedPiece = null;
     clearValidMoves();
 }
@@ -1274,6 +1278,12 @@ function handleDrop(e) {
         sourceSquare.classList.remove("selected");
     }
     
+    // Reset any opacity changes
+    if (draggedPiece) {
+        draggedPiece.classList.remove("dragging");
+        draggedPiece.style.opacity = "1";
+    }
+    
     clearValidMoves();
     draggedPiece = null;
 }
@@ -1281,7 +1291,6 @@ function handleDrop(e) {
 function handleTouchStart(e) {
     if (!gameStarted) return;
     
-    // Prevent default to avoid scrolling
     e.preventDefault();
     
     const piece = e.target;
@@ -1301,33 +1310,30 @@ function handleTouchStart(e) {
     startPosRow = row;
     startPosCol = col;
     
-    // Store the original position
+
     const rect = piece.getBoundingClientRect();
     originalX = rect.left;
     originalY = rect.top;
     
-    // Add a class for styling
+
     piece.classList.add("dragging");
     
-    // Create a clone for visual feedback
+
     const clone = piece.cloneNode(true);
     clone.id = "drag-clone";
     clone.style.position = "fixed";
     clone.style.left = rect.left + "px";
     clone.style.top = rect.top + "px";
     clone.style.zIndex = "1000";
-    clone.style.opacity = "0.8";
     clone.style.pointerEvents = "none";
     document.body.appendChild(clone);
     
-    // Calculate touch point offset
     const touch = e.touches[0];
     dragOffsetX = touch.clientX - rect.left;
     dragOffsetY = touch.clientY - rect.top;
     
     square.classList.add("selected");
 }
-
 function handleTouchMove(e) {
     if (!draggedPiece) return;
     
@@ -1364,6 +1370,8 @@ function handleTouchEnd(e) {
     
     clearValidMoves();
     draggedPiece.classList.remove("dragging");
+    // Reset opacity explicitly
+    draggedPiece.style.opacity = "1";
     draggedPiece = null;
     
     const clone = document.getElementById("drag-clone");
@@ -1574,6 +1582,17 @@ function addMoveToHistory(piece, startPos, endPos, isCapture, isCheck, isCheckma
     setupBoard();
     playSound('start');
       
+    const dragStyle = document.createElement('style');
+    dragStyle.textContent = `
+        .piece.dragging {
+            opacity: 1 !important; /* Force full opacity during drag */
+        }
+        #drag-clone {
+            opacity: 1 !important; /* Force full opacity for clone */
+        }
+    `;
+    document.head.appendChild(dragStyle);
+
       if (!document.getElementById('timer')) {
           const timerDisplay = document.createElement('div');
           timerDisplay.id = 'timer';
