@@ -131,10 +131,7 @@ function createColorPickers() {
         }
         
         // Use our newly created container
-        return createColorPickersInContainer(newContainer);
     }
-    
-    return createColorPickersInContainer(colorControlsContainer);
 }
 
   // Function to update the board colors
@@ -1577,6 +1574,7 @@ function addMoveToHistory(piece, startPos, endPos, isCapture, isCheck, isCheckma
     
     updateMoveDisplay();
 }
+
 
   document.addEventListener("DOMContentLoaded", function() {
     setupBoard();
