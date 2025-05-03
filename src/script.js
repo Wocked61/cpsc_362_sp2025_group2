@@ -245,9 +245,10 @@ function highlightMovablePieces() {
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       if (board[row][col] === currentPlayer) {
+        const validMoves = []
         // Check if the piece has any valid moves
-        const moves = getValidMoves(row, col)
-        if (moves.length > 0) {
+        getValidMoves(row, col, validMoves)
+        if (validMoves.length > 0) {
           const square = getSquare(row, col)
           square.style.border = "2px solid green" // Highlight movable pieces
         }
@@ -257,8 +258,7 @@ function highlightMovablePieces() {
 }
 
 //Helper function to get valid moves for a piece
-function getValidMoves(row, col) {
-  const validMoves = []
+function getValidMoves(row, col, validMoves) {
   const directions = []
 
   // Define movement directions based on player and whether it's a king
@@ -280,26 +280,23 @@ function getValidMoves(row, col) {
       if (board[newRow][newCol] === null) {
         validMoves.push({ row: newRow, col: newCol })
       } else {
-        nextRow = newRow
-        nextCol = newCol
-        if (rowDiff > 0) {
-          nextRow++
-        } else {
-          nextRow--
-        }
-        if (colDiff > 0) {
-          nextCol++
-        } else {
-          nextCol--
-        }
-        if (nextRow >= 0 && nextRow < rows && nextCol >= 0 && nextCol < cols && board[nextRow][nextCol] === null && board[row][col] != board[newRow][newCol]) {
-          validMoves.push({ row: nextRow, col: nextCol })
-        }
+        checkHops(row, col, rowDiff*2, colDiff*2, directions, validMoves)
       }
     }
   })
+}
 
-  return validMoves
+function checkHops (row, col, rowDiff, colDiff, directions, validMoves) {
+  const newRow = row + rowDiff
+  const newCol = col + colDiff
+  const jumpOverRow = row + rowDiff/2
+  const jumpOverCol = col + colDiff/2
+  if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && board[newRow][newCol] === null && board[row][col] != board[jumpOverRow][jumpOverCol]) {
+    validMoves.push({ row: newRow, col: newCol })
+    directions.forEach(([rowDiff, colDiff]) => {
+      checkHops(newRow, newCol, rowDiff*2, colDiff*2, validMoves)
+    })
+  }
 }
 
 function validMove(fromRow, fromCol, toRow, toCol) {
