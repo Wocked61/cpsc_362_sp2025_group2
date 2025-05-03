@@ -1013,6 +1013,11 @@ function showValidMoves(row, col) {
   })
 }
 
+document.getElementById('volumeControl').addEventListener('input', function() {
+  const volumeValue = this.value;
+  document.getElementById('volumeValue').textContent = `${Math.round(volumeValue * 100)}%`;
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     setupBoard()
     loadWinsFromStorage()

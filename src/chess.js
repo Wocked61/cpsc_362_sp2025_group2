@@ -107,99 +107,36 @@ const sounds = {
 
 
 function createColorPickers() {
-    const controlsContainer = document.getElementById('game-controls') || document.body;
+    // Look for a specific container first, then fallback to game-controls
+    const colorControlsContainer = document.getElementById('board-customization') || 
+                                  document.getElementById('game-controls');
     
-    // Create container for color pickers
-    const colorPickerContainer = document.createElement('div');
-    colorPickerContainer.id = 'color-picker-container';
-    colorPickerContainer.classList.add('color-picker-container');
+    // If neither exists, create a container in a strategic location
+    if (!colorControlsContainer) {
+        const newContainer = document.createElement('div');
+        newContainer.id = 'board-customization';
+        newContainer.classList.add('game-control-section');
+        
+        // Insert before the timer display if it exists
+        const timerDisplay = document.getElementById('timer');
+        if (timerDisplay && timerDisplay.parentNode) {
+            timerDisplay.parentNode.insertBefore(newContainer, timerDisplay);
+        } else {
+            // Otherwise insert at the top of boardContainer's parent
+            if (boardContainer.parentNode) {
+                boardContainer.parentNode.insertBefore(newContainer, boardContainer.nextSibling);
+            } else {
+                document.body.insertBefore(newContainer, boardContainer.nextSibling);
+            }
+        }
+        
+        // Use our newly created container
+        return createColorPickersInContainer(newContainer);
+    }
     
-    // Light squares color picker
-    const lightSquareLabel = document.createElement('label');
-    lightSquareLabel.textContent = 'Light Squares: ';
-    lightSquareLabel.setAttribute('for', 'light-square-color');
-    
-    const lightSquarePicker = document.createElement('input');
-    lightSquarePicker.type = 'color';
-    lightSquarePicker.id = 'light-square-color';
-    lightSquarePicker.value = lightSquareColor;
-    lightSquarePicker.addEventListener('input', (e) => {
-      lightSquareColor = e.target.value;
-      updateBoardColors();
-      playSound('click');
-    });
-    
-    // Dark squares color picker
-    const darkSquareLabel = document.createElement('label');
-    darkSquareLabel.textContent = 'Dark Squares: ';
-    darkSquareLabel.setAttribute('for', 'dark-square-color');
-    
-    const darkSquarePicker = document.createElement('input');
-    darkSquarePicker.type = 'color';
-    darkSquarePicker.id = 'dark-square-color';
-    darkSquarePicker.value = darkSquareColor;
-    darkSquarePicker.addEventListener('input', (e) => {
-      darkSquareColor = e.target.value;
-      updateBoardColors();
-      playSound('click');
-    });
+    return createColorPickersInContainer(colorControlsContainer);
+}
 
-    const resetColorsBtn = document.createElement('button');
-    resetColorsBtn.id = 'reset-colors-btn';
-    resetColorsBtn.textContent = 'Reset Colors';
-    resetColorsBtn.classList.add('game-button');
-    resetColorsBtn.addEventListener('click', () => {
-      lightSquareColor = '#f0d9b5';
-      darkSquareColor = '#b58863';
-      
-      // Update the color picker input values
-      document.getElementById('light-square-color').value = lightSquareColor;
-      document.getElementById('dark-square-color').value = darkSquareColor;
-      
-      updateBoardColors();
-      playSound('click');
-    });
-    
-    // Append all elements to the container
-    colorPickerContainer.appendChild(lightSquareLabel);
-    colorPickerContainer.appendChild(lightSquarePicker);
-    colorPickerContainer.appendChild(document.createElement('br'));
-    colorPickerContainer.appendChild(darkSquareLabel);
-    colorPickerContainer.appendChild(darkSquarePicker);
-    colorPickerContainer.appendChild(document.createElement('br'));
-    colorPickerContainer.appendChild(resetColorsBtn);
-    
-    // Add container to the controls
-    controlsContainer.appendChild(colorPickerContainer);
-    
-    // Add some CSS for the color picker container
-    const style = document.createElement('style');
-    style.textContent = `
-      .color-picker-container {
-        margin: 10px 0;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #f5f5f5;
-      }
-      
-      .color-picker-container label {
-        margin-right: 5px;
-        font-weight: bold;
-      }
-      
-      .color-picker-container input[type="color"] {
-        margin-bottom: 8px;
-        cursor: pointer;
-      }
-      
-      #reset-colors-btn {
-        margin-top: 5px;
-      }
-    `;
-    document.head.appendChild(style);
-  }
-  
   // Function to update the board colors
   function updateBoardColors() {
     const squares = document.querySelectorAll('.square');
@@ -237,25 +174,6 @@ function createColorPickers() {
     applyInitialBoardColors();
   });
 
-  const pieceThemes = {
-    classic: {
-      name: "Classic",
-      styles: `
-        .piece.white.pawn { background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt45.svg'); }
-        .piece.white.rook { background-image: url('https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg'); }
-        .piece.white.knight { background-image: url('https://upload.wikimedia.org/wikipedia/commons/7/70/Chess_nlt45.svg'); }
-        .piece.white.bishop { background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b1/Chess_blt45.svg'); }
-        .piece.white.queen { background-image: url('https://upload.wikimedia.org/wikipedia/commons/1/15/Chess_qlt45.svg'); }
-        .piece.white.king { background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg'); }
-        .piece.black.pawn { background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/c7/Chess_pdt45.svg'); }
-        .piece.black.rook { background-image: url('https://upload.wikimedia.org/wikipedia/commons/f/ff/Chess_rdt45.svg'); }
-        .piece.black.knight { background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/ef/Chess_ndt45.svg'); }
-        .piece.black.bishop { background-image: url('https://upload.wikimedia.org/wikipedia/commons/9/98/Chess_bdt45.svg'); }
-        .piece.black.queen { background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg'); }
-        .piece.black.king { background-image: url('https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg'); }
-      `
-    },
-};
 
 function setupBoard() {
     boardContainer.innerHTML = "";
@@ -755,6 +673,11 @@ function handleMove(startRow, startCol, endRow, endCol) {
     
     
     let isEnPassant = false;
+    const currentTurnElement = document.getElementById('current-turn');
+    if (currentTurnElement) {
+        currentTurnElement.textContent = `${currentPlayer.charAt(0).toUpperCase() + currentPlayer.slice(1)}'s Turn`;
+    }
+
     if (piece.type === 'pawn' && Math.abs(endCol - startCol) === 1 && !capturedPiece) {
         const enPassantRow = piece.color === 'white' ? endRow + 1 : endRow - 1;
         const enPassantPiece = board[enPassantRow][endCol];
@@ -1408,12 +1331,10 @@ function handleTouchStart(e) {
 function handleTouchMove(e) {
     if (!draggedPiece) return;
     
-    // Prevent default to avoid scrolling
     e.preventDefault();
     
     const touch = e.touches[0];
     
-    // Move the clone to follow the finger
     const clone = document.getElementById("drag-clone");
     if (clone) {
         clone.style.left = (touch.clientX - dragOffsetX) + "px";
@@ -1433,11 +1354,9 @@ function handleTouchEnd(e) {
         const endRow = parseInt(targetSquare.dataset.row);
         const endCol = parseInt(targetSquare.dataset.col);
         
-        // Try to make the move
         handleMove(startPosRow, startPosCol, endRow, endCol);
     }
     
-    // Clean up
     const sourceSquare = getSquare(startPosRow, startPosCol);
     if (sourceSquare) {
         sourceSquare.classList.remove("selected");
@@ -1477,6 +1396,180 @@ function clearCheckIndicator() {
     });
 }
 
+function openSettings() {
+    document.getElementById('whiteColor').value = '#FFFFFF';
+    document.getElementById('blackColor').value = '#000000';
+    document.getElementById('darkSquareColor').value = darkSquareColor;
+    document.getElementById('lightSquareColor').value = lightSquareColor;
+    document.getElementById('soundToggle').checked = soundEnabled;
+    document.getElementById('volumeControl').value = 0.5;
+    document.getElementById('volumeValue').textContent = '50%';
+    document.getElementById('gameTimer').value = Math.floor(whiteTime / 60);
+    
+
+    document.getElementById('settingsPopup').style.display = 'flex';
+    playSound('click');
+}
+
+function closeSettings() {
+    document.getElementById('settingsPopup').style.display = 'none';
+    playSound('click');
+}
+
+function saveSettings() {
+    const whiteColor = document.getElementById('whiteColor').value;
+    const blackColor = document.getElementById('blackColor').value;
+    
+    darkSquareColor = document.getElementById('darkSquareColor').value;
+    lightSquareColor = document.getElementById('lightSquareColor').value;
+    updateBoardColors();
+    
+    soundEnabled = document.getElementById('soundToggle').checked;
+    
+    const volume = parseFloat(document.getElementById('volumeControl').value);
+    Object.values(sounds).forEach(sound => {
+        sound.volume = volume;
+    });
+    
+    const timerMinutes = parseInt(document.getElementById('gameTimer').value);
+    if (!gameStarted) {
+        whiteTime = timerMinutes * 60;
+        blackTime = timerMinutes * 60;
+        updateTimerDisplay();
+    }
+    
+    const styleElement = document.getElementById('piece-colors-style') || document.createElement('style');
+    styleElement.id = 'piece-colors-style';
+    styleElement.textContent = `
+        .piece.white { filter: drop-shadow(0 0 1px ${whiteColor}) drop-shadow(0 0 1px ${whiteColor}); }
+        .piece.black { filter: drop-shadow(0 0 1px ${blackColor}) drop-shadow(0 0 1px ${blackColor}); }
+    `;
+    
+    if (!document.getElementById('piece-colors-style')) {
+        document.head.appendChild(styleElement);
+    }
+    
+    closeSettings();
+    playSound('click');
+}
+
+function openHelp() {
+    document.getElementById('helpPopup').style.display = 'flex';
+    playSound('click');
+}
+
+function closeHelp() {
+    document.getElementById('helpPopup').style.display = 'none';
+    playSound('click');
+}
+
+function showGameOver(winner, reason) {
+    const winnerText = document.getElementById('winnerText');
+    const finalScore = document.getElementById('finalScore');
+    const gameEndReason = document.getElementById('gameEndReason');
+    
+    if (winner) {
+        winnerText.textContent = `${winner.charAt(0).toUpperCase() + winner.slice(1)} wins!`;
+        playSound('win');
+    } else {
+        winnerText.textContent = 'Draw!';
+    }
+    
+    finalScore.textContent = `Final Score: White ${player1Score} - Black ${player2Score}`;
+    gameEndReason.textContent = reason || '';
+    
+    document.getElementById('gameOverPopup').style.display = 'flex';
+}
+
+function closeGameOver() {
+    document.getElementById('gameOverPopup').style.display = 'none';
+    playSound('click');
+}
+
+function startNewGame() {
+    closeGameOver();
+    resetGame();
+}
+
+function resetWins() {
+    player1Wins = 0;
+    player2Wins = 0;
+    document.getElementById("scoreText").textContent = "White: 0 | Black: 0";
+    playSound('click');
+}
+
+function endGame() {
+    gameStarted = false;
+    clearInterval(timerInterval);
+    
+    let winner = null;
+    let reason = '';
+    
+    const gameState = checkGameState();
+    if (gameState === 'checkmate') {
+        winner = currentPlayer === 'white' ? 'black' : 'white';
+        updateWinCount(winner);
+        reason = 'Checkmate';
+    } else if (gameState === 'stalemate') {
+        reason = 'Stalemate';
+    } else if (whiteTime <= 0) {
+        winner = 'black';
+        updateWinCount(winner);
+        reason = 'Time out';
+    } else if (blackTime <= 0) {
+        winner = 'white';
+        updateWinCount(winner);
+        reason = 'Time out';
+    }
+    
+    showGameOver(winner, reason);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const volumeControl = document.getElementById('volumeControl');
+    const volumeValue = document.getElementById('volumeValue');
+    
+    if (volumeControl) {
+        volumeControl.addEventListener('input', function() {
+            const volumePercent = Math.round(this.value * 100);
+            volumeValue.textContent = volumePercent + '%';
+        });
+    }
+    
+    const newGameButton = document.getElementById('newGameButton');
+    if (newGameButton) {
+        newGameButton.addEventListener('click', resetGame);
+    }
+});
+
+function toChessNotation(row, col) {
+    const files = 'abcdefgh';
+    const ranks = '87654321';
+    return files[col] + ranks[row];
+}
+
+function addMoveToHistory(piece, startPos, endPos, isCapture, isCheck, isCheckmate, isCastling) {
+    const from = toChessNotation(startPos.row, startPos.col);
+    const to = toChessNotation(endPos.row, endPos.col);
+    
+    const notation = createMoveNotation(piece, startPos, endPos, isCapture, isCheck, isCheckmate, isCastling);
+    
+    moveHistory.push({
+        number: moveNumber,
+        color: piece.color,
+        piece: piece.type,
+        from: from,
+        to: to,
+        notation: notation
+    });
+    
+    if (piece.color === 'black') {
+        moveNumber++;
+    }
+    
+    updateMoveDisplay();
+}
+
   document.addEventListener("DOMContentLoaded", function() {
     setupBoard();
     playSound('start');
@@ -1490,37 +1583,6 @@ function clearCheckIndicator() {
           controlsContainer.appendChild(timerDisplay);
       }
       
-      if (!document.getElementById('start-game-btn')) {
-          const startBtn = document.createElement('button');
-          startBtn.id = 'start-game-btn';
-          startBtn.textContent = 'Start Game';
-          startBtn.classList.add('game-button');
-          startBtn.addEventListener('click', () => {
-              if (!gameStarted) {
-                  gameStarted = true;
-                  startTimer();
-                  startBtn.disabled = true;
-              }
-          });
-          
-          const controlsContainer = document.getElementById('game-controls') || document.body;
-          controlsContainer.appendChild(startBtn);
-      }
-
-      if (!document.getElementById('sound-toggle-btn')) {
-        const soundToggleBtn = document.createElement('button');
-        soundToggleBtn.id = 'sound-toggle-btn';
-        soundToggleBtn.textContent = 'Sound: On';
-        soundToggleBtn.classList.add('game-button');
-        soundToggleBtn.addEventListener('click', () => {
-            soundEnabled = !soundEnabled;
-            soundToggleBtn.textContent = soundEnabled ? 'Sound: On' : 'Sound: Off';
-            playSound('click');
-        });
-        
-        const controlsContainer = document.getElementById('game-controls') || document.body;
-        controlsContainer.appendChild(soundToggleBtn);
-    }
       
       updateTimerDisplay();
   });
