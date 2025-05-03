@@ -101,7 +101,7 @@ body {
 .box {
   width: 100%;
   max-width: 480px;
-  height: 350px;
+  height: 400px;
   border: 2px solid #fa1212;
   justify-content: center;
   align-items: center;
