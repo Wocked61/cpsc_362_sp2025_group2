@@ -959,28 +959,6 @@ function loadWinsFromStorage() {
   updateScores();
 }
 
-function addResetWinsButton() {
-  const settingsPopup = document.getElementById("settingsPopup");
-  
-  // Check if button already exists
-  if (!document.getElementById("resetWinsButton")) {
-    const resetWinsButton = document.createElement("button");
-    resetWinsButton.id = "resetWinsButton";
-    resetWinsButton.className = "button";
-    resetWinsButton.textContent = "Reset Win Records";
-    resetWinsButton.addEventListener("click", resetWins);
-    
-    // Find a good place to add the button in the settings popup
-    const settingGroup = document.createElement("div");
-    settingGroup.className = "setting-group";
-    settingGroup.appendChild(resetWinsButton);
-    
-    const popupContent = settingsPopup.querySelector(".popup-content");
-    if (popupContent) {
-      popupContent.appendChild(settingGroup);
-    }
-  }
-}
 
 function resetWins() {
   player1Wins = 0;
