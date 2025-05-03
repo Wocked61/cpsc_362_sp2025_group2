@@ -1046,15 +1046,27 @@ function endGame() {
     
     const whiteCaptured = document.getElementById('white-captured');
     const blackCaptured = document.getElementById('black-captured');
-    if (whiteCaptured) whiteCaptured.innerHTML = '';
-    if (blackCaptured) blackCaptured.innerHTML = '';
+
+    if (whiteCaptured) {
+        whiteCaptured.innerHTML = '<h3>White Captures</h3>';
+        const initialWhiteRow = document.createElement('div');
+        initialWhiteRow.classList.add('captured-row');
+        whiteCaptured.appendChild(initialWhiteRow);
+    }
+    
+    if (blackCaptured) {
+        blackCaptured.innerHTML = '<h3>Black Captures</h3>';
+        const initialBlackRow = document.createElement('div');
+        initialBlackRow.classList.add('captured-row');
+        blackCaptured.appendChild(initialBlackRow);
+    }
     
     updateScore('player1-score', 0);
     updateScore('player2-score', 0);
     
     updateTimerDisplay();
     
-    setupBoard(); // This now calls enableDragAndDrop internally
+    setupBoard();
     
     startTimer();
 }
