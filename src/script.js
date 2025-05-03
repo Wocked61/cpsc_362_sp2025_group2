@@ -2,7 +2,6 @@
 // save settings when new game??
 // improve design???
 // fix issues that arised
-// show dead pieces on the side of the board
 // add a sound for regular takes
 // add a setting for changing the take sound
 
