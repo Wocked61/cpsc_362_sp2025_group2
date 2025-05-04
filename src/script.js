@@ -2,7 +2,6 @@
 // save settings when new game??
 // improve design???
 // fix issues that arised
-// show dead pieces on the side of the board
 // add a sound for regular takes
 // add a setting for changing the take sound
 
@@ -360,7 +359,7 @@ function movePiece(fromRow, fromCol, toRow, toCol, valid) {
 
   fromSquare.style.border = "none"
 
-  highlightMovablePieces()
+  //highlightMovablePieces()
 }
 
 function highlightMovablePieces() {
@@ -405,14 +404,17 @@ function getValidMoves(row, col) {
       if (board[newRow][newCol] === null) {
         validMoves.push({ row: newRow, col: newCol })
       } else {
-        validHopMoves = checkHops(row,col, row, col, rowDiff*2, colDiff*2, directions)
+        validHopMoves = checkHops(row, col, rowDiff*2, colDiff*2, directions)
         for (i = 0; i < validHopMoves.length; i++) {
+          //console.log(row, col, validMoves, validHopMoves)
           validMoves.push({ row: validHopMoves[i].row, col: validHopMoves[i].col })
+          //console.log(validMoves)
         }
-       
+
       }
     }
   })
+
 
   return validMoves
 }
@@ -486,8 +488,35 @@ function validMove(fromRow, fromCol, toRow, toCol) {
 
 function removePiece(row, col) {
   const removeSquare = getSquare(row, col)
+  const capturedColor = board[row][col];
+  
   removeSquare.innerHTML = ""
   board[row][col] = null
+  
+  addToCapturedPieces(capturedColor);
+}
+
+function checkHops (row, col, rd, cd, directions) {
+  const validHopMoves = []
+  nextHops = []
+  const newRow = row + rd
+  const newCol = col + cd
+  const jumpOverRow = row + rd/2
+  const jumpOverCol = col + cd/2
+  if (newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols || board[newRow][newCol] != null || board[row][col] == board[jumpOverRow][jumpOverCol]) {
+    return validHopMoves
+  }
+  if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && board[newRow][newCol] === null && board[row][col] != board[jumpOverRow][jumpOverCol]) {
+    validHopMoves.push({ row: newRow, col: newCol })
+    directions.forEach(([rowDiff, colDiff]) => {
+      nextHops = checkHops(newRow, newCol, rowDiff*2, colDiff*2, directions)
+      for (i = 0; i < nextHops.length; i++) {
+        validHopMoves.push(nextHops[i])
+        console.log(validHopMoves)
+      }
+    })
+  }
+  return validHopMoves;
 }
 
 function checkIfKing(row, col) {
@@ -596,7 +625,29 @@ function newGame() {
   highlightMovablePieces();
   resetScores(); // Reset scores for the current game
   updateScores(); // Update the display to show current game scores and total wins
+
+  resetCapturedPieces();
+
   playSound('start');
+}
+
+function resetCapturedPieces() {
+  const redCaptured = document.getElementById('red-captured');
+  const blackCaptured = document.getElementById('black-captured');
+  
+  if (redCaptured) {
+    redCaptured.innerHTML = '<h3>Red Captures</h3>';
+    const initialRedRow = document.createElement('div');
+    initialRedRow.classList.add('captured-row');
+    redCaptured.appendChild(initialRedRow);
+  }
+  
+  if (blackCaptured) {
+    blackCaptured.innerHTML = '<h3>Black Captures</h3>';
+    const initialBlackRow = document.createElement('div');
+    initialBlackRow.classList.add('captured-row');
+    blackCaptured.appendChild(initialBlackRow);
+  }
 }
 
 //add a popup for the settings for changing colors and pieces
@@ -1009,10 +1060,35 @@ function showValidMoves(row, col) {
   })
 }
 
+function addToCapturedPieces(color) {
+  const container = color === 'red' ? 
+    document.getElementById('black-captured') : 
+    document.getElementById('red-captured');
+  
+  if (container) {
+    const capturedPiece = document.createElement('div');
+    capturedPiece.classList.add('captured-piece', color);
+    
+    let currentRow = container.querySelector('.captured-row:last-child');
+    const piecesPerRow = 4;
+    
+    if (!currentRow || currentRow.children.length >= piecesPerRow) {
+      currentRow = document.createElement('div');
+      currentRow.classList.add('captured-row');
+      container.appendChild(currentRow);
+    }
+    
+    currentRow.appendChild(capturedPiece);
+  }
+}
+
+
 document.getElementById('volumeControl').addEventListener('input', function () {
   const volumeValue = this.value;
   document.getElementById('volumeValue').textContent = `${Math.round(volumeValue * 100)}%`;
 });
+
+
 
 document.addEventListener("DOMContentLoaded", function () {
   setupBoard()

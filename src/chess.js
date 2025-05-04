@@ -149,7 +149,6 @@ function updateBoardColors() {
 
 // Modify the setupBoard function to incorporate color styling
 function applyInitialBoardColors() {
-    // Add CSS to set the initial board colors
     const boardStyle = document.createElement('style');
     boardStyle.textContent = `
       .square.light {
@@ -162,15 +161,6 @@ function applyInitialBoardColors() {
     `;
     document.head.appendChild(boardStyle);
 }
-
-// Add this to your DOMContentLoaded event listener
-document.addEventListener("DOMContentLoaded", function () {
-    // Existing setup code remains...
-
-    // Add color pickers
-    createColorPickers();
-    applyInitialBoardColors();
-});
 
 
 function setupBoard() {
@@ -190,7 +180,7 @@ function setupBoard() {
     }
 
     setupPieces();
-    enableDragAndDrop(); // Ensure this is called after pieces are created
+    enableDragAndDrop();
 }
 
 function setupPieces() {
@@ -1727,6 +1717,8 @@ function addMoveToHistory(piece, startPos, endPos, isCapture, isCheck, isCheckma
 document.addEventListener("DOMContentLoaded", function () {
     setupBoard();
     playSound('start');
+    createColorPickers();
+    applyInitialBoardColors();
 
     gameStarted = true;
     //startTimer(); i took this line out so that the timer doesn't start automatically
