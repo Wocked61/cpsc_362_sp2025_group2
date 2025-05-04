@@ -386,6 +386,7 @@ function getValidMoves(row, col) {
   const validMoves = []
   const directions = []
 
+
   if (getSquare(row, col).firstChild.dataset.king === "true") {
     directions.push([1, 1], [1, -1], [-1, 1], [-1, -1])
   } else if (board[row][col] === "red") {
@@ -394,35 +395,55 @@ function getValidMoves(row, col) {
     directions.push([-1, 1], [-1, -1])
   }
 
+
   directions.forEach(([rowDiff, colDiff]) => {
     const newRow = row + rowDiff
     const newCol = col + colDiff
+
 
     if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
       if (board[newRow][newCol] === null) {
         validMoves.push({ row: newRow, col: newCol })
       } else {
-        nextRow = newRow
-        nextCol = newCol
-        if (rowDiff > 0) {
-          nextRow++
-        } else {
-          nextRow--
+        validHopMoves = checkHops(row,col, row, col, rowDiff*2, colDiff*2, directions)
+        for (i = 0; i < validHopMoves.length; i++) {
+          //console.log(row, col, validMoves, validHopMoves)
+          validMoves.push({ row: validHopMoves[i].row, col: validHopMoves[i].col })
+          //console.log(validMoves)
         }
-        if (colDiff > 0) {
-          nextCol++
-        } else {
-          nextCol--
-        }
-        if (nextRow >= 0 && nextRow < rows && nextCol >= 0 && nextCol < cols && board[nextRow][nextCol] === null && board[row][col] != board[newRow][newCol]) {
-          validMoves.push({ row: nextRow, col: nextCol })
-        }
+       
       }
     }
   })
 
+
   return validMoves
 }
+
+
+function checkHops (origRow, origCol, row, col, rd, cd, directions) {
+  const validHopMoves = []
+  nextHops = []
+  const newRow = row + rd
+  const newCol = col + cd
+  const jumpOverRow = row + rd/2
+  const jumpOverCol = col + cd/2
+  if (newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols || board[newRow][newCol] != null || board[origRow][origCol] === board[jumpOverRow][jumpOverCol] || board[jumpOverRow][jumpOverCol] == null) {
+    return validHopMoves
+  }
+  if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && board[newRow][newCol] === null && board[origRow][origCol] != board[jumpOverRow][jumpOverCol] && board[jumpOverRow][jumpOverCol] != null) {
+    validHopMoves.push({ row: newRow, col: newCol })
+    directions.forEach(([rowDiff, colDiff]) => {
+      nextHops = checkHops(origRow, origCol, newRow, newCol, rowDiff*2, colDiff*2, directions)
+      for (i = 0; i < nextHops.length; i++) {
+        validHopMoves.push(nextHops[i])
+        console.log(validHopMoves)
+      }
+    })
+  }
+  return validHopMoves;
+}
+
 
 function validMove(fromRow, fromCol, toRow, toCol) {
   if (board[toRow][toCol] != null) return false
