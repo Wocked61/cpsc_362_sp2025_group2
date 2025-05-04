@@ -407,15 +407,12 @@ function getValidMoves(row, col) {
       } else {
         validHopMoves = checkHops(row,col, row, col, rowDiff*2, colDiff*2, directions)
         for (i = 0; i < validHopMoves.length; i++) {
-          //console.log(row, col, validMoves, validHopMoves)
           validMoves.push({ row: validHopMoves[i].row, col: validHopMoves[i].col })
-          //console.log(validMoves)
         }
        
       }
     }
   })
-
 
   return validMoves
 }
