@@ -24,16 +24,18 @@ The front-end will be implemented in HTML/CSS and JavaScript, and the back-end w
 </p>
 
 ## Getting Started
+
 # Homepage
+
 ![image](https://github.com/user-attachments/assets/7e983ffd-5bf2-45af-90eb-4cc91b0d381f)
+
 # Checkers
+
 ![image](https://github.com/user-attachments/assets/2ecb0a35-2e0a-4f1f-aa0b-7abb24a9506b)
+
 # Chess
+
 ![image](https://github.com/user-attachments/assets/1767c1e1-861a-4726-86df-e675b8fd5f9d)
-
-
-
-
 
 ## Styleguide
 
