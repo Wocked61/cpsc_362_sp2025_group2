@@ -1,167 +1,188 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chess Game</title>
+    <link rel="stylesheet" href="Chess.css" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="data:," />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chess Game</title>
-  <link rel="stylesheet" href="Chess.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="icon" href="data:,">
-</head>
-
-<body>
-  <header>
-    <p class="title">Checkers and Chess</p>
-    <nav class="navigation">
-      <ul>
-        <li><a href="home.html">Home</a></li>
-        <li><a href="index.html">Checkers</a></li>
-        <li><a href="chess.html">Chess</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <div class="container">
-    <div id="timer">White Time Left: 3:00 | Black Time Left: 3:00</div>
-    <div class="skeleton">
-      <div class="box">
-        <!-- Game Information Display -->
-        <div class="game-info">
-          <div>
-            <h4>Wins</h4>
-            <p id="scoreText">White: 0 | Black: 0</p>
-          </div>
-          <h4>Current Turn</h4>
-          <p class="player-turn" id="current-turn">White's Turn</p>
-          <p id="score" class="score">Material White: 0 Black : 0</p>
-        </div>
-
-        <!-- Toolbar with buttons -->
-        <div class="toolbar">
-          <button id="newGameButton" class="button">New Game</button>
-          <button id="settings" class="button" onclick="openSettings()">Settings</button>
-          <button class="button" onclick="openHelp()">Help</button>
-          <button class="button" onclick="resetWins()">Reset Wins</button>
-        </div>
-      </div>
-
-      <div class="board">
-        <div id="boardContainer"></div>
-      </div>
-
-      <div class="box-settings">
-        <div class="captured-pieces">
-          <div id="white-captured" class="captured-container">
-            <h3>White Captures</h3>
-          </div>
-          <div id="black-captured" class="captured-container">
-            <h3>Black Captures</h3>
-          </div>
-        </div>
-        <div class="move-history">
-          <h3>Move History</h3>
-          <div id="move-list" class="move-list"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Settings Popup -->
-  <div id="settingsPopup" class="popup">
-    <div class="popup-content">
-      <h2>Chess Settings</h2>
-      <div class="setting-group">
-        <label>White Pieces Color:</label>
-        <input type="color" id="whiteColor" value="#FFFFFF" />
-      </div>
-      <div class="setting-group">
-        <label>Black Pieces Color:</label>
-        <input type="color" id="blackColor" value="#000000" />
-      </div>
-      <div class="setting-group">
-        <label for="darkSquareColor">Dark Square Color:</label>
-        <input type="color" id="darkSquareColor" value="#b58863" />
-      </div>
-      <div class="setting-group">
-        <label for="lightSquareColor">Light Square Color:</label>
-        <input type="color" id="lightSquareColor" value="#f0d9b5" />
-      </div>
-      <div class="setting-row">
-        <label for="soundToggle">Sound Effects:</label>
-        <input type="checkbox" id="soundToggle" checked>
-      </div>
-      <div class="setting-item">
-        <label for="volumeControl">Volume:</label>
-        <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5">
-        <span id="volumeValue">50%</span>
-      </div>
-      <div class="setting-group">
-        <label>Game Timer (minutes):</label>
-        <input type="number" id="gameTimer" min="1" max="60" value="3" />
-      </div>
-      <div class="center">
-        <button onclick="saveSettings()" class="button">Save</button>
-        <button onclick="closeSettings()" class="button">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Help Popup -->
-  <div id="helpPopup" class="popup">
-    <div class="popup-content help-content">
-      <h2>How to Play Chess</h2>
-      <div class="help-text">
-        <h3>Piece Movements:</h3>
+  <body>
+    <header>
+      <p class="title">Checkers and Chess</p>
+      <nav class="navigation">
         <ul>
-          <li>Pawn: Moves forward one square, captures diagonally</li>
-          <li>Rook: Moves horizontally or vertically any number of squares</li>
-          <li>Knight: Moves in an L-shape (2 squares in one direction, 1 square perpendicular)</li>
-          <li>Bishop: Moves diagonally any number of squares</li>
-          <li>Queen: Combines rook and bishop movements</li>
-          <li>King: Moves one square in any direction</li>
+          <li><a href="home.html">Home</a></li>
+          <li><a href="index.html">Checkers</a></li>
+          <li><a href="chess.html">Chess</a></li>
         </ul>
+      </nav>
+    </header>
 
-        <h3>Special Rules:</h3>
-        <ul>
-          <li>Castling: King moves two squares toward a rook, and the rook moves to the square the king crossed</li>
-          <li>En Passant: Pawn can capture an opponent's pawn that has moved two squares</li>
-          <li>Promotion: Pawn becomes any piece (usually queen) when reaching the last rank</li>
-          <li>Check: When the king is under attack</li>
-          <li>Checkmate: When the king is in check and cannot escape</li>
-        </ul>
+    <div class="container">
+      <div id="timer">White Time Left: 3:00 | Black Time Left: 3:00</div>
+      <div class="skeleton">
+        <div class="box">
+          <!-- Game Information Display -->
+          <div class="game-info">
+            <div>
+              <h4>Wins</h4>
+              <p id="scoreText">White: 0 | Black: 0</p>
+            </div>
+            <h4>Current Turn</h4>
+            <p class="player-turn" id="current-turn">White's Turn</p>
+            <p id="score" class="score">Material White: 0 Black : 0</p>
+          </div>
+
+          <!-- Toolbar with buttons -->
+          <div class="toolbar">
+            <button id="newGameButton" class="button">New Game</button>
+            <button id="settings" class="button" onclick="openSettings()">
+              Settings
+            </button>
+            <button class="button" onclick="openHelp()">Help</button>
+            <button class="button" onclick="resetWins()">Reset Wins</button>
+          </div>
+        </div>
+
+        <div class="board">
+          <div id="boardContainer"></div>
+        </div>
+
+        <div class="box-settings">
+          <div class="captured-pieces">
+            <div id="white-captured" class="captured-container">
+              <h3>White Captures</h3>
+            </div>
+            <div id="black-captured" class="captured-container">
+              <h3>Black Captures</h3>
+            </div>
+          </div>
+          <div class="move-history">
+            <h3>Move History</h3>
+            <div id="move-list" class="move-list"></div>
+          </div>
+        </div>
       </div>
-      <button onclick="closeHelp()" class="button">Close</button>
     </div>
-  </div>
 
-  <!-- Game Over Popup -->
-  <div id="gameOverPopup" class="popup">
-    <div class="popup-content">
-      <h2 class="game-over-content">Game Over!</h2>
-      <div class="game-over-content">
-        <p id="winnerText">Player wins!</p>
-        <p id="finalScore">Final Score:</p>
-        <p id="gameEndReason"></p>
-      </div>
-      <div class="center">
-        <button onclick="startNewGame()" class="button">New Game</button>
-        <button onclick="closeGameOver()" class="button">Close</button>
+    <!-- Settings Popup -->
+    <div id="settingsPopup" class="popup">
+      <div class="popup-content">
+        <h2>Chess Settings</h2>
+        <div class="setting-group">
+          <label>White Pieces Color:</label>
+          <input type="color" id="whiteColor" value="#FFFFFF" />
+        </div>
+        <div class="setting-group">
+          <label>Black Pieces Color:</label>
+          <input type="color" id="blackColor" value="#000000" />
+        </div>
+        <div class="setting-group">
+          <label for="darkSquareColor">Dark Square Color:</label>
+          <input type="color" id="darkSquareColor" value="#b58863" />
+        </div>
+        <div class="setting-group">
+          <label for="lightSquareColor">Light Square Color:</label>
+          <input type="color" id="lightSquareColor" value="#f0d9b5" />
+        </div>
+        <div class="setting-row">
+          <label for="soundToggle">Sound Effects:</label>
+          <input type="checkbox" id="soundToggle" checked />
+        </div>
+        <div class="setting-item">
+          <label for="volumeControl">Volume:</label>
+          <input
+            type="range"
+            id="volumeControl"
+            min="0"
+            max="1"
+            step="0.01"
+            value="0.5"
+          />
+          <span id="volumeValue">50%</span>
+        </div>
+        <div class="setting-group">
+          <label>Game Timer (minutes):</label>
+          <input type="number" id="gameTimer" min="1" max="60" value="3" />
+        </div>
+        <div class="center">
+          <button onclick="saveSettings()" class="button">Save</button>
+          <button onclick="closeSettings()" class="button">Cancel</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <footer>
-    <div class="footer">
-      <div class="footer-content">
-        <p class="footer-text">Chess Game</p>
-        <p class="footer-text">Created by Group 2</p>
-        <p class="footer-text">CPSC 362 - Spring 2025</p>
+    <!-- Help Popup -->
+    <div id="helpPopup" class="popup">
+      <div class="popup-content help-content">
+        <h2>How to Play Chess</h2>
+        <div class="help-text">
+          <h3>Piece Movements:</h3>
+          <ul>
+            <li>Pawn: Moves forward one square, captures diagonally</li>
+            <li>
+              Rook: Moves horizontally or vertically any number of squares
+            </li>
+            <li>
+              Knight: Moves in an L-shape (2 squares in one direction, 1 square
+              perpendicular)
+            </li>
+            <li>Bishop: Moves diagonally any number of squares</li>
+            <li>Queen: Combines rook and bishop movements</li>
+            <li>King: Moves one square in any direction</li>
+          </ul>
+
+          <h3>Special Rules:</h3>
+          <ul>
+            <li>
+              Castling: King moves two squares toward a rook, and the rook moves
+              to the square the king crossed
+            </li>
+            <li>
+              En Passant: Pawn can capture an opponent's pawn that has moved two
+              squares
+            </li>
+            <li>
+              Promotion: Pawn becomes any piece (usually queen) when reaching
+              the last rank
+            </li>
+            <li>Check: When the king is under attack</li>
+            <li>Checkmate: When the king is in check and cannot escape</li>
+          </ul>
+        </div>
+        <button onclick="closeHelp()" class="button">Close</button>
       </div>
     </div>
-  </footer>
 
-  <script src="chess.js" id="query"></script>
-</body>
+    <!-- Game Over Popup -->
+    <div id="gameOverPopup" class="popup">
+      <div class="popup-content">
+        <h2 class="game-over-content">Game Over!</h2>
+        <div class="game-over-content">
+          <p id="winnerText">Player wins!</p>
+          <p id="finalScore">Final Score:</p>
+          <p id="gameEndReason"></p>
+        </div>
+        <div class="center">
+          <button onclick="startNewGame()" class="button">New Game</button>
+          <button onclick="closeGameOver()" class="button">Close</button>
+        </div>
+      </div>
+    </div>
 
+    <footer>
+      <div class="footer">
+        <div class="footer-content">
+          <p class="footer-text">Chess Game</p>
+          <p class="footer-text">Created by Group 2</p>
+          <p class="footer-text">CPSC 362 - Spring 2025</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="chess.js" id="query"></script>
+  </body>
 </html>

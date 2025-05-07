@@ -122,10 +122,7 @@
 .square.highlight {
   border: 2px solid green;
   /* Green border to indicate movable pieces */
-  background-color: rgba(0,
-      255,
-      0,
-      0.2);
+  background-color: rgba(0, 255, 0, 0.2);
   /* Light green background for emphasis */
 }
 
@@ -226,7 +223,9 @@ body {
   background: linear-gradient(135deg, #0f4425, #082c13);
   /* green gradient */
   border-radius: 12px;
-  box-shadow: 0 0 20px #2ba446, 0 0 40px #0d7333;
+  box-shadow:
+    0 0 20px #2ba446,
+    0 0 40px #0d7333;
   animation: containerGlow 3s ease-in-out infinite;
 }
 
@@ -273,15 +272,24 @@ footer {
 
 @keyframes pulseBorder {
   0% {
-    box-shadow: 0 0 10px #58a4f1, 0 0 20px #ff00ae, 0 0 30px rgb(225, 0, 255);
+    box-shadow:
+      0 0 10px #58a4f1,
+      0 0 20px #ff00ae,
+      0 0 30px rgb(225, 0, 255);
   }
 
   50% {
-    box-shadow: 0 0 20px #58a4f1, 0 0 30px #ff00f2, 0 0 40px rgb(255, 0, 179);
+    box-shadow:
+      0 0 20px #58a4f1,
+      0 0 30px #ff00f2,
+      0 0 40px rgb(255, 0, 179);
   }
 
   100% {
-    box-shadow: 0 0 10px #58a4f1, 0 0 20px #ff00cc, 0 0 30px rgb(225, 0, 255);
+    box-shadow:
+      0 0 10px #58a4f1,
+      0 0 20px #ff00cc,
+      0 0 30px rgb(225, 0, 255);
   }
 }
 

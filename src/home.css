@@ -110,7 +110,7 @@ footer {
 .box-link:hover {
   transform: scale(1.05);
   transition: transform 0.3s ease;
-  padding: 2px; 
+  padding: 2px;
   border-radius: 8px;
   background: linear-gradient(270deg, #860c0c, #670d13, #0f5e29);
   background-size: 300% 300%;

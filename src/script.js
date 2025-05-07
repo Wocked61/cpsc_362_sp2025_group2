@@ -5,9 +5,9 @@
 // add a sound for regular takes
 // add a setting for changing the take sound
 
-
 var boardContainer = document.getElementById("boardContainer")
-const rows = 8, cols = 8
+const rows = 8,
+  cols = 8
 let board = []
 let currentPlayer = "black"
 let selectedPiece = null
@@ -19,8 +19,8 @@ let player1Score = 0
 let player2Score = 0
 let player1Wins = 0
 let player2Wins = 0
-let soundEnabled = true;
-let winAlreadyProcessed = false;
+let soundEnabled = true
+let winAlreadyProcessed = false
 
 //sounds for the game
 //make them functions later
@@ -31,39 +31,35 @@ const sounds = {
   move: new Audio("sounds/moving.mp3"),
   take: new Audio("sounds/take.mp3"),
   promote: new Audio("sounds/promote.mp3"),
-  win: new Audio("sounds/yippee-tbh.mp3")
-};
-
-
-
+  win: new Audio("sounds/yippee-tbh.mp3"),
+}
 
 const buttons = document.querySelectorAll(".button")
 
-
 function playSound(soundName) {
   if (soundEnabled && sounds[soundName]) {
-    sounds[soundName].currentTime = 0;
+    sounds[soundName].currentTime = 0
     try {
-      sounds[soundName].play().catch(error => {
-        console.error("Sound play error:", error);
-      });
+      sounds[soundName].play().catch((error) => {
+        console.error("Sound play error:", error)
+      })
     } catch (error) {
-      console.error("Sound playback error:", error);
+      console.error("Sound playback error:", error)
     }
   }
 }
 function toggleSound() {
-  soundEnabled = !soundEnabled;
+  soundEnabled = !soundEnabled
 }
 
 function updateSoundToggle() {
-  const soundToggle = document.getElementById("soundToggle");
-  soundToggle.checked = soundEnabled;
+  const soundToggle = document.getElementById("soundToggle")
+  soundToggle.checked = soundEnabled
 }
 
 function handleSoundToggle() {
-  const soundToggle = document.getElementById("soundToggle");
-  soundEnabled = soundToggle.checked;
+  const soundToggle = document.getElementById("soundToggle")
+  soundEnabled = soundToggle.checked
 }
 
 //can add more cords in jumps to hop over 3 or more peices
@@ -89,10 +85,14 @@ const kingMoveSet = [
   }, //left
 
   //moves as king to the sides
-  { piece: "red", enemy: "black", jumps: [-1, 1, -2, 2, -1, 3, 0, 0, 0, 4] }, //left down 
-  { piece: "red", enemy: "black", jumps: [-1, -1, -2, -2, -1, -3, 0, 0, 0, -4] }, //left up 
-  { piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 1, -3, 0, 0, 0, -4] }, //right down 
-  { piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 1, 3, 0, 0, 0, 4] }, //right up 
+  { piece: "red", enemy: "black", jumps: [-1, 1, -2, 2, -1, 3, 0, 0, 0, 4] }, //left down
+  {
+    piece: "red",
+    enemy: "black",
+    jumps: [-1, -1, -2, -2, -1, -3, 0, 0, 0, -4],
+  }, //left up
+  { piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 1, -3, 0, 0, 0, -4] }, //right down
+  { piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 1, 3, 0, 0, 0, 4] }, //right up
 
   { piece: "black", enemy: "red", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0] }, //right
   { piece: "black", enemy: "red", jumps: [1, -1, 2, -2, 3, -3, 4, -4, 4, 0] }, //left
@@ -104,11 +104,15 @@ const kingMoveSet = [
   }, //left
 
   //moves as king to the sides
-  { piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -1, -3, 0, 0, 0, -4] }, //left up 
-  { piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -1, 3, 0, 0, 0, 4] }, //left down 
+  {
+    piece: "black",
+    enemy: "red",
+    jumps: [-1, -1, -2, -2, -1, -3, 0, 0, 0, -4],
+  }, //left up
+  { piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -1, 3, 0, 0, 0, 4] }, //left down
 
-  { piece: "black", enemy: "red", jumps: [1, 1, 2, 2, 1, 3, 0, 0, 0, 4] }, //right up 
-  { piece: "black", enemy: "red", jumps: [1, -1, 2, -2, 1, -3, 0, 0, 0, -4] }, //right down 
+  { piece: "black", enemy: "red", jumps: [1, 1, 2, 2, 1, 3, 0, 0, 0, 4] }, //right up
+  { piece: "black", enemy: "red", jumps: [1, -1, 2, -2, 1, -3, 0, 0, 0, -4] }, //right down
 ]
 
 // Timer functionality
@@ -138,10 +142,9 @@ function startTimer() {
 
 //pause Timer
 function pauseTime() {
-  clearInterval(timerInterval);  // Stop the timer
-  timerInterval = null;  // Clear the interval reference
+  clearInterval(timerInterval) // Stop the timer
+  timerInterval = null // Clear the interval reference
 }
-
 
 // Helper function to format time in MM:SS
 function formatTime(seconds) {
@@ -188,107 +191,109 @@ function checkForValidMoves() {
 // End the game
 function endGame(reason) {
   if (winAlreadyProcessed) {
-    console.log("Win already processed, skipping counter increment");
+    console.log("Win already processed, skipping counter increment")
 
-    const player1Name = document.getElementById("player1").value || "Player 1";
-    const player2Name = document.getElementById("player2").value || "Player 2";
-    let winner;
+    const player1Name = document.getElementById("player1").value || "Player 1"
+    const player2Name = document.getElementById("player2").value || "Player 2"
+    let winner
 
     if (reason.includes("time")) {
-      winner = currentPlayer === "red" ? player1Name : player2Name;
+      winner = currentPlayer === "red" ? player1Name : player2Name
     } else if (reason.includes("no valid moves")) {
-      winner = currentPlayer === "black" ? player2Name : player1Name;
+      winner = currentPlayer === "black" ? player2Name : player1Name
     } else if (reason.includes("Black captured")) {
-      winner = player1Name;
+      winner = player1Name
     } else if (reason.includes("Red captured")) {
-      winner = player2Name;
+      winner = player2Name
     }
 
-    const score = `${player2Score} - ${player1Score}`;
-    playSound('win');
-    showGameOver(winner, score, reason);
-    return;
+    const score = `${player2Score} - ${player1Score}`
+    playSound("win")
+    showGameOver(winner, score, reason)
+    return
   }
 
   if (timerInterval) {
-    clearInterval(timerInterval);
-    timerInterval = null;
+    clearInterval(timerInterval)
+    timerInterval = null
   }
 
-  gameStarted = false;
-  winAlreadyProcessed = true;
+  gameStarted = false
+  winAlreadyProcessed = true
 
-  const player1Name = document.getElementById("player1").value || "Player 1";
-  const player2Name = document.getElementById("player2").value || "Player 2";
+  const player1Name = document.getElementById("player1").value || "Player 1"
+  const player2Name = document.getElementById("player2").value || "Player 2"
 
-  let winner;
+  let winner
 
   if (reason.includes("time")) {
     if (currentPlayer === "red") {
-      winner = player1Name;
-      player1Wins++;
+      winner = player1Name
+      player1Wins++
     } else {
-      winner = player2Name;
-      player2Wins++;
+      winner = player2Name
+      player2Wins++
     }
   } else if (reason.includes("no valid moves")) {
     if (currentPlayer === "black") {
-      winner = player2Name;
-      player2Wins++;
+      winner = player2Name
+      player2Wins++
     } else {
-      winner = player1Name;
-      player1Wins++;
+      winner = player1Name
+      player1Wins++
     }
   } else if (reason.includes("Black captured")) {
-    winner = player1Name;
-    player1Wins++;
+    winner = player1Name
+    player1Wins++
   } else if (reason.includes("Red captured")) {
-    winner = player2Name;
-    player2Wins++;
+    winner = player2Name
+    player2Wins++
   }
 
-  updateScores();
-  saveWinsToStorage();
+  updateScores()
+  saveWinsToStorage()
 
-  const score = `${player2Score} - ${player1Score}`;
-  playSound('win');
-  showGameOver(winner, score, reason);
+  const score = `${player2Score} - ${player1Score}`
+  playSound("win")
+  showGameOver(winner, score, reason)
 }
 
 //makes board
 function setupBoard() {
-  boardContainer.innerHTML = "";
-  const lightSquareColor = document.getElementById("light")?.value || "#f5f5dc";
-  const darkSquareColor = document.getElementById("dark")?.value || "#a62b2b";
+  boardContainer.innerHTML = ""
+  const lightSquareColor = document.getElementById("light")?.value || "#f5f5dc"
+  const darkSquareColor = document.getElementById("dark")?.value || "#a62b2b"
 
   for (let row = 0; row < rows; row++) {
-    board[row] = [];
+    board[row] = []
     for (let col = 0; col < cols; col++) {
-      const square = document.createElement("div");
-      const isLight = (row + col) % 2 === 0;
-      square.classList.add("square", isLight ? "light" : "dark");
-      square.style.backgroundColor = isLight ? lightSquareColor : darkSquareColor;
-      square.dataset.row = row;
-      square.dataset.col = col;
-      square.addEventListener("click", handleClick);
+      const square = document.createElement("div")
+      const isLight = (row + col) % 2 === 0
+      square.classList.add("square", isLight ? "light" : "dark")
+      square.style.backgroundColor = isLight
+        ? lightSquareColor
+        : darkSquareColor
+      square.dataset.row = row
+      square.dataset.col = col
+      square.addEventListener("click", handleClick)
 
       if (!isLight) {
         if (row < 3) {
-          addPiece(square, "red");
-          board[row][col] = "red";
+          addPiece(square, "red")
+          board[row][col] = "red"
         } else if (row > 4) {
-          addPiece(square, "black");
-          board[row][col] = "black";
+          addPiece(square, "black")
+          board[row][col] = "black"
         } else {
-          board[row][col] = null;
+          board[row][col] = null
         }
       } else {
-        board[row][col] = null;
+        board[row][col] = null
       }
-      boardContainer.appendChild(square);
+      boardContainer.appendChild(square)
     }
   }
-  enableDragAndDrop();
+  enableDragAndDrop()
 }
 
 //creates and adds appends the piece to the square
@@ -306,7 +311,7 @@ function handleClick(event) {
   const col = parseInt(square.dataset.col)
 
   if (board[row][col] === currentPlayer) {
-    playSound('click');
+    playSound("click")
   }
 
   clearValidMoveIndicators()
@@ -339,7 +344,7 @@ function handleClick(event) {
 //move piece
 function movePiece(fromRow, fromCol, toRow, toCol, valid) {
   if (!valid) return
-  playSound('move');
+  playSound("move")
 
   if (!gameStarted) {
     gameStarted = true
@@ -385,7 +390,6 @@ function getValidMoves(row, col) {
   const validMoves = []
   const directions = []
 
-
   if (getSquare(row, col).firstChild.dataset.king === "true") {
     directions.push([1, 1], [1, -1], [-1, 1], [-1, -1])
   } else if (board[row][col] === "red") {
@@ -394,52 +398,81 @@ function getValidMoves(row, col) {
     directions.push([-1, 1], [-1, -1])
   }
 
-
   directions.forEach(([rowDiff, colDiff]) => {
     const newRow = row + rowDiff
     const newCol = col + colDiff
-
 
     if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
       if (board[newRow][newCol] === null) {
         validMoves.push({ row: newRow, col: newCol })
       } else {
-        validHopMoves = checkHops(row, col, row, col, rowDiff*2, colDiff*2, directions)
+        validHopMoves = checkHops(
+          row,
+          col,
+          row,
+          col,
+          rowDiff * 2,
+          colDiff * 2,
+          directions,
+        )
         for (i = 0; i < validHopMoves.length; i++) {
-          validMoves.push({ row: validHopMoves[i].row, col: validHopMoves[i].col })
+          validMoves.push({
+            row: validHopMoves[i].row,
+            col: validHopMoves[i].col,
+          })
         }
-
       }
     }
   })
 
-
   return validMoves
 }
 
-function checkHops (origRow, origCol, row, col, rd, cd, directions) {
+function checkHops(origRow, origCol, row, col, rd, cd, directions) {
   const validHopMoves = []
   nextHops = []
   const newRow = row + rd
   const newCol = col + cd
-  const jumpOverRow = row + rd/2
-  const jumpOverCol = col + cd/2
-  if (newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols || board[newRow][newCol] != null || board[origRow][origCol] == board[jumpOverRow][jumpOverCol] || board[jumpOverRow][jumpOverCol] == null) {
+  const jumpOverRow = row + rd / 2
+  const jumpOverCol = col + cd / 2
+  if (
+    newRow < 0 ||
+    newRow >= rows ||
+    newCol < 0 ||
+    newCol >= cols ||
+    board[newRow][newCol] != null ||
+    board[origRow][origCol] == board[jumpOverRow][jumpOverCol] ||
+    board[jumpOverRow][jumpOverCol] == null
+  ) {
     return validHopMoves
   }
-  if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && board[newRow][newCol] == null && board[origRow][origCol] != board[jumpOverRow][jumpOverCol] && board[jumpOverRow][jumpOverCol] != null) {
+  if (
+    newRow >= 0 &&
+    newRow < rows &&
+    newCol >= 0 &&
+    newCol < cols &&
+    board[newRow][newCol] == null &&
+    board[origRow][origCol] != board[jumpOverRow][jumpOverCol] &&
+    board[jumpOverRow][jumpOverCol] != null
+  ) {
     validHopMoves.push({ row: newRow, col: newCol })
     directions.forEach(([rowDiff, colDiff]) => {
-      nextHops = checkHops(origRow, origCol, newRow, newCol, rowDiff*2, colDiff*2, directions)
+      nextHops = checkHops(
+        origRow,
+        origCol,
+        newRow,
+        newCol,
+        rowDiff * 2,
+        colDiff * 2,
+        directions,
+      )
       for (i = 0; i < nextHops.length; i++) {
         validHopMoves.push(nextHops[i])
       }
     })
   }
-  return validHopMoves;
+  return validHopMoves
 }
-
-
 
 function validMove(fromRow, fromCol, toRow, toCol) {
   if (board[toRow][toCol] != null) return false
@@ -485,14 +518,13 @@ function validMove(fromRow, fromCol, toRow, toCol) {
 
 function removePiece(row, col) {
   const removeSquare = getSquare(row, col)
-  const capturedColor = board[row][col];
-  
+  const capturedColor = board[row][col]
+
   removeSquare.innerHTML = ""
   board[row][col] = null
-  
-  addToCapturedPieces(capturedColor);
-}
 
+  addToCapturedPieces(capturedColor)
+}
 
 function checkIfKing(row, col) {
   if (currentPlayer == "red" && row == 7) {
@@ -507,7 +539,7 @@ function checkIfKing(row, col) {
       const hexColor = rgbToHex(currentColor)
       const darkerColor = darkenColor(hexColor, 20)
       toKing.firstChild.style.backgroundColor = darkerColor
-      playSound('promote');
+      playSound("promote")
     }
   }
   if (currentPlayer == "black" && row == 0) {
@@ -522,8 +554,7 @@ function checkIfKing(row, col) {
       const hexColor = rgbToHex(currentColor)
       const darkerColor = darkenColor(hexColor, 20)
       toKing.firstChild.style.backgroundColor = darkerColor
-      playSound('promote');
-
+      playSound("promote")
     }
   }
 }
@@ -532,8 +563,15 @@ function hops(fromRow, fromCol, toRow, toCol, moves) {
   let { piece, enemy, jumps } = moves
   let i = 0
   j = 1
-  for (; j < jumps.length;) {
-    if ((fromRow + jumps[i] == toRow && fromCol + jumps[j] == toCol) && ((fromRow + jumps[2] < 8 && fromRow + jumps[2] >= 0) && (fromCol + jumps[3] < 8 && fromCol + jumps[3] >= 0))) {
+  for (; j < jumps.length; ) {
+    if (
+      fromRow + jumps[i] == toRow &&
+      fromCol + jumps[j] == toCol &&
+      fromRow + jumps[2] < 8 &&
+      fromRow + jumps[2] >= 0 &&
+      fromCol + jumps[3] < 8 &&
+      fromCol + jumps[3] >= 0
+    ) {
       if (
         board[fromRow][fromCol] == piece &&
         board[fromRow + jumps[0]][fromCol + jumps[1]] == enemy &&
@@ -562,18 +600,19 @@ function hops(fromRow, fromCol, toRow, toCol, moves) {
           fromRow + jumps[8] == toRow &&
           fromCol + jumps[9] == toCol
         ) {
-          if (jumps[6] == 0 && jumps[7] == 0) { //checks if a king move out in
-            removePiece(fromRow + jumps[4], fromCol + jumps[5]);
-            removePiece(fromRow + jumps[0], fromCol + jumps[1]);
+          if (jumps[6] == 0 && jumps[7] == 0) {
+            //checks if a king move out in
+            removePiece(fromRow + jumps[4], fromCol + jumps[5])
+            removePiece(fromRow + jumps[0], fromCol + jumps[1])
             updateScore(currentPlayer === "red" ? 1 : 2)
             updateScore(currentPlayer === "red" ? 1 : 2)
-            return true;
+            return true
           } else {
-            removePiece(fromRow + jumps[4], fromCol + jumps[1]);
-            removePiece(fromRow + jumps[0], fromCol + jumps[1]);
+            removePiece(fromRow + jumps[4], fromCol + jumps[1])
+            removePiece(fromRow + jumps[0], fromCol + jumps[1])
             updateScore(currentPlayer === "red" ? 1 : 2)
             updateScore(currentPlayer === "red" ? 1 : 2)
-            return true;
+            return true
           }
         }
       }
@@ -590,38 +629,38 @@ function getSquare(row, col) {
 //add a function for the new game button
 
 function newGame() {
-  boardContainer.innerHTML = ""; // Clear the board
-  currentPlayer = "black"; // Reset current player to black
-  setupBoard(); // Set up the board again
-  resetTime(); // Restart the timer
-  clearInterval(timerInterval); // Clear the timer interval
-  gameStarted = false; // Reset game started flag
-  winAlreadyProcessed = false; // Reset win processed flag
-  highlightMovablePieces();
-  resetScores(); // Reset scores for the current game
-  updateScores(); // Update the display to show current game scores and total wins
+  boardContainer.innerHTML = "" // Clear the board
+  currentPlayer = "black" // Reset current player to black
+  setupBoard() // Set up the board again
+  resetTime() // Restart the timer
+  clearInterval(timerInterval) // Clear the timer interval
+  gameStarted = false // Reset game started flag
+  winAlreadyProcessed = false // Reset win processed flag
+  highlightMovablePieces()
+  resetScores() // Reset scores for the current game
+  updateScores() // Update the display to show current game scores and total wins
 
-  resetCapturedPieces();
+  resetCapturedPieces()
 
-  playSound('start');
+  playSound("start")
 }
 
 function resetCapturedPieces() {
-  const redCaptured = document.getElementById('red-captured');
-  const blackCaptured = document.getElementById('black-captured');
-  
+  const redCaptured = document.getElementById("red-captured")
+  const blackCaptured = document.getElementById("black-captured")
+
   if (redCaptured) {
-    redCaptured.innerHTML = '<h3>Red Captures</h3>';
-    const initialRedRow = document.createElement('div');
-    initialRedRow.classList.add('captured-row');
-    redCaptured.appendChild(initialRedRow);
+    redCaptured.innerHTML = "<h3>Red Captures</h3>"
+    const initialRedRow = document.createElement("div")
+    initialRedRow.classList.add("captured-row")
+    redCaptured.appendChild(initialRedRow)
   }
-  
+
   if (blackCaptured) {
-    blackCaptured.innerHTML = '<h3>Black Captures</h3>';
-    const initialBlackRow = document.createElement('div');
-    initialBlackRow.classList.add('captured-row');
-    blackCaptured.appendChild(initialBlackRow);
+    blackCaptured.innerHTML = "<h3>Black Captures</h3>"
+    const initialBlackRow = document.createElement("div")
+    initialBlackRow.classList.add("captured-row")
+    blackCaptured.appendChild(initialBlackRow)
   }
 }
 
@@ -644,18 +683,22 @@ function openSettings() {
     )
   }
 
-  const lightSquare = document.querySelector(".square.light");
-  const darkSquare = document.querySelector(".square.dark");
+  const lightSquare = document.querySelector(".square.light")
+  const darkSquare = document.querySelector(".square.dark")
 
   if (lightSquare) {
-    document.getElementById("lightSquareColor").value = rgbToHex(getComputedStyle(lightSquare).backgroundColor);
+    document.getElementById("lightSquareColor").value = rgbToHex(
+      getComputedStyle(lightSquare).backgroundColor,
+    )
   }
   if (darkSquare) {
-    document.getElementById("darkSquareColor").value = rgbToHex(getComputedStyle(darkSquare).backgroundColor);
+    document.getElementById("darkSquareColor").value = rgbToHex(
+      getComputedStyle(darkSquare).backgroundColor,
+    )
   }
 
   document.getElementById("gameTimer").value = Math.floor(redTime / 60)
-  updateSoundToggle();
+  updateSoundToggle()
 }
 
 function closeSettings() {
@@ -695,11 +738,11 @@ function darkenColor(color, percent) {
 function saveSettings() {
   const redColor = document.getElementById("redColor").value
   const blackColor = document.getElementById("blackColor").value
-  const lightSquareColor = document.getElementById("lightSquareColor").value;
-  const darkSquareColor = document.getElementById("darkSquareColor").value;
+  const lightSquareColor = document.getElementById("lightSquareColor").value
+  const darkSquareColor = document.getElementById("darkSquareColor").value
   const newTime = document.getElementById("gameTimer").value * 60
 
-  handleSoundToggle();
+  handleSoundToggle()
 
   // Update piece colors
   document.querySelectorAll(".piece.red:not(.king)").forEach((piece) => {
@@ -722,12 +765,12 @@ function saveSettings() {
   })
 
   // Update board colors
-  document.querySelectorAll(".square.light").forEach(square => {
-    square.style.backgroundColor = lightSquareColor;
-  });
-  document.querySelectorAll(".square.dark").forEach(square => {
-    square.style.backgroundColor = darkSquareColor;
-  });
+  document.querySelectorAll(".square.light").forEach((square) => {
+    square.style.backgroundColor = lightSquareColor
+  })
+  document.querySelectorAll(".square.dark").forEach((square) => {
+    square.style.backgroundColor = darkSquareColor
+  })
 
   // Update timer
   redTime = newTime
@@ -747,7 +790,6 @@ function closeHelp() {
   helpPopup.style.display = "none"
 }
 
-
 //function to change the names of the players
 function updatePlayerNames() {
   const player1Name = document.getElementById("player1").value || "Player 1"
@@ -764,50 +806,50 @@ function updatePlayerNames() {
   if (scoreElement) {
     scoreElement.textContent = `${player1Name}: 0 | ${player2Name}: 0`
 
-    const savedPlayer1Wins = localStorage.getItem('checkers_player1Wins') || 0;
-    const savedPlayer2Wins = localStorage.getItem('checkers_player2Wins') || 0;
+    const savedPlayer1Wins = localStorage.getItem("checkers_player1Wins") || 0
+    const savedPlayer2Wins = localStorage.getItem("checkers_player2Wins") || 0
 
-    localStorage.setItem('checkers_player1Name', player1Name);
-    localStorage.setItem('checkers_player2Name', player2Name);
+    localStorage.setItem("checkers_player1Name", player1Name)
+    localStorage.setItem("checkers_player2Name", player2Name)
 
     // Just update display without incrementing
     document.getElementById("scoreText").textContent =
-      `${player1Name} : ${player1Wins} | ${player2Name} : ${player2Wins}`;
+      `${player1Name} : ${player1Wins} | ${player2Name} : ${player2Wins}`
   }
 }
 
 function updateScore(capturingPlayer) {
   if (capturingPlayer === 1) {
-    player2Score += 1;
+    player2Score += 1
   } else {
-    player1Score += 1;
+    player1Score += 1
   }
 
-  const player1Name = document.getElementById("player1").value || "Player 1";
-  const player2Name = document.getElementById("player2").value || "Player 2";
+  const player1Name = document.getElementById("player1").value || "Player 1"
+  const player2Name = document.getElementById("player2").value || "Player 2"
 
   // Update the score display
   document.getElementById("score").textContent =
-    `${player1Name}: ${player1Score} | ${player2Name}: ${player2Score}`;
+    `${player1Name}: ${player1Score} | ${player2Name}: ${player2Score}`
 
-  const redPieces = document.querySelectorAll(".piece.red").length;
-  const blackPieces = document.querySelectorAll(".piece.black").length;
+  const redPieces = document.querySelectorAll(".piece.red").length
+  const blackPieces = document.querySelectorAll(".piece.black").length
 
   // Check if the game is over because a player has no pieces left
   if (redPieces === 0 || blackPieces === 0) {
-    clearInterval(timerInterval);
-    timerInterval = null;
-    gameStarted = false;
+    clearInterval(timerInterval)
+    timerInterval = null
+    gameStarted = false
 
     if (redPieces === 0) {
-      endGame("Black captured all pieces!");
+      endGame("Black captured all pieces!")
     } else {
-      endGame("Red captured all pieces!");
+      endGame("Red captured all pieces!")
     }
-    return;
+    return
   }
 
-  playSound('boom');
+  playSound("boom")
 }
 
 function resetScores() {
@@ -832,21 +874,21 @@ function resetTime() {
 
 function showGameOver(winner, score, reason) {
   if (document.getElementById("gameOverPopup").style.display === "block") {
-    return;
+    return
   }
 
-  const popup = document.getElementById("gameOverPopup");
-  const winnerText = document.getElementById("winnerText");
-  const finalScore = document.getElementById("finalScore");
-  const gameEndReason = document.getElementById("gameEndReason");
+  const popup = document.getElementById("gameOverPopup")
+  const winnerText = document.getElementById("winnerText")
+  const finalScore = document.getElementById("finalScore")
+  const gameEndReason = document.getElementById("gameEndReason")
 
-  winnerText.textContent = `${winner} wins!`;
-  finalScore.textContent = `Final Score: ${score}`;
-  gameEndReason.textContent = reason;
+  winnerText.textContent = `${winner} wins!`
+  finalScore.textContent = `Final Score: ${score}`
+  gameEndReason.textContent = reason
 
-  popup.style.display = "block";
+  popup.style.display = "block"
 
-  gameStarted = false;
+  gameStarted = false
 }
 
 function closeGameOver() {
@@ -854,14 +896,14 @@ function closeGameOver() {
   popup.style.display = "none"
 
   const squares = document.querySelectorAll(".square")
-  squares.forEach(square => {
+  squares.forEach((square) => {
     square.removeEventListener("click", handleClick)
     square.removeEventListener("dragover", handleDragOver)
     square.removeEventListener("drop", handleDrop)
   })
 
   const pieces = document.querySelectorAll(".piece")
-  pieces.forEach(piece => {
+  pieces.forEach((piece) => {
     piece.draggable = false
     piece.removeEventListener("dragstart", handleDragStart)
     piece.removeEventListener("dragend", handleDragEnd)
@@ -872,7 +914,7 @@ function closeGameOver() {
     selectedPiece = null
   }
 
-  document.querySelectorAll(".square").forEach(square => {
+  document.querySelectorAll(".square").forEach((square) => {
     square.style.border = "none"
   })
 }
@@ -900,15 +942,18 @@ function enableDragAndDrop() {
 }
 
 function handleDragStart(e) {
-  if (board[e.target.parentNode.dataset.row][e.target.parentNode.dataset.col] !== currentPlayer) {
-    e.preventDefault();
-    return;
+  if (
+    board[e.target.parentNode.dataset.row][e.target.parentNode.dataset.col] !==
+    currentPlayer
+  ) {
+    e.preventDefault()
+    return
   }
-  e.target.classList.add("dragging");
-  const row = parseInt(e.target.parentNode.dataset.row);
-  const col = parseInt(e.target.parentNode.dataset.col);
-  selectedPiece = { row, col, element: e.target.parentNode };
-  showValidMoves(row, col);
+  e.target.classList.add("dragging")
+  const row = parseInt(e.target.parentNode.dataset.row)
+  const col = parseInt(e.target.parentNode.dataset.col)
+  selectedPiece = { row, col, element: e.target.parentNode }
+  showValidMoves(row, col)
 }
 
 function handleDragEnd(e) {
@@ -937,7 +982,7 @@ function handleDrop(e) {
   if (selectedPiece) {
     const valid = validMove(selectedPiece.row, selectedPiece.col, toRow, toCol)
     if (valid) {
-      playSound('move');
+      playSound("move")
       const fromSquare = getSquare(selectedPiece.row, selectedPiece.col)
       const piece = fromSquare.firstChild
       square.appendChild(piece)
@@ -952,68 +997,65 @@ function handleDrop(e) {
 }
 
 function updateScores() {
-  const player1Name = document.getElementById("player1").value || "Player 1";
-  const player2Name = document.getElementById("player2").value || "Player 2";
+  const player1Name = document.getElementById("player1").value || "Player 1"
+  const player2Name = document.getElementById("player2").value || "Player 2"
 
   // Update the wins display
   document.getElementById("scoreText").textContent =
-    `${player1Name} : ${player1Wins} | ${player2Name} : ${player2Wins}`;
+    `${player1Name} : ${player1Wins} | ${player2Name} : ${player2Wins}`
 }
 
-
 function redPlayerWins() {
-  player2Wins++;
-  updateScores();
+  player2Wins++
+  updateScores()
 
-  saveWinsToStorage();
+  saveWinsToStorage()
 }
 
 function blackPlayerWins() {
-  player1Wins++;
-  updateScores();
+  player1Wins++
+  updateScores()
 
-  saveWinsToStorage();
+  saveWinsToStorage()
 }
 
 function saveWinsToStorage() {
-  const player1Name = document.getElementById("player1").value || "Player 1";
-  const player2Name = document.getElementById("player2").value || "Player 2";
+  const player1Name = document.getElementById("player1").value || "Player 1"
+  const player2Name = document.getElementById("player2").value || "Player 2"
 
-  localStorage.setItem('checkers_player1Wins', player1Wins);
-  localStorage.setItem('checkers_player2Wins', player2Wins);
-  localStorage.setItem('checkers_player1Name', player1Name);
-  localStorage.setItem('checkers_player2Name', player2Name);
+  localStorage.setItem("checkers_player1Wins", player1Wins)
+  localStorage.setItem("checkers_player2Wins", player2Wins)
+  localStorage.setItem("checkers_player1Name", player1Name)
+  localStorage.setItem("checkers_player2Name", player2Name)
 }
 
 function loadWinsFromStorage() {
-  player1Wins = parseInt(localStorage.getItem('checkers_player1Wins')) || 0;
-  player2Wins = parseInt(localStorage.getItem('checkers_player2Wins')) || 0;
+  player1Wins = parseInt(localStorage.getItem("checkers_player1Wins")) || 0
+  player2Wins = parseInt(localStorage.getItem("checkers_player2Wins")) || 0
 
-  const savedPlayer1Name = localStorage.getItem('checkers_player1Name');
-  const savedPlayer2Name = localStorage.getItem('checkers_player2Name');
+  const savedPlayer1Name = localStorage.getItem("checkers_player1Name")
+  const savedPlayer2Name = localStorage.getItem("checkers_player2Name")
 
   if (savedPlayer1Name) {
-    document.getElementById("player1").value = savedPlayer1Name;
+    document.getElementById("player1").value = savedPlayer1Name
   }
 
   if (savedPlayer2Name) {
-    document.getElementById("player2").value = savedPlayer2Name;
+    document.getElementById("player2").value = savedPlayer2Name
   }
 
-  updateScores();
+  updateScores()
 }
-
 
 function resetWins() {
-  player1Wins = 0;
-  player2Wins = 0;
-  saveWinsToStorage();
-  updateScores();
+  player1Wins = 0
+  player2Wins = 0
+  saveWinsToStorage()
+  updateScores()
 }
 
-
 function clearValidMoveIndicators() {
-  document.querySelectorAll('.valid-move-indicator').forEach(indicator => {
+  document.querySelectorAll(".valid-move-indicator").forEach((indicator) => {
     indicator.remove()
   })
 }
@@ -1027,57 +1069,56 @@ function showValidMoves(row, col) {
   }
 
   const validMoves = getValidMoves(row, col)
-  validMoves.forEach(move => {
+  validMoves.forEach((move) => {
     const square = getSquare(move.row, move.col)
-    const indicator = document.createElement('div')
-    indicator.className = 'valid-move-indicator'
+    const indicator = document.createElement("div")
+    indicator.className = "valid-move-indicator"
     square.appendChild(indicator)
   })
 }
 
 function addToCapturedPieces(color) {
-  const container = color === 'red' ? 
-    document.getElementById('black-captured') : 
-    document.getElementById('red-captured');
-  
+  const container =
+    color === "red"
+      ? document.getElementById("black-captured")
+      : document.getElementById("red-captured")
+
   if (container) {
-    const capturedPiece = document.createElement('div');
-    capturedPiece.classList.add('captured-piece', color);
-    
-    let currentRow = container.querySelector('.captured-row:last-child');
-    const piecesPerRow = 4;
-    
+    const capturedPiece = document.createElement("div")
+    capturedPiece.classList.add("captured-piece", color)
+
+    let currentRow = container.querySelector(".captured-row:last-child")
+    const piecesPerRow = 4
+
     if (!currentRow || currentRow.children.length >= piecesPerRow) {
-      currentRow = document.createElement('div');
-      currentRow.classList.add('captured-row');
-      container.appendChild(currentRow);
+      currentRow = document.createElement("div")
+      currentRow.classList.add("captured-row")
+      container.appendChild(currentRow)
     }
-    
-    currentRow.appendChild(capturedPiece);
+
+    currentRow.appendChild(capturedPiece)
   }
 }
 
-
-document.getElementById('volumeControl').addEventListener('input', function () {
-  const volumeValue = this.value;
-  document.getElementById('volumeValue').textContent = `${Math.round(volumeValue * 100)}%`;
-});
-
-
+document.getElementById("volumeControl").addEventListener("input", function () {
+  const volumeValue = this.value
+  document.getElementById("volumeValue").textContent =
+    `${Math.round(volumeValue * 100)}%`
+})
 
 document.addEventListener("DOMContentLoaded", function () {
   setupBoard()
   loadWinsFromStorage()
   startTimer()
   highlightMovablePieces()
-  playSound('start');
+  playSound("start")
   document.getElementById("newGameButton").addEventListener("click", newGame)
-  addResetWinsButton();
-  updatePlayerNames();
+  addResetWinsButton()
+  updatePlayerNames()
 })
 
 buttons.forEach((button) => {
   button.addEventListener("click", () => {
-    playSound('boom');
+    playSound("boom")
   })
 })

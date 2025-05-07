@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
 
 /* General styles */
 html,
@@ -12,7 +12,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   background-color: #808080;
 }
 
@@ -67,11 +67,11 @@ body {
   background: linear-gradient(135deg, #440f0f, #470b0b);
   /* red gradient */
   border-radius: 12px;
-  box-shadow: 0 0 20px #c50101, 0 0 40px #eb1010;
+  box-shadow:
+    0 0 20px #c50101,
+    0 0 40px #eb1010;
   animation: containerGlow 3s ease-in-out infinite;
 }
-
-
 
 .skeleton {
   display: flex;
@@ -180,68 +180,92 @@ body {
 
 /* Chess Pieces Unicode Characters */
 .piece.white.king::after {
-  content: '♔';
+  content: "♔";
   color: white;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
 }
 
 .piece.white.queen::after {
-  content: '♕';
+  content: "♕";
   color: white;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
 }
 
 .piece.white.rook::after {
-  content: '♖';
+  content: "♖";
   color: white;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
 }
 
 .piece.white.bishop::after {
-  content: '♗';
+  content: "♗";
   color: white;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
 }
 
 .piece.white.knight::after {
-  content: '♘';
+  content: "♘";
   color: white;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
 }
 
 .piece.white.pawn::after {
-  content: '♙';
+  content: "♙";
   color: white;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
 }
 
 .piece.black.king::after {
-  content: '♚';
+  content: "♚";
   color: black;
 }
 
 .piece.black.queen::after {
-  content: '♛';
+  content: "♛";
   color: black;
 }
 
 .piece.black.rook::after {
-  content: '♜';
+  content: "♜";
   color: black;
 }
 
 .piece.black.bishop::after {
-  content: '♝';
+  content: "♝";
   color: black;
 }
 
 .piece.black.knight::after {
-  content: '♞';
+  content: "♞";
   color: black;
 }
 
 .piece.black.pawn::after {
-  content: '♟';
+  content: "♟";
   color: black;
 }
 
@@ -380,7 +404,7 @@ body {
 }
 
 .valid-move::before {
-  content: '';
+  content: "";
   position: absolute;
   width: 20px;
   height: 20px;
@@ -390,7 +414,7 @@ body {
 }
 
 .valid-capture::before {
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   height: 100%;
@@ -400,7 +424,7 @@ body {
 }
 
 .check::before {
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   height: 100%;
@@ -476,7 +500,6 @@ body {
 .square.highlight-to {
   background-color: rgba(100, 255, 100, 0.4) !important;
 }
-
 
 .help-text {
   margin: 20px 0;
