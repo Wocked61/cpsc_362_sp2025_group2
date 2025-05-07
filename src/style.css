@@ -23,17 +23,18 @@
   background-color: #333;
   border: 2px solid #444;
   border-radius: 10px;
-  width: 30%;
+  width: 35%;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #boardContainer {
-  background-color: black;
+  background-color: rgb(0, 0, 0);
   display: grid;
   grid-template-columns: repeat(8, 50px);
   grid-template-rows: repeat(8, 50px);
   gap: 5px;
   border: 10px solid #000;
+  height: 435px;
 }
 
 .square {
@@ -48,8 +49,17 @@
     box-shadow 0.1s ease;
 }
 
+.valid-move-indicator {
+  width: 30px;
+  height: 30px;
+  background-color: rgba(128, 128, 128, 0.5);
+  border-radius: 50%;
+  position: relative;
+  pointer-events: none;
+}
+
 .dark {
-  background-color: brown;
+  background-color: #a62b2b;
 }
 
 .light {
@@ -59,6 +69,24 @@
 .red.king {
   background-color: darkred;
   cursor: pointer;
+}
+
+.red.king::after {
+  content: "♔";
+  /* Unicode crown symbol */
+  margin: 7px;
+  transform: translate(-50%, -50%);
+  color: red;
+  font-size: 24px;
+}
+
+.black.king::after {
+  content: "♔";
+  /* Unicode crown symbol */
+  transform: translate(-40%, -40%);
+  margin: 7px;
+  color: black;
+  font-size: 24px;
 }
 
 .black.king {
@@ -79,6 +107,7 @@
   opacity: 0.5;
   cursor: grab;
 }
+
 .red {
   background-color: red;
   border: 2px solid #000;
@@ -91,18 +120,19 @@
 
 /* New CSS for highlighted movable pieces */
 .square.highlight {
-  border: 2px solid green; /* Green border to indicate movable pieces */
-  background-color: rgba(
-    0,
-    255,
-    0,
-    0.2
-  ); /* Light green background for emphasis */
+  border: 2px solid green;
+  /* Green border to indicate movable pieces */
+  background-color: rgba(0,
+      255,
+      0,
+      0.2);
+  /* Light green background for emphasis */
 }
 
 /* Hover effect for enhanced interactivity */
 .square.highlight:hover {
-  background-color: rgba(0, 255, 0, 0.4); /* Brighter green on hover */
+  background-color: rgba(0, 255, 0, 0.4);
+  /* Brighter green on hover */
 }
 
 html,
@@ -172,9 +202,11 @@ body {
 }
 
 .board {
-  max-width: fit-content;
   display: flex;
+  flex-direction: row;
+  max-width: fit-content;
   margin: 20px auto;
+  align-items: flex-start;
 }
 
 .image {
@@ -191,6 +223,11 @@ body {
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  background: linear-gradient(135deg, #0f4425, #082c13);
+  /* green gradient */
+  border-radius: 12px;
+  box-shadow: 0 0 20px #2ba446, 0 0 40px #0d7333;
+  animation: containerGlow 3s ease-in-out infinite;
 }
 
 footer {
@@ -225,23 +262,37 @@ footer {
 }
 
 .box {
-  width: 350px;
-  height: 300px;
-  border: 2px solid #000;
+  width: 480px;
+  height: 350px;
+  border: 2px solid #0dcb53;
   justify-content: center;
   align-items: center;
   font-size: 2rem;
   margin: 2rem;
 }
 
+@keyframes pulseBorder {
+  0% {
+    box-shadow: 0 0 10px #58a4f1, 0 0 20px #ff00ae, 0 0 30px rgb(225, 0, 255);
+  }
+
+  50% {
+    box-shadow: 0 0 20px #58a4f1, 0 0 30px #ff00f2, 0 0 40px rgb(255, 0, 179);
+  }
+
+  100% {
+    box-shadow: 0 0 10px #58a4f1, 0 0 20px #ff00cc, 0 0 30px rgb(225, 0, 255);
+  }
+}
+
 .box-settings {
-  width: 350px;
-  height: 300px;
   width: 400px;
   height: 150px;
-  border: 2px solid #000;
+  border: 2px solid #0dcb53;
   justify-content: center;
   align-items: center;
+  align-content: center;
+  color: #fff2f2;
   font-size: 2rem;
   margin: 2rem;
 }
@@ -287,7 +338,8 @@ select {
 }
 
 .popup {
-  display: none; /* Hidden by default */
+  display: none;
+  /* Hidden by default */
   position: fixed;
   top: 0;
   left: 0;
@@ -376,4 +428,84 @@ select {
 #gameEndReason {
   color: #666;
   font-style: italic;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+#soundToggle {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.setting-item {
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#volumeControl {
+  width: 150px;
+}
+
+.player-turn,
+.score {
+  margin: 0;
+  padding: 0;
+  line-height: 1.3;
+}
+
+h4 {
+  margin: 0;
+  padding: 0;
+  font-size: 1.2em;
+}
+
+.captured-pieces-container {
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+  width: 150px;
+}
+
+.captured-pieces {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.captured-pieces h3 {
+  color: white;
+  font-size: 16px;
+  margin-top: 0;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.captured-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.captured-piece {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 1px solid #000;
+}
+
+.captured-piece.red {
+  background-color: red;
+}
+
+.captured-piece.black {
+  background-color: black;
 }

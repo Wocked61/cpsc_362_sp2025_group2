@@ -1,159 +1,181 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <title>Checkers</title>
-  </head>
 
-  <body>
-    <header>
-      <p class="title">Checkers and Chess</p>
-      <nav class="navigation">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Checkers</title>
+</head>
+
+<body>
+  <header>
+    <p class="title">Checkers and Chess</p>
+    <nav class="navigation">
+      <ul>
+        <li><a href="home.html">Home</a></li>
+        <li><a href="index.html">Checkers</a></li>
+        <li><a href="chess.html">Chess</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div id="timer">Red Time Left: 3:00 | Black Time Left: 3:00</div>
+    <div class="skeleton">
+      <div class="box">
+        <!-- Game Information Display -->
+
+        <div class="game-info">
+          <div>
+            <h4>Wins</h4>
+            <p id="scoreText">Player 1: 0 | Player 2: 0</p>
+          </div>
+          <h4>Score</h4>
+          <p class="player-turn">Player 1's Turn</p>
+          <p id="score" class="score">Player 1: 0 | Player 2: 0</p>
+        </div>
+
+        <!-- Toolbar with buttons -->
+        <div class="toolbar">
+          <button id="newGameButton" class="button">New Game</button>
+
+          <button id="settings" class="button" onclick="openSettings()">
+            Settings
+          </button>
+          <button class="button" onclick="openHelp()">Help</button>
+          <button class="button" onclick="resetWins()">Reset Wins</button>
+        </div>
+      </div>
+
+      <div class="board">
+        <div id="boardContainer"></div>
+        <div class="captured-pieces-container">
+          <div id="red-captured" class="captured-pieces">
+            <h3>Red Captures</h3>
+            <div class="captured-row"></div>
+          </div>
+          <div id="black-captured" class="captured-pieces">
+            <h3>Black Captures</h3>
+            <div class="captured-row"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- settings -->
+      <div class="box-settings">
+        <div class="settings">
+          <label for="player1">Player 1 Name:</label>
+          <input class="name" type="text" id="player1" name="player1" placeholder="Player 1" value=""
+            oninput="updatePlayerNames()" />
+          <label for="player2">Player 2 Name:</label>
+          <input class="name" type="text" id="player2" name="player2" placeholder="Player 2" value=""
+            oninput="updatePlayerNames()" />
+          <label for="difficulty">Game Difficulty:</label>
+          <select id="difficulty" name="difficulty">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="settingsPopup" class="popup">
+    <div class="popup-content">
+      <h2>Game Settings</h2>
+      <div class="setting-group">
+        <label>Top Player Color:</label>
+        <input type="color" id="redColor" value="#ff0000" />
+      </div>
+      <div class="setting-group">
+        <label>Bottom Player Color:</label>
+        <input type="color" id="blackColor" value="#000000" />
+      </div>
+      <div class="setting-group">
+        <label for="darkSquareColor">Dark Square Color:</label>
+        <input type="color" id="darkSquareColor" value="#666666">
+      </div>
+      <div class="setting-group">
+        <label for="lightSquareColor">Light Square Color:</label>
+        <input type="color" id="lightSquareColor" value="#FFFFFF">
+      </div>
+      <div class="setting-row">
+        <label for="soundToggle">Sound Effects:</label>
+        <input type="checkbox" id="soundToggle" checked>
+      </div>
+      <div class="setting-item">
+        <label for="volumeControl">Volume:</label>
+        <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5">
+        <span id="volumeValue">100%</span>
+      </div>
+      <div class="setting-group">
+        <label>Game Timer (minutes):</label>
+        <input type="number" id="gameTimer" min="1" max="30" value="3" />
+      </div>
+      <div class="center">
+        <button onclick="saveSettings()" class="button">Save</button>
+        <button onclick="closeSettings()" class="button">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="helpPopup" class="popup">
+    <div class="popup-content help-content">
+      <h2>How to Play Checkers</h2>
+      <div class="help-text">
+        <h3>Basic Rules:</h3>
         <ul>
-          <li><a href="home.html">Home</a></li>
-          <li><a href="index.html">Checkers</a></li>
-          <li><a href="chess.html">Chess</a></li>
+          <li>Players move diagonally forward one space at a time</li>
+          <li>Capture opponent's pieces by jumping over them</li>
+          <li>Multiple jumps are required if available</li>
+          <li>Pieces that reach the opposite end become Kings</li>
+          <li>Kings can move and capture backwards</li>
         </ul>
-      </nav>
-    </header>
 
-    <div class="container">
-      <div id="timer">Red Time Left: 3:00 | Black Time Left: 3:00</div>
-      <div class="skeleton">
-        <div class="box">
-          <!-- Game Information Display -->
-          <div class="game-info">
-            <p class="player-turn">Player 1's Turn</p>
-            <p id="score" class="score">Player 1: 0 | Player 2: 0</p>
-          </div>
+        <h3>How to Move:</h3>
+        <ul>
+          <li>Click on your piece to see available moves</li>
+          <li>Click on a highlighted square to move there</li>
+          <li>The timer counts down during your turn</li>
+          <li>
+            The game ends when a player captures all pieces or runs out of
+            time
+          </li>
+        </ul>
+      </div>
+      <button onclick="closeHelp()" class="button">Close</button>
+    </div>
+  </div>
 
-          <!-- Toolbar with buttons -->
-          <div class="toolbar">
-            <button id="newGameButton" class="button">New Game</button>
-
-            <button id="settings" class="button" onclick="openSettings()">
-              Settings
-            </button>
-            <button class="button" onclick="openHelp()">Help</button>
-          </div>
-        </div>
-
-        <div class="board">
-          <div id="boardContainer"></div>
-        </div>
-
-        <!-- settings -->
-        <div class="box-settings">
-          <div class="settings">
-            <label for="player1">Player 1 Name:</label>
-            <input
-              class="name"
-              type="text"
-              id="player1"
-              name="player1"
-              placeholder="Player 1"
-              value=""
-              oninput="updatePlayerNames()"
-            />
-            <label for="player2">Player 2 Name:</label>
-            <input
-              class="name"
-              type="text"
-              id="player2"
-              name="player2"
-              placeholder="Player 2"
-              value=""
-              oninput="updatePlayerNames()"
-            />
-            <label for="difficulty">Game Difficulty:</label>
-            <select id="difficulty" name="difficulty">
-              <option value="easy">Easy</option>
-              <option value="medium">Medium</option>
-              <option value="hard">Hard</option>
-            </select>
-          </div>
-        </div>
+  <div id="gameOverPopup" class="popup">
+    <div class="popup-content">
+      <h2 class="game-over-content">Game Over!</h2>
+      <div class="game-over-content">
+        <p id="winnerText">Player wins!</p>
+        <p id="finalScore">Final Score:</p>
+        <p id="gameEndReason"></p>
+      </div>
+      <div class="center">
+        <button onclick="startNewGame()" class="button">New Game</button>
+        <button onclick="closeGameOver()" class="button">Close</button>
       </div>
     </div>
+  </div>
 
-    <div id="settingsPopup" class="popup">
-      <div class="popup-content">
-        <h2>Game Settings</h2>
-        <div class="setting-group">
-          <label>Top Player Color:</label>
-          <input type="color" id="redColor" value="#ff0000" />
-        </div>
-        <div class="setting-group">
-          <label>Bottom Player Color:</label>
-          <input type="color" id="blackColor" value="#000000" />
-        </div>
-        <div class="setting-group">
-          <label>Game Timer (minutes):</label>
-          <input type="number" id="gameTimer" min="1" max="30" value="3" />
-        </div>
-        <div class="center">
-          <button onclick="saveSettings()" class="center">Save</button>
-          <button onclick="closeSettings()" class="center">Cancel</button>
-        </div>
+  <footer>
+    <div class="footer">
+      <div class="footer-content">
+        <p class="footer-text">Checkers Game</p>
+        <p class="footer-text">Created by Group 2</p>
+        <p class="footer-text">CPSC 362 - Spring 2025</p>
       </div>
     </div>
+  </footer>
 
-    <div id="helpPopup" class="popup">
-      <div class="popup-content help-content">
-        <h2>How to Play Checkers</h2>
-        <div class="help-text">
-          <h3>Basic Rules:</h3>
-          <ul>
-            <li>Players move diagonally forward one space at a time</li>
-            <li>Capture opponent's pieces by jumping over them</li>
-            <li>Multiple jumps are required if available</li>
-            <li>Pieces that reach the opposite end become Kings</li>
-            <li>Kings can move and capture backwards</li>
-          </ul>
+  <script src="script.js?query=string" id="query"></script>
+  <script></script>
+</body>
 
-          <h3>How to Move:</h3>
-          <ul>
-            <li>Click on your piece to see available moves</li>
-            <li>Click on a highlighted square to move there</li>
-            <li>The timer counts down during your turn</li>
-            <li>
-              The game ends when a player captures all pieces or runs out of
-              time
-            </li>
-          </ul>
-        </div>
-        <button onclick="closeHelp()" class="button">Close</button>
-      </div>
-    </div>
-
-    <div id="gameOverPopup" class="popup">
-      <div class="popup-content">
-        <h2>Game Over!</h2>
-        <div class="game-over-content">
-          <p id="winnerText">Player wins!</p>
-          <p id="finalScore">Final Score:</p>
-          <p id="gameEndReason"></p>
-        </div>
-        <div class="center">
-          <button onclick="startNewGame()" class="button">New Game</button>
-          <button onclick="closeGameOver()" class="button">Close</button>
-        </div>
-      </div>
-    </div>
-
-    <footer>
-      <div class="footer">
-        <div class="footer-content">
-          <p class="footer-text">Checkers Game</p>
-          <p class="footer-text">Created by Group 2</p>
-          <p class="footer-text">CPSC 362 - Spring 2025</p>
-        </div>
-      </div>
-    </footer>
-
-    <script src="script.js?query=string" id="query"></script>
-    <script></script>
-  </body>
 </html>

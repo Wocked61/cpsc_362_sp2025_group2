@@ -1,13 +1,13 @@
 // to do
-// add change board color option
-// wins and losses
 // save settings when new game??
-// show available moves for pieces
 // improve design???
+// fix issues that arised
+// add a sound for regular takes
+// add a setting for changing the take sound
+
 
 var boardContainer = document.getElementById("boardContainer")
-const rows = 8,
-  cols = 8
+const rows = 8, cols = 8
 let board = []
 let currentPlayer = "black"
 let selectedPiece = null
@@ -19,6 +19,52 @@ let player1Score = 0
 let player2Score = 0
 let player1Wins = 0
 let player2Wins = 0
+let soundEnabled = true;
+let winAlreadyProcessed = false;
+
+//sounds for the game
+//make them functions later
+const sounds = {
+  boom: new Audio("sounds/boom.mov"),
+  click: new Audio("sounds/buttonclick.mp3"),
+  start: new Audio("sounds/board_start.mp3"),
+  move: new Audio("sounds/moving.mp3"),
+  take: new Audio("sounds/take.mp3"),
+  promote: new Audio("sounds/promote.mp3"),
+  win: new Audio("sounds/yippee-tbh.mp3")
+};
+
+
+
+
+const buttons = document.querySelectorAll(".button")
+
+
+function playSound(soundName) {
+  if (soundEnabled && sounds[soundName]) {
+    sounds[soundName].currentTime = 0;
+    try {
+      sounds[soundName].play().catch(error => {
+        console.error("Sound play error:", error);
+      });
+    } catch (error) {
+      console.error("Sound playback error:", error);
+    }
+  }
+}
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+}
+
+function updateSoundToggle() {
+  const soundToggle = document.getElementById("soundToggle");
+  soundToggle.checked = soundEnabled;
+}
+
+function handleSoundToggle() {
+  const soundToggle = document.getElementById("soundToggle");
+  soundEnabled = soundToggle.checked;
+}
 
 //can add more cords in jumps to hop over 3 or more peices
 const moveSet = [
@@ -41,6 +87,13 @@ const kingMoveSet = [
     enemy: "black",
     jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0],
   }, //left
+
+  //moves as king to the sides
+  { piece: "red", enemy: "black", jumps: [-1, 1, -2, 2, -1, 3, 0, 0, 0, 4] }, //left down 
+  { piece: "red", enemy: "black", jumps: [-1, -1, -2, -2, -1, -3, 0, 0, 0, -4] }, //left up 
+  { piece: "red", enemy: "black", jumps: [1, -1, 2, -2, 1, -3, 0, 0, 0, -4] }, //right down 
+  { piece: "red", enemy: "black", jumps: [1, 1, 2, 2, 1, 3, 0, 0, 0, 4] }, //right up 
+
   { piece: "black", enemy: "red", jumps: [1, 1, 2, 2, 3, 3, 4, 4, 4, 0] }, //right
   { piece: "black", enemy: "red", jumps: [1, -1, 2, -2, 3, -3, 4, -4, 4, 0] }, //left
   { piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -3, 3, -4, 4, -4, 0] }, //right
@@ -49,7 +102,15 @@ const kingMoveSet = [
     enemy: "red",
     jumps: [-1, -1, -2, -2, -3, -3, -4, -4, -4, 0],
   }, //left
+
+  //moves as king to the sides
+  { piece: "black", enemy: "red", jumps: [-1, -1, -2, -2, -1, -3, 0, 0, 0, -4] }, //left up 
+  { piece: "black", enemy: "red", jumps: [-1, 1, -2, 2, -1, 3, 0, 0, 0, 4] }, //left down 
+
+  { piece: "black", enemy: "red", jumps: [1, 1, 2, 2, 1, 3, 0, 0, 0, 4] }, //right up 
+  { piece: "black", enemy: "red", jumps: [1, -1, 2, -2, 1, -3, 0, 0, 0, -4] }, //right down 
 ]
+
 // Timer functionality
 function startTimer() {
   clearInterval(timerInterval) // Clear the previous timer
@@ -75,6 +136,13 @@ function startTimer() {
   }, 1000) // Update every second
 }
 
+//pause Timer
+function pauseTime() {
+  clearInterval(timerInterval);  // Stop the timer
+  timerInterval = null;  // Clear the interval reference
+}
+
+
 // Helper function to format time in MM:SS
 function formatTime(seconds) {
   const minutes = Math.floor(seconds / 60)
@@ -90,67 +158,137 @@ function switchPlayer() {
   const player2Name = document.getElementById("player2").value || "Player 2"
   const playerTurnElement = document.querySelector(".player-turn")
 
+  if (!checkForValidMoves()) {
+    endGame(`${currentPlayer === "red" ? "Red" : "Black"} has no valid moves!`)
+    return
+  }
+
   if (playerTurnElement) {
     playerTurnElement.textContent = `${currentPlayer === "red" ? player2Name : player1Name}'s Turn`
   }
 
-  startTimer() // Start the timer for the next player
+  startTimer()
+}
+
+//helper function to check if there are valid moves for the current player that doesnt break the highlight feature
+function checkForValidMoves() {
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      if (board[row][col] === currentPlayer) {
+        const moves = getValidMoves(row, col)
+        if (moves.length > 0) {
+          return true // Found at least one valid move
+        }
+      }
+    }
+  }
+  return false
 }
 
 // End the game
 function endGame(reason) {
-  clearInterval(timerInterval)
-  gameStarted = false
+  if (winAlreadyProcessed) {
+    console.log("Win already processed, skipping counter increment");
 
-  const player1Name = document.getElementById("player1").value || "Player 1"
-  const player2Name = document.getElementById("player2").value || "Player 2"
+    const player1Name = document.getElementById("player1").value || "Player 1";
+    const player2Name = document.getElementById("player2").value || "Player 2";
+    let winner;
 
-  // Determine winner based on current game state
-  const redPieces = document.querySelectorAll(".piece.red").length
-  const blackPieces = document.querySelectorAll(".piece.black").length
+    if (reason.includes("time")) {
+      winner = currentPlayer === "red" ? player1Name : player2Name;
+    } else if (reason.includes("no valid moves")) {
+      winner = currentPlayer === "black" ? player2Name : player1Name;
+    } else if (reason.includes("Black captured")) {
+      winner = player1Name;
+    } else if (reason.includes("Red captured")) {
+      winner = player2Name;
+    }
 
-  let winner
-  if (reason.includes("time")) {
-    winner = currentPlayer === "red" ? player1Name : player2Name
-  } else {
-    winner = redPieces === 0 ? player1Name : player2Name
+    const score = `${player2Score} - ${player1Score}`;
+    playSound('win');
+    showGameOver(winner, score, reason);
+    return;
   }
 
-  const score = `${player2Score} - ${player1Score}`
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
 
-  showGameOver(winner, score, reason)
-  winNoise.currentTime = 0
-  winNoise.play()
+  gameStarted = false;
+  winAlreadyProcessed = true;
+
+  const player1Name = document.getElementById("player1").value || "Player 1";
+  const player2Name = document.getElementById("player2").value || "Player 2";
+
+  let winner;
+
+  if (reason.includes("time")) {
+    if (currentPlayer === "red") {
+      winner = player1Name;
+      player1Wins++;
+    } else {
+      winner = player2Name;
+      player2Wins++;
+    }
+  } else if (reason.includes("no valid moves")) {
+    if (currentPlayer === "black") {
+      winner = player2Name;
+      player2Wins++;
+    } else {
+      winner = player1Name;
+      player1Wins++;
+    }
+  } else if (reason.includes("Black captured")) {
+    winner = player1Name;
+    player1Wins++;
+  } else if (reason.includes("Red captured")) {
+    winner = player2Name;
+    player2Wins++;
+  }
+
+  updateScores();
+  saveWinsToStorage();
+
+  const score = `${player2Score} - ${player1Score}`;
+  playSound('win');
+  showGameOver(winner, score, reason);
 }
+
 //makes board
 function setupBoard() {
-  boardContainer.innerHTML = ""
+  boardContainer.innerHTML = "";
+  const lightSquareColor = document.getElementById("light")?.value || "#f5f5dc";
+  const darkSquareColor = document.getElementById("dark")?.value || "#a62b2b";
+
   for (let row = 0; row < rows; row++) {
-    board[row] = [] //make 2d
+    board[row] = [];
     for (let col = 0; col < cols; col++) {
-      const square = document.createElement("div")
-      square.classList.add("square", (row + col) % 2 === 0 ? "light" : "dark") //adds square light or square dark class
-      square.dataset.row = row //stores row
-      square.dataset.col = col //stores col
-      square.addEventListener("click", handleClick)
-      if ((row + col) % 2 === 1) {
-        // Only on dark squares
+      const square = document.createElement("div");
+      const isLight = (row + col) % 2 === 0;
+      square.classList.add("square", isLight ? "light" : "dark");
+      square.style.backgroundColor = isLight ? lightSquareColor : darkSquareColor;
+      square.dataset.row = row;
+      square.dataset.col = col;
+      square.addEventListener("click", handleClick);
+
+      if (!isLight) {
         if (row < 3) {
-          addPiece(square, "red")
-          board[row][col] = "red"
+          addPiece(square, "red");
+          board[row][col] = "red";
         } else if (row > 4) {
-          addPiece(square, "black")
-          board[row][col] = "black"
+          addPiece(square, "black");
+          board[row][col] = "black";
         } else {
-          board[row][col] = null
+          board[row][col] = null;
         }
       } else {
-        board[row][col] = null
+        board[row][col] = null;
       }
-      boardContainer.appendChild(square)
+      boardContainer.appendChild(square);
     }
   }
-  enableDragAndDrop()
+  enableDragAndDrop();
 }
 
 //creates and adds appends the piece to the square
@@ -163,75 +301,68 @@ function addPiece(square, color) {
 
 //click on square
 function handleClick(event) {
-  const square = event.target.closest(".square") //current clicked
+  const square = event.target.closest(".square")
   const row = parseInt(square.dataset.row)
   const col = parseInt(square.dataset.col)
 
   if (board[row][col] === currentPlayer) {
-    soundClick.currentTime = 0
-    soundClick.play()
+    playSound('click');
   }
 
+  clearValidMoveIndicators()
+
   if (selectedPiece) {
-    //if selectedPiece is not empty
     let valid = validMove(selectedPiece.row, selectedPiece.col, row, col)
 
-    //change selected square
-    if (
-      board[row][col] == currentPlayer &&
-      board[selectedPiece.row][selectedPiece.col] == currentPlayer
-    ) {
+    if (board[row][col] == currentPlayer) {
       selectedPiece.element.style.border = "none"
       selectedPiece = { row, col, element: square }
+      highlightMovablePieces()
       square.style.border = "3px solid yellow"
+      showValidMoves(row, col)
     } else if (!valid) {
-      //if trys to move where antoher is
       console.log("NON VALID MOVE")
+      highlightMovablePieces()
     } else {
       movePiece(selectedPiece.row, selectedPiece.col, row, col, valid)
-      selectedPiece = ""
+      selectedPiece = null
+      highlightMovablePieces()
     }
   } else if (board[row][col] === currentPlayer) {
     selectedPiece = { row, col, element: square }
-    square.style.border = "3px solid yellow" // Highlight selected piece
+    highlightMovablePieces()
+    square.style.border = "3px solid yellow"
+    showValidMoves(row, col)
   }
 }
 
 //move piece
 function movePiece(fromRow, fromCol, toRow, toCol, valid) {
-  //check if valid move
   if (!valid) return
-  moveSound.currentTime = 0
-  moveSound.play()
+  playSound('move');
 
   if (!gameStarted) {
-    gameStarted = true // Set the flag to true when the game starts
-    startTimer() // Start the timer when the game starts
+    gameStarted = true
+    startTimer()
   }
 
-  //update visuals
   const fromSquare = getSquare(fromRow, fromCol)
   const toSquare = getSquare(toRow, toCol)
   toSquare.append(fromSquare.firstChild)
 
-  //change the array
   board[toRow][toCol] = board[fromRow][fromCol]
   board[fromRow][fromCol] = null
 
-  //check if should be king
   checkIfKing(toRow, toCol)
 
-  //switch player
   switchPlayer()
 
-  //clear the border
   fromSquare.style.border = "none"
 
-  highlightMovablePieces()
+  //highlightMovablePieces()
 }
 
 function highlightMovablePieces() {
-  // Clear previous highlights
   document.querySelectorAll(".square").forEach((square) => {
     square.style.border = "none"
   })
@@ -239,63 +370,83 @@ function highlightMovablePieces() {
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       if (board[row][col] === currentPlayer) {
-        // Check if the piece has any valid moves
         const moves = getValidMoves(row, col)
         if (moves.length > 0) {
           const square = getSquare(row, col)
-          square.style.border = "2px solid green" // Highlight movable pieces
+          square.style.border = "2px solid green"
         }
       }
     }
   }
 }
 
-// Helper function to get valid moves for a piece
+//Helper function to get valid moves for a piece
 function getValidMoves(row, col) {
   const validMoves = []
-
-  // Define movement directions based on player and whether it's a king
   const directions = []
-  if (board[row][col] === "red") {
-    directions.push([1, 1], [1, -1]) // Red moves forward
-    if (getSquare(row, col).firstChild.dataset.king === "true") {
-      directions.push([-1, 1], [-1, -1]) // Kings move backward as well
-    }
-  } else if (board[row][col] === "black") {
-    directions.push([-1, 1], [-1, -1]) // Black moves forward
-    if (getSquare(row, col).firstChild.dataset.king === "true") {
-      directions.push([1, 1], [1, -1]) // Kings move backward as well
-    }
+
+
+  if (getSquare(row, col).firstChild.dataset.king === "true") {
+    directions.push([1, 1], [1, -1], [-1, 1], [-1, -1])
+  } else if (board[row][col] === "red") {
+    directions.push([1, 1], [1, -1])
+  } else {
+    directions.push([-1, 1], [-1, -1])
   }
 
-  // Check each direction for valid moves
+
   directions.forEach(([rowDiff, colDiff]) => {
     const newRow = row + rowDiff
     const newCol = col + colDiff
 
-    // Ensure the move is within bounds and valid
-    if (
-      newRow >= 0 &&
-      newRow < rows &&
-      newCol >= 0 &&
-      newCol < cols &&
-      board[newRow][newCol] === null &&
-      validMove(row, col, newRow, newCol)
-    ) {
-      validMoves.push({ row: newRow, col: newCol })
+
+    if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+      if (board[newRow][newCol] === null) {
+        validMoves.push({ row: newRow, col: newCol })
+      } else {
+        validHopMoves = checkHops(row, col, row, col, rowDiff*2, colDiff*2, directions)
+        for (i = 0; i < validHopMoves.length; i++) {
+          validMoves.push({ row: validHopMoves[i].row, col: validHopMoves[i].col })
+        }
+
+      }
     }
   })
+
 
   return validMoves
 }
 
+function checkHops (origRow, origCol, row, col, rd, cd, directions) {
+  const validHopMoves = []
+  nextHops = []
+  const newRow = row + rd
+  const newCol = col + cd
+  const jumpOverRow = row + rd/2
+  const jumpOverCol = col + cd/2
+  if (newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols || board[newRow][newCol] != null || board[origRow][origCol] == board[jumpOverRow][jumpOverCol] || board[jumpOverRow][jumpOverCol] == null) {
+    return validHopMoves
+  }
+  if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && board[newRow][newCol] == null && board[origRow][origCol] != board[jumpOverRow][jumpOverCol] && board[jumpOverRow][jumpOverCol] != null) {
+    validHopMoves.push({ row: newRow, col: newCol })
+    directions.forEach(([rowDiff, colDiff]) => {
+      nextHops = checkHops(origRow, origCol, newRow, newCol, rowDiff*2, colDiff*2, directions)
+      for (i = 0; i < nextHops.length; i++) {
+        validHopMoves.push(nextHops[i])
+      }
+    })
+  }
+  return validHopMoves;
+}
+
+
+
 function validMove(fromRow, fromCol, toRow, toCol) {
-  if (board[toRow][toCol] != null) return false //must move to an empty square
+  if (board[toRow][toCol] != null) return false
 
   const rowDiff = toRow - fromRow
   const colDiff = Math.abs(toCol - fromCol)
 
-  //chek if in bounds of board
   for (let x of moveSet) {
     if (getSquare(fromRow, fromCol).firstChild.dataset.king == "false") {
       if (hops(fromRow, fromCol, toRow, toCol, x)) {
@@ -304,7 +455,6 @@ function validMove(fromRow, fromCol, toRow, toCol) {
     }
   }
 
-  //if king
   if (getSquare(fromRow, fromCol).firstChild.dataset.king == "true") {
     if (
       (fromRow + 1 == toRow && fromCol + 1 == toCol) ||
@@ -322,9 +472,6 @@ function validMove(fromRow, fromCol, toRow, toCol) {
     return false
   }
 
-  //checks if single square move is valid
-  //with colDiff check if trying to move to far to right or left
-  //with rowDiff it checks if trying to move back
   if (
     colDiff != 1 ||
     (currentPlayer == "red" && rowDiff != 1) ||
@@ -336,74 +483,67 @@ function validMove(fromRow, fromCol, toRow, toCol) {
   return true
 }
 
-//take piece
 function removePiece(row, col) {
   const removeSquare = getSquare(row, col)
+  const capturedColor = board[row][col];
+  
   removeSquare.innerHTML = ""
   board[row][col] = null
+  
+  addToCapturedPieces(capturedColor);
 }
 
-//converts piece
+
 function checkIfKing(row, col) {
   if (currentPlayer == "red" && row == 7) {
     const toKing = getSquare(row, col)
-    // Check if piece is not already a king
     if (toKing.firstChild.dataset.king !== "true") {
       toKing.firstChild.classList.add("king")
       toKing.firstChild.dataset.king = "true"
 
-      // Get the current piece color and make it darker
       const currentColor = window.getComputedStyle(
         toKing.firstChild,
       ).backgroundColor
       const hexColor = rgbToHex(currentColor)
       const darkerColor = darkenColor(hexColor, 20)
       toKing.firstChild.style.backgroundColor = darkerColor
-      promoteSound.currentTime = 0
-      promoteSound.play()
+      playSound('promote');
     }
   }
   if (currentPlayer == "black" && row == 0) {
     const toKing = getSquare(row, col)
-    // Check if piece is not already a king
     if (toKing.firstChild.dataset.king !== "true") {
       toKing.firstChild.classList.add("king")
       toKing.firstChild.dataset.king = "true"
 
-      // Get the current piece color and make it darker
       const currentColor = window.getComputedStyle(
         toKing.firstChild,
       ).backgroundColor
       const hexColor = rgbToHex(currentColor)
       const darkerColor = darkenColor(hexColor, 20)
       toKing.firstChild.style.backgroundColor = darkerColor
+      playSound('promote');
 
-      promoteSound.currentTime = 0
-      promoteSound.play()
     }
   }
 }
 
-//move over 1 or move peice
 function hops(fromRow, fromCol, toRow, toCol, moves) {
   let { piece, enemy, jumps } = moves
   let i = 0
   j = 1
-  for (; j < jumps.length; ) {
-    if (fromRow + jumps[i] == toRow && fromCol + jumps[j] == toCol) {
+  for (; j < jumps.length;) {
+    if ((fromRow + jumps[i] == toRow && fromCol + jumps[j] == toCol) && ((fromRow + jumps[2] < 8 && fromRow + jumps[2] >= 0) && (fromCol + jumps[3] < 8 && fromCol + jumps[3] >= 0))) {
       if (
         board[fromRow][fromCol] == piece &&
         board[fromRow + jumps[0]][fromCol + jumps[1]] == enemy &&
         board[fromRow + jumps[2]][fromCol + jumps[3]] == null
       ) {
-        //single
         if (toRow == fromRow + jumps[2] && toCol == fromCol + jumps[3]) {
           removePiece(fromRow + jumps[0], fromCol + jumps[1])
-          // Update score for single capture
           updateScore(currentPlayer === "red" ? 1 : 2)
           return true
         }
-        //double same (r-r or l-l)
         if (
           board[fromRow + jumps[4]][fromCol + jumps[5]] == enemy &&
           fromRow + jumps[6] == toRow &&
@@ -422,12 +562,19 @@ function hops(fromRow, fromCol, toRow, toCol, moves) {
           fromRow + jumps[8] == toRow &&
           fromCol + jumps[9] == toCol
         ) {
-          removePiece(fromRow + jumps[4], fromCol + jumps[1])
-          removePiece(fromRow + jumps[0], fromCol + jumps[1])
-          // Update score for double capture
-          updateScore(currentPlayer === "red" ? 1 : 2)
-          updateScore(currentPlayer === "red" ? 1 : 2)
-          return true
+          if (jumps[6] == 0 && jumps[7] == 0) { //checks if a king move out in
+            removePiece(fromRow + jumps[4], fromCol + jumps[5]);
+            removePiece(fromRow + jumps[0], fromCol + jumps[1]);
+            updateScore(currentPlayer === "red" ? 1 : 2)
+            updateScore(currentPlayer === "red" ? 1 : 2)
+            return true;
+          } else {
+            removePiece(fromRow + jumps[4], fromCol + jumps[1]);
+            removePiece(fromRow + jumps[0], fromCol + jumps[1]);
+            updateScore(currentPlayer === "red" ? 1 : 2)
+            updateScore(currentPlayer === "red" ? 1 : 2)
+            return true;
+          }
         }
       }
     } else i = i + 2
@@ -437,20 +584,45 @@ function hops(fromRow, fromCol, toRow, toCol, moves) {
 
 //gets the square div
 function getSquare(row, col) {
-  //in class square with where .dataset.row and .col = row,col
   return document.querySelector(`.square[data-row="${row}"][data-col="${col}"]`)
 }
 
 //add a function for the new game button
 
 function newGame() {
-  boardContainer.innerHTML = "" // Clear the board
-  currentPlayer = "black" // Reset current player to black
-  setupBoard() // Set up the board again
-  resetTime() //restart the timer
-  gameStarted = false // Reset game started flag
-  highlightMovablePieces()
-  resetScores() // Reset scores
+  boardContainer.innerHTML = ""; // Clear the board
+  currentPlayer = "black"; // Reset current player to black
+  setupBoard(); // Set up the board again
+  resetTime(); // Restart the timer
+  clearInterval(timerInterval); // Clear the timer interval
+  gameStarted = false; // Reset game started flag
+  winAlreadyProcessed = false; // Reset win processed flag
+  highlightMovablePieces();
+  resetScores(); // Reset scores for the current game
+  updateScores(); // Update the display to show current game scores and total wins
+
+  resetCapturedPieces();
+
+  playSound('start');
+}
+
+function resetCapturedPieces() {
+  const redCaptured = document.getElementById('red-captured');
+  const blackCaptured = document.getElementById('black-captured');
+  
+  if (redCaptured) {
+    redCaptured.innerHTML = '<h3>Red Captures</h3>';
+    const initialRedRow = document.createElement('div');
+    initialRedRow.classList.add('captured-row');
+    redCaptured.appendChild(initialRedRow);
+  }
+  
+  if (blackCaptured) {
+    blackCaptured.innerHTML = '<h3>Black Captures</h3>';
+    const initialBlackRow = document.createElement('div');
+    initialBlackRow.classList.add('captured-row');
+    blackCaptured.appendChild(initialBlackRow);
+  }
 }
 
 //add a popup for the settings for changing colors and pieces
@@ -471,7 +643,19 @@ function openSettings() {
       getComputedStyle(blackPiece).backgroundColor,
     )
   }
+
+  const lightSquare = document.querySelector(".square.light");
+  const darkSquare = document.querySelector(".square.dark");
+
+  if (lightSquare) {
+    document.getElementById("lightSquareColor").value = rgbToHex(getComputedStyle(lightSquare).backgroundColor);
+  }
+  if (darkSquare) {
+    document.getElementById("darkSquareColor").value = rgbToHex(getComputedStyle(darkSquare).backgroundColor);
+  }
+
   document.getElementById("gameTimer").value = Math.floor(redTime / 60)
+  updateSoundToggle();
 }
 
 function closeSettings() {
@@ -511,7 +695,11 @@ function darkenColor(color, percent) {
 function saveSettings() {
   const redColor = document.getElementById("redColor").value
   const blackColor = document.getElementById("blackColor").value
+  const lightSquareColor = document.getElementById("lightSquareColor").value;
+  const darkSquareColor = document.getElementById("darkSquareColor").value;
   const newTime = document.getElementById("gameTimer").value * 60
+
+  handleSoundToggle();
 
   // Update piece colors
   document.querySelectorAll(".piece.red:not(.king)").forEach((piece) => {
@@ -532,6 +720,15 @@ function saveSettings() {
   document.querySelectorAll(".piece.black.king").forEach((piece) => {
     piece.style.backgroundColor = darkerBlack
   })
+
+  // Update board colors
+  document.querySelectorAll(".square.light").forEach(square => {
+    square.style.backgroundColor = lightSquareColor;
+  });
+  document.querySelectorAll(".square.dark").forEach(square => {
+    square.style.backgroundColor = darkSquareColor;
+  });
+
   // Update timer
   redTime = newTime
   blackTime = newTime
@@ -550,13 +747,6 @@ function closeHelp() {
   helpPopup.style.display = "none"
 }
 
-// const helpSound = new Audio('buttonclick.mp3')
-
-// const helpButton = document.getElementById("helpButton")
-
-// helpButton.addEventListener('click', () => {
-//   helpSound.play()
-// })
 
 //function to change the names of the players
 function updatePlayerNames() {
@@ -573,34 +763,51 @@ function updatePlayerNames() {
   const scoreElement = document.querySelector(".score")
   if (scoreElement) {
     scoreElement.textContent = `${player1Name}: 0 | ${player2Name}: 0`
+
+    const savedPlayer1Wins = localStorage.getItem('checkers_player1Wins') || 0;
+    const savedPlayer2Wins = localStorage.getItem('checkers_player2Wins') || 0;
+
+    localStorage.setItem('checkers_player1Name', player1Name);
+    localStorage.setItem('checkers_player2Name', player2Name);
+
+    // Just update display without incrementing
+    document.getElementById("scoreText").textContent =
+      `${player1Name} : ${player1Wins} | ${player2Name} : ${player2Wins}`;
   }
 }
 
 function updateScore(capturingPlayer) {
   if (capturingPlayer === 1) {
-    player1Score += 1
+    player2Score += 1;
   } else {
-    player2Score += 1
+    player1Score += 1;
   }
 
-  const player1Name = document.getElementById("player1").value || "Player 1"
-  const player2Name = document.getElementById("player2").value || "Player 2"
+  const player1Name = document.getElementById("player1").value || "Player 1";
+  const player2Name = document.getElementById("player2").value || "Player 2";
 
   // Update the score display
   document.getElementById("score").textContent =
-    `${player1Name}: ${player1Score} | ${player2Name}: ${player2Score}`
+    `${player1Name}: ${player1Score} | ${player2Name}: ${player2Score}`;
 
-  const redPieces = document.querySelectorAll(".piece.red").length
-  const blackPieces = document.querySelectorAll(".piece.black").length
+  const redPieces = document.querySelectorAll(".piece.red").length;
+  const blackPieces = document.querySelectorAll(".piece.black").length;
 
-  if (redPieces === 0) {
-    endGame("Black captured all pieces!")
-  } else if (blackPieces === 0) {
-    endGame("Red captured all pieces!")
+  // Check if the game is over because a player has no pieces left
+  if (redPieces === 0 || blackPieces === 0) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    gameStarted = false;
+
+    if (redPieces === 0) {
+      endGame("Black captured all pieces!");
+    } else {
+      endGame("Red captured all pieces!");
+    }
+    return;
   }
 
-  sound.currentTime = 0
-  sound.play()
+  playSound('boom');
 }
 
 function resetScores() {
@@ -623,54 +830,57 @@ function resetTime() {
     `Red Time Left: ${formatTime(redTime)} | Black Time Left: ${formatTime(blackTime)}`
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  setupBoard()
-  startTimer()
-  highlightMovablePieces()
-  startSound.currentTime = 0
-  startSound.play()
-  //connects the new game button to the function
-  document.getElementById("newGameButton").addEventListener("click", newGame)
-})
-
-const sound = new Audio("sounds/boom.mov")
-const buttons = document.querySelectorAll(".button")
-const soundClick = new Audio("sounds/buttonclick.mp3")
-const startSound = new Audio("sounds/board_start.mp3")
-const moveSound = new Audio("sounds/moving.mp3")
-const takeSound = new Audio("sounds/take.mp3")
-const promoteSound = new Audio("sounds/promote.mp3")
-const winNoise = new Audio("sounds/yippee-tbh.mp3")
-
-buttons.forEach((button) => {
-  button.addEventListener("click", () => {
-    sound.currentTime = 0
-    sound.play()
-  })
-})
-
 function showGameOver(winner, score, reason) {
-  const popup = document.getElementById("gameOverPopup")
-  const winnerText = document.getElementById("winnerText")
-  const finalScore = document.getElementById("finalScore")
-  const gameEndReason = document.getElementById("gameEndReason")
+  if (document.getElementById("gameOverPopup").style.display === "block") {
+    return;
+  }
 
-  winnerText.textContent = `${winner} wins!`
-  finalScore.textContent = `Final Score: ${score}`
-  gameEndReason.textContent = reason
+  const popup = document.getElementById("gameOverPopup");
+  const winnerText = document.getElementById("winnerText");
+  const finalScore = document.getElementById("finalScore");
+  const gameEndReason = document.getElementById("gameEndReason");
 
-  popup.style.display = "block"
-  gameStarted = false
+  winnerText.textContent = `${winner} wins!`;
+  finalScore.textContent = `Final Score: ${score}`;
+  gameEndReason.textContent = reason;
+
+  popup.style.display = "block";
+
+  gameStarted = false;
 }
 
 function closeGameOver() {
   const popup = document.getElementById("gameOverPopup")
   popup.style.display = "none"
+
+  const squares = document.querySelectorAll(".square")
+  squares.forEach(square => {
+    square.removeEventListener("click", handleClick)
+    square.removeEventListener("dragover", handleDragOver)
+    square.removeEventListener("drop", handleDrop)
+  })
+
+  const pieces = document.querySelectorAll(".piece")
+  pieces.forEach(piece => {
+    piece.draggable = false
+    piece.removeEventListener("dragstart", handleDragStart)
+    piece.removeEventListener("dragend", handleDragEnd)
+  })
+
+  if (selectedPiece) {
+    selectedPiece.element.style.border = "none"
+    selectedPiece = null
+  }
+
+  document.querySelectorAll(".square").forEach(square => {
+    square.style.border = "none"
+  })
 }
 
 function startNewGame() {
   closeGameOver()
   newGame()
+  pauseTime()
 }
 
 //drag and drop functionality
@@ -690,19 +900,15 @@ function enableDragAndDrop() {
 }
 
 function handleDragStart(e) {
-  if (
-    board[e.target.parentNode.dataset.row][e.target.parentNode.dataset.col] !==
-    currentPlayer
-  ) {
-    e.preventDefault()
-    return
+  if (board[e.target.parentNode.dataset.row][e.target.parentNode.dataset.col] !== currentPlayer) {
+    e.preventDefault();
+    return;
   }
-  e.target.classList.add("dragging")
-  selectedPiece = {
-    row: parseInt(e.target.parentNode.dataset.row),
-    col: parseInt(e.target.parentNode.dataset.col),
-    element: e.target.parentNode,
-  }
+  e.target.classList.add("dragging");
+  const row = parseInt(e.target.parentNode.dataset.row);
+  const col = parseInt(e.target.parentNode.dataset.col);
+  selectedPiece = { row, col, element: e.target.parentNode };
+  showValidMoves(row, col);
 }
 
 function handleDragEnd(e) {
@@ -719,11 +925,159 @@ function handleDrop(e) {
   const toRow = parseInt(square.dataset.row)
   const toCol = parseInt(square.dataset.col)
 
+  // Clear valid move indicators
+  clearValidMoveIndicators()
+
+  // If the target square already has a piece, return
+  if (square.hasChildNodes()) {
+    selectedPiece = null
+    return
+  }
+
   if (selectedPiece) {
     const valid = validMove(selectedPiece.row, selectedPiece.col, toRow, toCol)
     if (valid) {
-      movePiece(selectedPiece.row, selectedPiece.col, toRow, toCol, valid)
+      playSound('move');
+      const fromSquare = getSquare(selectedPiece.row, selectedPiece.col)
+      const piece = fromSquare.firstChild
+      square.appendChild(piece)
+      board[toRow][toCol] = board[selectedPiece.row][selectedPiece.col]
+      board[selectedPiece.row][selectedPiece.col] = null
+      checkIfKing(toRow, toCol)
+      switchPlayer()
     }
     selectedPiece = null
+    highlightMovablePieces()
   }
 }
+
+function updateScores() {
+  const player1Name = document.getElementById("player1").value || "Player 1";
+  const player2Name = document.getElementById("player2").value || "Player 2";
+
+  // Update the wins display
+  document.getElementById("scoreText").textContent =
+    `${player1Name} : ${player1Wins} | ${player2Name} : ${player2Wins}`;
+}
+
+
+function redPlayerWins() {
+  player2Wins++;
+  updateScores();
+
+  saveWinsToStorage();
+}
+
+function blackPlayerWins() {
+  player1Wins++;
+  updateScores();
+
+  saveWinsToStorage();
+}
+
+function saveWinsToStorage() {
+  const player1Name = document.getElementById("player1").value || "Player 1";
+  const player2Name = document.getElementById("player2").value || "Player 2";
+
+  localStorage.setItem('checkers_player1Wins', player1Wins);
+  localStorage.setItem('checkers_player2Wins', player2Wins);
+  localStorage.setItem('checkers_player1Name', player1Name);
+  localStorage.setItem('checkers_player2Name', player2Name);
+}
+
+function loadWinsFromStorage() {
+  player1Wins = parseInt(localStorage.getItem('checkers_player1Wins')) || 0;
+  player2Wins = parseInt(localStorage.getItem('checkers_player2Wins')) || 0;
+
+  const savedPlayer1Name = localStorage.getItem('checkers_player1Name');
+  const savedPlayer2Name = localStorage.getItem('checkers_player2Name');
+
+  if (savedPlayer1Name) {
+    document.getElementById("player1").value = savedPlayer1Name;
+  }
+
+  if (savedPlayer2Name) {
+    document.getElementById("player2").value = savedPlayer2Name;
+  }
+
+  updateScores();
+}
+
+
+function resetWins() {
+  player1Wins = 0;
+  player2Wins = 0;
+  saveWinsToStorage();
+  updateScores();
+}
+
+
+function clearValidMoveIndicators() {
+  document.querySelectorAll('.valid-move-indicator').forEach(indicator => {
+    indicator.remove()
+  })
+}
+
+function showValidMoves(row, col) {
+  clearValidMoveIndicators()
+
+  // If the clicked piece doesn't belong to current player, return
+  if (board[row][col] !== currentPlayer) {
+    return
+  }
+
+  const validMoves = getValidMoves(row, col)
+  validMoves.forEach(move => {
+    const square = getSquare(move.row, move.col)
+    const indicator = document.createElement('div')
+    indicator.className = 'valid-move-indicator'
+    square.appendChild(indicator)
+  })
+}
+
+function addToCapturedPieces(color) {
+  const container = color === 'red' ? 
+    document.getElementById('black-captured') : 
+    document.getElementById('red-captured');
+  
+  if (container) {
+    const capturedPiece = document.createElement('div');
+    capturedPiece.classList.add('captured-piece', color);
+    
+    let currentRow = container.querySelector('.captured-row:last-child');
+    const piecesPerRow = 4;
+    
+    if (!currentRow || currentRow.children.length >= piecesPerRow) {
+      currentRow = document.createElement('div');
+      currentRow.classList.add('captured-row');
+      container.appendChild(currentRow);
+    }
+    
+    currentRow.appendChild(capturedPiece);
+  }
+}
+
+
+document.getElementById('volumeControl').addEventListener('input', function () {
+  const volumeValue = this.value;
+  document.getElementById('volumeValue').textContent = `${Math.round(volumeValue * 100)}%`;
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  setupBoard()
+  loadWinsFromStorage()
+  startTimer()
+  highlightMovablePieces()
+  playSound('start');
+  document.getElementById("newGameButton").addEventListener("click", newGame)
+  addResetWinsButton();
+  updatePlayerNames();
+})
+
+buttons.forEach((button) => {
+  button.addEventListener("click", () => {
+    playSound('boom');
+  })
+})
