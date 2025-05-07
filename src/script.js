@@ -404,11 +404,9 @@ function getValidMoves(row, col) {
       if (board[newRow][newCol] === null) {
         validMoves.push({ row: newRow, col: newCol })
       } else {
-        validHopMoves = checkHops(row, col, rowDiff*2, colDiff*2, directions)
+        validHopMoves = checkHops(row, col, row, col, rowDiff*2, colDiff*2, directions)
         for (i = 0; i < validHopMoves.length; i++) {
-          //console.log(row, col, validMoves, validHopMoves)
           validMoves.push({ row: validHopMoves[i].row, col: validHopMoves[i].col })
-          //console.log(validMoves)
         }
 
       }
@@ -418,6 +416,30 @@ function getValidMoves(row, col) {
 
   return validMoves
 }
+
+function checkHops (origRow, origCol, row, col, rd, cd, directions) {
+  const validHopMoves = []
+  nextHops = []
+  const newRow = row + rd
+  const newCol = col + cd
+  const jumpOverRow = row + rd/2
+  const jumpOverCol = col + cd/2
+  if (newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols || board[newRow][newCol] != null || board[origRow][origCol] == board[jumpOverRow][jumpOverCol] || board[jumpOverRow][jumpOverCol] == null) {
+    return validHopMoves
+  }
+  if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && board[newRow][newCol] == null && board[origRow][origCol] != board[jumpOverRow][jumpOverCol] && board[jumpOverRow][jumpOverCol] != null) {
+    validHopMoves.push({ row: newRow, col: newCol })
+    directions.forEach(([rowDiff, colDiff]) => {
+      nextHops = checkHops(origRow, origCol, newRow, newCol, rowDiff*2, colDiff*2, directions)
+      for (i = 0; i < nextHops.length; i++) {
+        validHopMoves.push(nextHops[i])
+      }
+    })
+  }
+  return validHopMoves;
+}
+
+
 
 function validMove(fromRow, fromCol, toRow, toCol) {
   if (board[toRow][toCol] != null) return false
@@ -471,28 +493,6 @@ function removePiece(row, col) {
   addToCapturedPieces(capturedColor);
 }
 
-function checkHops (row, col, rd, cd, directions) {
-  const validHopMoves = []
-  nextHops = []
-  const newRow = row + rd
-  const newCol = col + cd
-  const jumpOverRow = row + rd/2
-  const jumpOverCol = col + cd/2
-  if (newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols || board[newRow][newCol] != null || board[row][col] == board[jumpOverRow][jumpOverCol]) {
-    return validHopMoves
-  }
-  if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && board[newRow][newCol] === null && board[row][col] != board[jumpOverRow][jumpOverCol]) {
-    validHopMoves.push({ row: newRow, col: newCol })
-    directions.forEach(([rowDiff, colDiff]) => {
-      nextHops = checkHops(newRow, newCol, rowDiff*2, colDiff*2, directions)
-      for (i = 0; i < nextHops.length; i++) {
-        validHopMoves.push(nextHops[i])
-        console.log(validHopMoves)
-      }
-    })
-  }
-  return validHopMoves;
-}
 
 function checkIfKing(row, col) {
   if (currentPlayer == "red" && row == 7) {
