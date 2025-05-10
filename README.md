@@ -7,6 +7,7 @@ Checkers is a full-stack game hosted on a web application that allows one player
 The front-end will be implemented in HTML/CSS and JavaScript, and the back-end will be implemented in Python.
 
 ## Requirement Models
+
 <p align="center">
   <img width="500" alt="Image of UML Class Diagram" src="uml_class.png">
   <p align="center">
@@ -24,20 +25,36 @@ The front-end will be implemented in HTML/CSS and JavaScript, and the back-end w
 
 ## Getting Started
 
+# Homepage
+
+![image](https://github.com/user-attachments/assets/7e983ffd-5bf2-45af-90eb-4cc91b0d381f)
+
+# Checkers
+
+![image](https://github.com/user-attachments/assets/2ecb0a35-2e0a-4f1f-aa0b-7abb24a9506b)
+
+# Chess
+
+![image](https://github.com/user-attachments/assets/1767c1e1-861a-4726-86df-e675b8fd5f9d)
+
 ## Styleguide
 
 The linter that will be used for the front-end development will be Prettier.
 The linter that will be used for the back-end development will be Black. Both linters will be automated and ran through GitHub Actions.
 
 ## Built With
-**Operating Systems:** 
+
+**Operating Systems:**
+
 - Ubuntu
 - Windows
 
 **Text Editors:**
+
 - Visual Studio Code
 
 **Linters:**
+
 - Black (for Python)
 - Prettier (for HTML/CSS/JavaScript)
 
@@ -47,20 +64,20 @@ The linter that will be used for the back-end development will be Black. Both li
 
 **Web Framework:**
 
-
 ## Future Updates
 
 ## Authors
+
 **Front-end developers:**  
 Dylan Phan  
 Sony Kim  
 Samson Du  
-Andrew Mankin  
+Andrew Mankin
 
 **Back-end developers:**  
 Kevin Chau  
 Azaan Mavandadipur  
 Collin Woelfl  
-Kayla Ngo  
+Kayla Ngo
 
 ## License

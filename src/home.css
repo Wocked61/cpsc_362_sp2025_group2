@@ -1,0 +1,144 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #808080;
+}
+
+.title {
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: larger;
+  color: #fff2f2;
+  text-align: center;
+  margin: 0;
+  padding: 1rem;
+  background-color: #212121;
+}
+
+.navigation {
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  background-color: #212121;
+  color: #fff2f2;
+  padding: 1rem;
+}
+
+.navigation ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navigation li {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.navigation a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #808080;
+  flex-direction: column;
+}
+
+footer {
+  background-color: #424242;
+  width: 100%;
+  padding: 1rem 0;
+  margin-top: auto;
+  display: flex;
+  text-align: center;
+  margin-bottom: auto;
+  position: relative;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.footer-content {
+  text-align: left;
+  color: #fff2f2;
+  padding: 1rem;
+}
+
+.box {
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.boxes {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  width: 250px;
+  height: 300px;
+  border: 5px solid black;
+  margin: 20px;
+  text-align: center;
+  align-items: center;
+}
+
+.box-link {
+  text-decoration: none;
+  cursor: pointer;
+  display: block;
+}
+
+.box-link:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+  padding: 2px;
+  border-radius: 8px;
+  background: linear-gradient(270deg, #860c0c, #670d13, #0f5e29);
+  background-size: 300% 300%;
+  animation: animatedGradient 4s ease infinite;
+}
+
+@keyframes animatedGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.game-image {
+  width: 250px;
+  height: 250px;
+}
+
+.game-name {
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: larger;
+  color: white;
+  text-align: center;
+  align-items: center;
+}
