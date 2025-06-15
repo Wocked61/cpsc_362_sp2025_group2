@@ -9,7 +9,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #808080;
+  background: linear-gradient(135deg, #4b0f44, #2e0b47);
 }
 
 .title {
@@ -55,7 +55,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #808080;
+  align-items: center;
+  background-color: transparent;
   flex-direction: column;
 }
 
@@ -110,7 +111,7 @@ footer {
 .box-link:hover {
   transform: scale(1.05);
   transition: transform 0.3s ease;
-  padding: 2px;
+  padding: 2px; 
   border-radius: 8px;
   background: linear-gradient(270deg, #860c0c, #670d13, #0f5e29);
   background-size: 300% 300%;
@@ -141,4 +142,14 @@ footer {
   color: white;
   text-align: center;
   align-items: center;
+}
+
+.text {
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: larger;
+  color: #fff2f2;
+  text-align: center;
+  margin: 0;
+  padding: 1rem;
 }
